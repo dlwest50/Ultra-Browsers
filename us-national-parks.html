@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US National Parks Interactive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        #container { display: flex; height: 100vh; flex-direction: column; }
+        #header { padding: 10px; background: #f0f0f0; text-align: center; }
+        #sidebar { width: 100%; padding: 10px; overflow-y: auto; background: #fff; border-bottom: 1px solid #ccc; max-height: 40vh; }
+        #map { flex: 1; }
+        #search { width: 100%; padding: 8px; margin-bottom: 10px; box-sizing: border-box; }
+        #park-list { list-style: none; padding: 0; margin: 0; }
+        #park-list li { padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; }
+        #park-list li:hover { background: #f5f5f5; }
+        @media (min-width: 768px) {
+            #container { flex-direction: row; }
+            #sidebar { width: 320px; max-height: none; border-bottom: none; border-right: 1px solid #ccc; }
+            #map { height: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Interactive Map of US National Parks</h1>
+    </div>
+    <div id="container">
+        <div id="sidebar">
+            <h2>US National Parks (63)</h2>
+            <p>Click a park name to zoom to it on the map, or click its marker to visit the official NPS website (with trails, camping, activities, and more).</p>
+            <input id="search" type="text" placeholder="Search parks...">
+            <ul id="park-list"></ul>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([37.09, -95.71], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Complete list of all 63 US National Parks with approximate coordinates and official NPS URLs
+        const parks = [
+            { name: "Acadia National Park", lat: 44.35, lng: -68.21, url: "https://www.nps.gov/acad/index.htm" },
+            { name: "National Park of American Samoa", lat: -14.25, lng: -170.68, url: "https://www.nps.gov/npsa/index.htm" },
+            { name: "Arches National Park", lat: 38.68, lng: -109.57, url: "https://www.nps.gov/arch/index.htm" },
+            { name: "Badlands National Park", lat: 43.75, lng: -102.5, url: "https://www.nps.gov/badl/index.htm" },
+            { name: "Big Bend National Park", lat: 29.25, lng: -103.25, url: "https://www.nps.gov/bibe/index.htm" },
+            { name: "Biscayne National Park", lat: 25.65, lng: -80.08, url: "https://www.nps.gov/bisc/index.htm" },
+            { name: "Black Canyon of the Gunnison National Park", lat: 38.57, lng: -107.72, url: "https://www.nps.gov/blca/index.htm" },
+            { name: "Bryce Canyon National Park", lat: 37.57, lng: -112.18, url: "https://www.nps.gov/brca/index.htm" },
+            { name: "Canyonlands National Park", lat: 38.2, lng: -109.93, url: "https://www.nps.gov/cany/index.htm" },
+            { name: "Capitol Reef National Park", lat: 38.2, lng: -111.17, url: "https://www.nps.gov/care/index.htm" },
+            { name: "Carlsbad Caverns National Park", lat: 32.17, lng: -104.44, url: "https://www.nps.gov/cave/index.htm" },
+            { name: "Channel Islands National Park", lat: 34.01, lng: -119.42, url: "https://www.nps.gov/chis/index.htm" },
+            { name: "Congaree National Park", lat: 33.78, lng: -80.78, url: "https://www.nps.gov/cong/index.htm" },
+            { name: "Crater Lake National Park", lat: 42.94, lng: -122.1, url: "https://www.nps.gov/crla/index.htm" },
+            { name: "Cuyahoga Valley National Park", lat: 41.24, lng: -81.55, url: "https://www.nps.gov/cuva/index.htm" },
+            { name: "Death Valley National Park", lat: 36.24, lng: -116.82, url: "https://www.nps.gov/deva/index.htm" },
+            { name: "Denali National Park and Preserve", lat: 63.33, lng: -150.5, url: "https://www.nps.gov/dena/index.htm" },
+            { name: "Dry Tortugas National Park", lat: 24.63, lng: -82.87, url: "https://www.nps.gov/drto/index.htm" },
+            { name: "Everglades National Park", lat: 25.32, lng: -80.93, url: "https://www.nps.gov/ever/index.htm" },
+            { name: "Gates of the Arctic National Park and Preserve", lat: 67.78, lng: -153.3, url: "https://www.nps.gov/gaar/index.htm" },
+            { name: "Gateway Arch National Park", lat: 38.63, lng: -90.19, url: "https://www.nps.gov/jeff/index.htm" },
+            { name: "Glacier National Park", lat: 48.8, lng: -114, url: "https://www.nps.gov/glac/index.htm" },
+            { name: "Glacier Bay National Park and Preserve", lat: 58.5, lng: -137, url: "https://www.nps.gov/glba/index.htm" },
+            { name: "Grand Canyon National Park", lat: 36.06, lng: -112.14, url: "https://www.nps.gov/grca/index.htm" },
+            { name: "Grand Teton National Park", lat: 43.73, lng: -110.8, url: "https://www.nps.gov/grte/index.htm" },
+            { name: "Great Basin National Park", lat: 38.98, lng: -114.3, url: "https://www.nps.gov/grba/index.htm" },
+            { name: "Great Sand Dunes National Park and Preserve", lat: 37.73, lng: -105.51, url: "https://www.nps.gov/grsa/index.htm" },
+            { name: "Great Smoky Mountains National Park", lat: 35.68, lng: -83.53, url: "https://www.nps.gov/grsm/index.htm" },
+            { name: "Guadalupe Mountains National Park", lat: 31.92, lng: -104.87, url: "https://www.nps.gov/gumo/index.htm" },
+            { name: "Haleakalā National Park", lat: 20.72, lng: -156.17, url: "https://www.nps.gov/hale/index.htm" },
+            { name: "Hawaiʻi Volcanoes National Park", lat: 19.38, lng: -155.2, url: "https://www.nps.gov/havo/index.htm" },
+            { name: "Hot Springs National Park", lat: 34.51, lng: -93.05, url: "https://www.nps.gov/hosp/index.htm" },
+            { name: "Indiana Dunes National Park", lat: 41.65, lng: -87.05, url: "https://www.nps.gov/indu/index.htm" },
+            { name: "Isle Royale National Park", lat: 48.1, lng: -88.55, url: "https://www.nps.gov/isro/index.htm" },
+            { name: "Joshua Tree National Park", lat: 33.79, lng: -115.9, url: "https://www.nps.gov/jotr/index.htm" },
+            { name: "Katmai National Park and Preserve", lat: 58.5, lng: -155, url: "https://www.nps.gov/katm/index.htm" },
+            { name: "Kenai Fjords National Park", lat: 59.92, lng: -149.65, url: "https://www.nps.gov/kefj/index.htm" },
+            { name: "Kings Canyon National Park", lat: 36.8, lng: -118.55, url: "https://www.nps.gov/seki/index.htm" }, // Managed with Sequoia
+            { name: "Kobuk Valley National Park", lat: 67.55, lng: -159.28, url: "https://www.nps.gov/kova/index.htm" },
+            { name: "Lake Clark National Park and Preserve", lat: 60.97, lng: -153.42, url: "https://www.nps.gov/lacl/index.htm" },
+            { name: "Lassen Volcanic National Park", lat: 40.49, lng: -121.51, url: "https://www.nps.gov/lavo/index.htm" },
+            { name: "Mammoth Cave National Park", lat: 37.18, lng: -86.1, url: "https://www.nps.gov/maca/index.htm" },
+            { name: "Mesa Verde National Park", lat: 37.18, lng: -108.49, url: "https://www.nps.gov/meve/index.htm" },
+            { name: "Mount Rainier National Park", lat: 46.85, lng: -121.75, url: "https://www.nps.gov/mora/index.htm" },
+            { name: "New River Gorge National Park and Preserve", lat: 38.07, lng: -81.08, url: "https://www.nps.gov/neri/index.htm" },
+            { name: "North Cascades National Park", lat: 48.7, lng: -121.2, url: "https://www.nps.gov/noca/index.htm" },
+            { name: "Olympic National Park", lat: 47.97, lng: -123.5, url: "https://www.nps.gov/olym/index.htm" },
+            { name: "Petrified Forest National Park", lat: 35.07, lng: -109.78, url: "https://www.nps.gov/pefo/index.htm" },
+            { name: "Pinnacles National Park", lat: 36.48, lng: -121.16, url: "https://www.nps.gov/pinn/index.htm" },
+            { name: "Redwood National and State Parks", lat: 41.3, lng: -124, url: "https://www.nps.gov/redw/index.htm" },
+            { name: "Rocky Mountain National Park", lat: 40.4, lng: -105.58, url: "https://www.nps.gov/romo/index.htm" },
+            { name: "Saguaro National Park", lat: 32.25, lng: -110.5, url: "https://www.nps.gov/sagu/index.htm" },
+            { name: "Sequoia National Park", lat: 36.56, lng: -118.77, url: "https://www.nps.gov/seki/index.htm" },
+            { name: "Shenandoah National Park", lat: 38.53, lng: -78.35, url: "https://www.nps.gov/shen/index.htm" },
+            { name: "Theodore Roosevelt National Park", lat: 46.97, lng: -103.47, url: "https://www.nps.gov/thro/index.htm" },
+            { name: "Virgin Islands National Park", lat: 18.33, lng: -64.73, url: "https://www.nps.gov/viis/index.htm" },
+            { name: "Voyageurs National Park", lat: 48.5, lng: -92.88, url: "https://www.nps.gov/voya/index.htm" },
+            { name: "White Sands National Park", lat: 32.78, lng: -106.17, url: "https://www.nps.gov/whsa/index.htm" },
+            { name: "Wind Cave National Park", lat: 43.57, lng: -103.48, url: "https://www.nps.gov/wica/index.htm" },
+            { name: "Wrangell–St. Elias National Park and Preserve", lat: 61.0, lng: -142.0, url: "https://www.nps.gov/wrst/index.htm" },
+            { name: "Yellowstone National Park", lat: 44.43, lng: -110.59, url: "https://www.nps.gov/yell/index.htm" },
+            { name: "Yosemite National Park", lat: 37.87, lng: -119.54, url: "https://www.nps.gov/yose/index.htm" },
+            { name: "Zion National Park", lat: 37.3, lng: -113.03, url: "https://www.nps.gov/zion/index.htm" }
+        ];
+
+        parks.sort((a, b) => a.name.localeCompare(b.name));
+
+        const list = document.getElementById('park-list');
+        const markers = [];
+
+        parks.forEach((park, index) => {
+            const li = document.createElement('li');
+            li.textContent = park.name;
+            li.addEventListener('click', () => {
+                map.setView([park.lat, park.lng], 10);
+                markers[index].openPopup();
+            });
+            list.appendChild(li);
+
+            const marker = L.marker([park.lat, park.lng]).addTo(map)
+                .bindPopup(`<b>${park.name}</b><br><a href="${park.url}" target="_blank">Visit Official Website</a> (Trails, Camping, etc.)`);
+
+            marker.on('click', () => {
+                window.open(park.url, '_blank');
+            });
+
+            markers.push(marker);
+        });
+
+        document.getElementById('search').addEventListener('input', e => {
+            const term = e.target.value.toLowerCase();
+            list.querySelectorAll('li').forEach((li, i) => {
+                li.style.display = parks[i].name.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

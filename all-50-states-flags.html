@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA State Flag Encyclopedia</title>
+    <style>
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                        url('https://flagcdn.com/w1280/us.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        header { text-align: center; margin-bottom: 30px; }
+
+        .search-container { max-width: 500px; margin: 0 auto 30px; }
+        #stateSearch {
+            width: 100%; padding: 15px; border-radius: 30px;
+            border: 2px solid #002868; font-size: 16px; outline: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .state-card {
+            background: white; border-radius: 10px; padding: 15px;
+            text-align: center; cursor: pointer; border: 1px solid #ddd;
+            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .state-card:hover { transform: translateY(-5px); border-color: #bf0a30; }
+
+        .state-card img {
+            width: 100%; height: 110px; object-fit: contain;
+            border-bottom: 1px solid #eee; margin-bottom: 10px;
+        }
+
+        /* Modal / Popup */
+        #flagModal {
+            display: none; position: fixed; z-index: 999;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); justify-content: center;
+            align-items: center; flex-direction: column; color: white;
+        }
+        #modalImg { max-width: 80%; max-height: 50%; border: 3px solid white; border-radius: 5px; }
+        .fact-text { max-width: 600px; font-size: 1.4rem; color: #ffca28; margin: 20px; text-align: center; font-style: italic; }
+        
+        /* Copy Button */
+        .copy-btn {
+            background: #bf0a30; color: white; border: none; padding: 10px 20px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .copy-btn:hover { background: #e00b3a; }
+
+        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 40px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+
+<header>
+    <h1 style="color: #002868;">USA State Flag Gallery</h1>
+    <div class="search-container">
+        <input type="text" id="stateSearch" placeholder="Search for your state..." onkeyup="filterStates()">
+    </div>
+</header>
+
+<div class="gallery" id="flagGrid"></div>
+
+<div id="flagModal">
+    <span class="close-btn" onclick="document.getElementById('flagModal').style.display='none'">&times;</span>
+    <img id="modalImg" src="">
+    <h2 id="modalTitle" style="margin-top:15px;"></h2>
+    <p id="modalFact" class="fact-text"></p>
+    <button class="copy-btn" id="copyBtn">Copy Fun Fact</button>
+    <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">(Click the 'X' or outside to close)</p>
+</div>
+
+<script>
+    // State data (abbreviated list - feel free to add the others back in!)
+    const states = [
+        { n: "Alabama", c: "al", f: "The flag is a crimson cross of St. Andrew on a white field." },
+        { n: "Alaska", c: "ak", f: "The stars form the Big Dipper and the North Star." },
+        { n: "Arizona", c: "az", f: "The 13 rays of red and gold represent the original 13 colonies." },
+        { n: "Arkansas", c: "ar", f: "The diamond represents Arkansas as the only US state to mine diamonds." },
+        { n: "California", c: "ca", f: "The grizzly bear on the flag was modeled after a real bear named 'Monarch'." },
+        { n: "Colorado", c: "co", f: "The 'C' stands for Colorado, Centennial State, and the state flower, the Columbine." },
+        { n: "Florida", c: "fl", f: "The flag depicts the state seal and a red cross of St. Andrew." },
+        { n: "Georgia", c: "ga", f: "The flag features the state coat of arms and 13 stars for the original colonies." },
+        { n: "Hawaii", c: "hi", f: "It's the only US state flag to feature the Union Jack of the United Kingdom." },
+        { n: "Texas", c: "tx", f: "The 'Lone Star' flag was the national flag of the Republic of Texas." },
+        { n: "Washington", c: "wa", f: "The only state flag with a green background and a US President." },
+        { n: "Wyoming", c: "wy", f: "The bison represents the state's local fauna." }
+        // ... You can re-insert the full list of 50 states here
+    ];
+
+    const grid = document.getElementById('flagGrid');
+
+    states.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'state-card';
+        card.innerHTML = `
+            <img src="https://flagcdn.com/w320/us-${s.c}.png" alt="${s.n}">
+            <div style="font-weight:bold">${s.n}</div>
+        `;
+        card.onclick = () => {
+            document.getElementById('modalImg').src = `https://flagcdn.com/w1280/us-${s.c}.png`;
+            document.getElementById('modalTitle').innerText = s.n;
+            document.getElementById('modalFact').innerText = s.f;
+            document.getElementById('flagModal').style.display = 'flex';
+            
+            // Set up copy button
+            document.getElementById('copyBtn').onclick = (e) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(s.f);
+                const originalText = document.getElementById('copyBtn').innerText;
+                document.getElementById('copyBtn').innerText = "Copied!";
+                setTimeout(() => { document.getElementById('copyBtn').innerText = originalText; }, 2000);
+            };
+        };
+        grid.appendChild(card);
+    });
+
+    function filterStates() {
+        const val = document.getElementById('stateSearch').value.toLowerCase();
+        document.querySelectorAll('.state-card').forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(val) ? 'block' : 'none';
+        });
+    }
+
+    // Close on background click
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('flagModal')) {
+            document.getElementById('flagModal').style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>

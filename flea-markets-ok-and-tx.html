@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Texas & Oklahoma Flea Markets Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    header {
+      padding: 8px 12px;
+      background: #2c3e50;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header input {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+    }
+
+    #content {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    #sidebar {
+      width: 300px;
+      max-width: 80%;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+      background: #f8f8f8;
+    }
+
+    #map {
+      flex: 1;
+    }
+
+    h3 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+    }
+
+    .market-item {
+      padding: 6px;
+      margin-bottom: 4px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .market-item:hover {
+      background: #e0e0e0;
+    }
+
+    .market-item input {
+      margin-right: 6px;
+    }
+
+    .distance-box {
+      margin-top: 10px;
+      padding: 8px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      #content {
+        flex-direction: column;
+      }
+      #sidebar {
+        width: 100%;
+        max-height: 40%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <strong>Flea Markets Map</strong>
+    <input id="searchInput" type="text" placeholder="Search by market name or city..." />
+  </header>
+
+  <div id="content">
+    <div id="sidebar">
+      <h3>Texas</h3>
+      <div id="list-texas"></div>
+
+      <h3>Oklahoma</h3>
+      <div id="list-oklahoma"></div>
+
+      <div class="distance-box" id="distanceBox">
+        Select two flea markets to calculate distance.
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  // =====================
+  // Data
+  // =====================
+  const texasMarkets = [
+    {"Name":"First Monday Trade Days","City":"Canton","GPS":[32.5593,-95.8641],"Schedule":"1st Weekend","URL":"https://www.firstmondaycanton.com"},
+    {"Name":"Traders Village","City":"Grand Prairie","GPS":[32.6961,-97.0264],"Schedule":"Every Sat/Sun","URL":"https://tradersvillage.com/grand-prairie"},
+    {"Name":"Traders Village","City":"Houston","GPS":[29.8901,-95.5412],"Schedule":"Every Sat/Sun","URL":"https://tradersvillage.com/houston"},
+    {"Name":"Traders Village","City":"San Antonio","GPS":[29.3361,-98.6653],"Schedule":"Every Sat/Sun","URL":"https://tradersvillage.com/san-antonio"},
+    {"Name":"Bussey’s Flea Market","City":"Schertz","GPS":[29.5898,-98.2743],"Schedule":"Every Sat/Sun","URL":"https://www.busseysfm.com"},
+    {"Name":"Sunny Flea Market","City":"Houston","GPS":[29.8893,-95.4093],"Schedule":"Every Sat/Sun","URL":"https://sunnyfleamarket.website"},
+    {"Name":"Austin Country Flea Market","City":"Austin","GPS":[30.3168,-97.6254],"Schedule":"Every Sat/Sun","URL":"http://austincountry.citymax.com"},
+    {"Name":"Third Monday Trade Days","City":"McKinney","GPS":[33.2081,-96.6853],"Schedule":"3rd Weekend","URL":"https://www.thirdmondaytreasures.com"},
+    {"Name":"Wimberley Market Days","City":"Wimberley","GPS":[29.9961,-98.1065],"Schedule":"1st Saturday","URL":"https://www.shopmarketdays.com"},
+    {"Name":"Fredericksburg Trade Days","City":"Fredericksburg","GPS":[30.2224,-98.7884],"Schedule":"3rd Weekend","URL":"http://www.fbgtradedays.com"},
+    {"Name":"Cole’s Flea Market","City":"Pearland","GPS":[29.5583,-95.2811],"Schedule":"Every Sat/Sun","URL":"https://colesantiquemarket.com"},
+    {"Name":"77 Flea Market","City":"Brownsville","GPS":[25.9686,-97.5186],"Schedule":"Every Sat/Sun","URL":"http://www.77fleamarket.com"},
+    {"Name":"Mission Open Air Market","City":"San Antonio","GPS":[29.3214,-98.4842],"Schedule":"Wed/Sat/Sun","URL":"http://missionopenairmarket.com"},
+    {"Name":"Fox Plaza Mercado","City":"El Paso","GPS":[31.7741,-106.4258],"Schedule":"Every Sunday","URL":"https://www.foxplazamercado.com"},
+    {"Name":"Marketplace Austin","City":"Austin","GPS":[30.3745,-97.6881],"Schedule":"Thu–Sun","URL":"https://marketplaceaustin.com"},
+    {"Name":"Round Top Antiques Fair","City":"Round Top","GPS":[30.0531,-96.7118],"Schedule":"Semi-Annual","URL":"https://www.exploreroundtop.com"},
+    {"Name":"Pate Swap Meet","City":"Fort Worth","GPS":[33.0271,-97.2831],"Schedule":"Annual (April)","URL":"https://www.pateswapmeet.com"},
+    {"Name":"First Monday Trade Days","City":"Weatherford","GPS":[32.7547,-97.8005],"Schedule":"1st Weekend","URL":"https://www.weatherfordtx.gov/155/First-Monday-Trade-Days"},
+    {"Name":"Boerne Market Days","City":"Boerne","GPS":[29.7947,-98.7320],"Schedule":"2nd Weekend","URL":"http://www.boernemarketdays.com"},
+    {"Name":"Bargin City Bazaar","City":"Dallas","GPS":[32.7561,-96.8794],"Schedule":"Every Fri–Sun","URL":"https://www.facebook.com/BarginCityBazaar"},
+    {"Name":"Canton Marketplace","City":"Canton","GPS":[32.5645,-95.8621],"Schedule":"1st Weekend","URL":"https://www.cantonmarketplace.com"},
+    {"Name":"Chicken House Flea Market","City":"Stephenville","GPS":[32.1932,-98.2435],"Schedule":"2nd & 4th Sat","URL":"https://chickenhousefleamarket.com"},
+    {"Name":"LaSalle Shoppes","City":"Waco","GPS":[31.5361,-97.1245],"Schedule":"Daily","URL":"https://lasalleshoppes.com"},
+    {"Name":"Big Daddy’s Traders Market","City":"Tool","GPS":[32.2612,-96.1601],"Schedule":"Every Sat/Sun","URL":"http://www.bigdaddysfleamarket.com"},
+    {"Name":"The Brenham Flea","City":"Brenham","GPS":[30.1741,-96.3882],"Schedule":"1st Weekend","URL":"https://www.facebook.com/TheBrenhamFlea"},
+    {"Name":"Garibaldi Bazaar","City":"Dallas","GPS":[32.7932,-96.6884],"Schedule":"Every Fri–Sun","URL":"https://www.facebook.com/garibaldi.bazaar"},
+    {"Name":"Treasure Trove Flea","City":"Texarkana","GPS":[33.4352,-94.0881],"Schedule":"Daily","URL":"https://www.facebook.com/TreasureTroveVintageFleaMarket"},
+    {"Name":"X Night Market","City":"Edinburg","GPS":[26.3684,-98.1754],"Schedule":"Every Weekend","URL":"https://xmarkett.com"},
+    {"Name":"Antique Alley Texas","City":"Grandview","GPS":[32.2693,-97.1784],"Schedule":"3rd Fri/Sat/Sun","URL":"https://antiquealleytexas.com"},
+    {"Name":"Huntsville Antiques","City":"Huntsville","GPS":[30.7235,-95.5508],"Schedule":"Daily","URL":"http://huntsvilleantiquedistrict.com"}
+  ];
+
+  const oklahomaMarkets = [
+    {"Name":"Old Paris Flea Market","City":"OKC","GPS":[35.4549,-97.4764],"Schedule":"Every Sat/Sun","URL":"http://www.oldparisfleamarket.com"},
+    {"Name":"Tulsa Flea Market","City":"Tulsa","GPS":[36.1332,-95.9311],"Schedule":"Most Saturdays","URL":"http://www.tulsafleamarket.net"},
+    {"Name":"Mary’s Ole Time Swap Meet","City":"OKC","GPS":[35.4921,-97.3985],"Schedule":"Every Sat/Sun","URL":"https://www.facebook.com/MarysSwapMeet"},
+    {"Name":"Old Chicken Farm Vintage","City":"Jones","GPS":[35.5658,-97.2884],"Schedule":"3rd Saturday","URL":"https://oldchickenfarm.com"},
+    {"Name":"Vintage Market Days","City":"Kellyville","GPS":[36.0028,-96.2154],"Schedule":"Seasonal","URL":"https://vintagemarketdays.com"},
+    {"Name":"The Rink Marketplace","City":"Bethany","GPS":[35.5034,-97.6184],"Schedule":"Daily","URL":"https://therinkgallery.com"},
+    {"Name":"Showplace Market","City":"Moore","GPS":[35.3392,-97.4851],"Schedule":"Daily","URL":"https://showplacemarket.com"},
+    {"Name":"Persimmon Hollow Village","City":"Broken Arrow","GPS":[36.0645,-95.8458],"Schedule":"Every Sat/Sun","URL":"https://persimmonhollowvillage.com"},
+    {"Name":"Brittain’s Indoor Flea Market","City":"Lawton","GPS":[34.6062,-98.3908],"Schedule":"Every Sat/Sun","URL":"https://www.facebook.com/BrittainsFlea"},
+    {"Name":"Coweta Poultry Swap","City":"Coweta","GPS":[35.9529,-95.6425],"Schedule":"3rd Saturday","URL":"https://www.facebook.com/CowetaPoultrySwap"},
+    {"Name":"Ole Shawnee Town Flea Market","City":"Shawnee","GPS":[35.3275,-96.9248],"Schedule":"Every Sat/Sun","URL":"http://www.shawneefleamarket.com"},
+    {"Name":"Ashleys’ Antique Mall","City":"Tulsa","GPS":[36.1601,-95.8751],"Schedule":"Daily","URL":"http://ashleysantiques.com"},
+    {"Name":"The Hitch N Post","City":"Commerce","GPS":[36.9348,-94.8719],"Schedule":"Daily","URL":"http://hitchnpostok.com"},
+    {"Name":"American Legion Flea Market","City":"Idabel","GPS":[33.8965,-94.8254],"Schedule":"1st Weekend","URL":"https://www.idabelchamber.com"},
+    {"Name":"Langley Flea Market","City":"Langley","GPS":[36.4674,-95.0486],"Schedule":"Every Sat/Sun","URL":"https://www.facebook.com/LangleyFlea"},
+    {"Name":"Tushka Flea Market","City":"Atoka","GPS":[34.3235,-96.1738],"Schedule":"4th Weekend","URL":"http://www.tushkafleamarket.com"},
+    {"Name":"OKC Monthly Market","City":"OKC","GPS":[35.4741,-97.5612],"Schedule":"1st Weekend","URL":"https://okcfleamarket.com"},
+    {"Name":"Gan’s Mall","City":"Bartlesville","GPS":[36.7477,-95.9761],"Schedule":"Daily","URL":"http://www.gansmall.com"},
+    {"Name":"Farmers Market OKC","City":"OKC","GPS":[35.4612,-97.5312],"Schedule":"Every Sat/Sun","URL":"http://okcfarmersmarket.com"},
+    {"Name":"Market Directory OK","City":"Various","GPS":[35.4676,-97.5164],"Schedule":"Varies","URL":"https://oklac.org/market-directory"},
+    {"Name":"Crossroads Mall Market","City":"OKC","GPS":[35.3941,-97.4912],"Schedule":"Every Sat/Sun","URL":"http://crossroadsmallok.com"},
+    {"Name":"Pryor Trader’s Day","City":"Pryor","GPS":[36.3081,-95.3164],"Schedule":"1st Saturday","URL":"https://pryorchamber.com"},
+    {"Name":"Lee’s Corner Market","City":"Muskogee","GPS":[35.7511,-95.3712],"Schedule":"Daily","URL":"http://leescornerok.com"},
+    {"Name":"Wagon Wheel Merc.","City":"OKC","GPS":[35.4771,-97.6184],"Schedule":"Daily","URL":"https://www.facebook.com/WagonWheel"},
+    {"Name":"Rose District Market","City":"Broken Arrow","GPS":[36.0514,-95.7912],"Schedule":"Every Saturday","URL":"https://www.rosedistrict.com"},
+    {"Name":"Stillwater Flea Market","City":"Stillwater","GPS":[36.1156,-97.0584],"Schedule":"Every Sunday","URL":"https://stillwaterchamber.org"},
+    {"Name":"Enid Flea Market","City":"Enid","GPS":[36.3956,-97.8784],"Schedule":"3rd Weekend","URL":"https://www.enidbuzz.com"},
+    {"Name":"Cushing Swap Meet","City":"Cushing","GPS":[35.9841,-96.7674],"Schedule":"2nd Saturday","URL":"https://cushingchamber.org"},
+    {"Name":"Norman Flea Market","City":"Norman","GPS":[35.2226,-97.4395],"Schedule":"Every Sat/Sun","URL":"https://www.visitnorman.com"},
+    {"Name":"Guthrie Antique Market","City":"Guthrie","GPS":[35.8773,-97.4251],"Schedule":"Daily","URL":"https://www.guthrieok.com"}
+  ];
+
+  // =====================
+  // Map setup
+  // =====================
+  const map = L.map('map').setView([33.5, -99], 6);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const allMarkers = [];
+  let selectedMarkets = [];
+  let distanceLine = null;
+
+  function haversine(latlng1, latlng2) {
+    const R = 3958.8; // miles
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(latlng2.lat - latlng1.lat);
+    const dLon = toRad(latlng2.lng - latlng1.lng);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(latlng1.lat)) *
+      Math.cos(toRad(latlng2.lat)) *
+      Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  function updateDistance() {
+    const box = document.getElementById('distanceBox');
+    if (distanceLine) {
+      map.removeLayer(distanceLine);
+      distanceLine = null;
+    }
+    if (selectedMarkets.length === 2) {
+      const p1 = selectedMarkets[0].marker.getLatLng();
+      const p2 = selectedMarkets[1].marker.getLatLng();
+      const dist = haversine(p1, p2).toFixed(1);
+      box.textContent = `Distance: ${dist} miles`;
+      distanceLine = L.polyline([p1, p2]).addTo(map);
+      map.fitBounds(distanceLine.getBounds(), { padding: [40, 40] });
+    } else {
+      box.textContent = 'Select two flea markets to calculate distance.';
+    }
+  }
+
+  function addMarkets(markets, containerId) {
+    const container = document.getElementById(containerId);
+
+    markets.forEach(market => {
+      const marker = L.marker(market.GPS).addTo(map);
+      marker.bindPopup(`<strong>${market.Name}</strong><br>${market.City}<br>${market.Schedule}`);
+
+      marker.on('click', () => {
+        window.open(market.URL, '_blank');
+      });
+
+      allMarkers.push({ ...market, marker });
+
+      const div = document.createElement('div');
+      div.className = 'market-item';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          if (selectedMarkets.length >= 2) {
+            checkbox.checked = false;
+            return;
+          }
+          selectedMarkets.push({ ...market, marker });
+        } else {
+          selectedMarkets = selectedMarkets.filter(m => m.marker !== marker);
+        }
+        updateDistance();
+      });
+
+      div.appendChild(checkbox);
+      div.appendChild(document.createTextNode(`${market.Name} (${market.City})`));
+
+      div.addEventListener('click', (e) => {
+        if (e.target !== checkbox) {
+          map.setView(market.GPS, 10);
+          marker.openPopup();
+        }
+      });
+
+      container.appendChild(div);
+    });
+  }
+
+  addMarkets(texasMarkets, 'list-texas');
+  addMarkets(oklahomaMarkets, 'list-oklahoma');
+
+  // =====================
+  // Search
+  // =====================
+  document.getElementById('searchInput').addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    allMarkers.forEach(m => {
+      const match = m.Name.toLowerCase().includes(q) || m.City.toLowerCase().includes(q);
+      if (match) {
+        m.marker.setOpacity(1);
+      } else {
+        m.marker.setOpacity(0.2);
+      }
+    });
+
+    const matches = allMarkers.filter(m =>
+      m.Name.toLowerCase().includes(q) || m.City.toLowerCase().includes(q)
+    );
+
+    if (matches.length === 1) {
+      map.setView(matches[0].GPS, 10);
+    }
+  });
+</script>
+</body>
+</html>
