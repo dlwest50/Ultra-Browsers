@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USA State Flag Encyclopedia</title>
     <style>
+        /* Background Overlay - Fixed to prevent flickering */
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+            background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)),
                         url('https://flagcdn.com/w1280/us.png');
             background-size: cover;
             background-position: center;
-            opacity: 0.2;
         }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0; padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #f0f2f5;
+            color: #333;
         }
 
         header { text-align: center; margin-bottom: 30px; }
@@ -38,35 +39,39 @@
         }
 
         .state-card {
-            background: white; border-radius: 10px; padding: 15px;
+            background: white; border-radius: 12px; padding: 15px;
             text-align: center; cursor: pointer; border: 1px solid #ddd;
-            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .state-card:hover { transform: translateY(-5px); border-color: #bf0a30; }
+        .state-card:hover { transform: translateY(-5px); border-color: #bf0a30; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
 
         .state-card img {
             width: 100%; height: 110px; object-fit: contain;
             border-bottom: 1px solid #eee; margin-bottom: 10px;
+            background-color: #fdfdfd;
         }
 
-        /* Modal / Popup */
+        /* Modal / Popup Styling */
         #flagModal {
-            display: none; position: fixed; z-index: 999;
+            display: none; position: fixed; z-index: 1000;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); justify-content: center;
+            background: rgba(0,0,0,0.92); justify-content: center;
             align-items: center; flex-direction: column; color: white;
+            animation: fadeIn 0.3s ease;
         }
-        #modalImg { max-width: 80%; max-height: 50%; border: 3px solid white; border-radius: 5px; }
-        .fact-text { max-width: 600px; font-size: 1.4rem; color: #ffca28; margin: 20px; text-align: center; font-style: italic; }
-        
-        /* Copy Button */
-        .copy-btn {
-            background: #bf0a30; color: white; border: none; padding: 10px 20px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        .copy-btn:hover { background: #e00b3a; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 40px; cursor: pointer; }
+        #modalImg { max-width: 85%; max-height: 55%; border: 4px solid white; border-radius: 4px; }
+        .fact-text { max-width: 600px; font-size: 1.3rem; color: #ffca28; margin: 20px; text-align: center; font-style: italic; line-height: 1.4; }
+        
+        .copy-btn {
+            background: #002868; color: white; border: none; padding: 12px 25px;
+            border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.2s;
+            font-size: 1rem;
+        }
+        .copy-btn:hover { background: #bf0a30; }
+
+        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 45px; color: #fff; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -74,80 +79,127 @@
 <div class="bg-overlay"></div>
 
 <header>
-    <h1 style="color: #002868;">USA State Flag Gallery</h1>
+    <h1 style="color: #002868; font-size: 2.5rem; margin-bottom: 5px;">USA State Flags</h1>
+    <p style="color: #bf0a30; font-weight: bold;">Click any flag to learn a fun fact!</p>
     <div class="search-container">
-        <input type="text" id="stateSearch" placeholder="Search for your state..." onkeyup="filterStates()">
+        <input type="text" id="stateSearch" placeholder="Type a state name (e.g., Texas)..." onkeyup="filterStates()">
     </div>
 </header>
 
 <div class="gallery" id="flagGrid"></div>
 
 <div id="flagModal">
-    <span class="close-btn" onclick="document.getElementById('flagModal').style.display='none'">&times;</span>
+    <span class="close-btn" onclick="closeModal()">&times;</span>
     <img id="modalImg" src="">
-    <h2 id="modalTitle" style="margin-top:15px;"></h2>
+    <h2 id="modalTitle" style="margin-top:20px; font-size: 2rem;"></h2>
     <p id="modalFact" class="fact-text"></p>
     <button class="copy-btn" id="copyBtn">Copy Fun Fact</button>
-    <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">(Click the 'X' or outside to close)</p>
 </div>
 
 <script>
-    // State data (abbreviated list - feel free to add the others back in!)
     const states = [
-        { n: "Alabama", c: "al", f: "The flag is a crimson cross of St. Andrew on a white field." },
-        { n: "Alaska", c: "ak", f: "The stars form the Big Dipper and the North Star." },
-        { n: "Arizona", c: "az", f: "The 13 rays of red and gold represent the original 13 colonies." },
-        { n: "Arkansas", c: "ar", f: "The diamond represents Arkansas as the only US state to mine diamonds." },
+        { n: "Alabama", c: "al", f: "The design is a crimson cross of St. Andrew on a white field." },
+        { n: "Alaska", c: "ak", f: "Designed by a 13-year-old, it features the Big Dipper and the North Star." },
+        { n: "Arizona", c: "az", f: "The 13 rays of red and gold represent the original colonies and the western sunset." },
+        { n: "Arkansas", c: "ar", f: "The diamond shape honors Arkansas as the only US state to mine diamonds." },
         { n: "California", c: "ca", f: "The grizzly bear on the flag was modeled after a real bear named 'Monarch'." },
         { n: "Colorado", c: "co", f: "The 'C' stands for Colorado, Centennial State, and the state flower, the Columbine." },
-        { n: "Florida", c: "fl", f: "The flag depicts the state seal and a red cross of St. Andrew." },
-        { n: "Georgia", c: "ga", f: "The flag features the state coat of arms and 13 stars for the original colonies." },
-        { n: "Hawaii", c: "hi", f: "It's the only US state flag to feature the Union Jack of the United Kingdom." },
-        { n: "Texas", c: "tx", f: "The 'Lone Star' flag was the national flag of the Republic of Texas." },
-        { n: "Washington", c: "wa", f: "The only state flag with a green background and a US President." },
-        { n: "Wyoming", c: "wy", f: "The bison represents the state's local fauna." }
-        // ... You can re-insert the full list of 50 states here
+        { n: "Connecticut", c: "ct", f: "The three grapevines represent the three original colonies: Hartford, Saybrook, and New Haven." },
+        { n: "Delaware", c: "de", f: "Known as 'The First State' because it was the first to ratify the Constitution." },
+        { n: "Florida", c: "fl", f: "Features the state seal with a Seminole woman scattering flowers." },
+        { n: "Georgia", c: "ga", f: "The current flag features the state coat of arms and the words 'In God We Trust'." },
+        { n: "Hawaii", c: "hi", f: "It is the only US flag to feature the Union Jack of the United Kingdom." },
+        { n: "Idaho", c: "id", f: "The state seal on the flag was designed by the only woman to ever design a state seal." },
+        { n: "Illinois", c: "il", f: "The eagle on the flag holds a banner with the state motto: 'State Sovereignty, National Union'." },
+        { n: "Indiana", c: "in", f: "The torch represents liberty and enlightenment; the 19 stars show it was the 19th state." },
+        { n: "Iowa", c: "ia", f: "The vertical red, white, and blue stripes are based on the flag of France." },
+        { n: "Kansas", c: "ks", f: "The seal depicts a landscape with a sun rising over the mountains." },
+        { n: "Kentucky", c: "ky", f: "The seal depicts a frontiersman and a statesman embracing, representing unity." },
+        { n: "Louisiana", c: "la", f: "A mother pelican is shown tearing her own breast to feed her young." },
+        { n: "Maine", c: "me", f: "The North Star represents the state motto: 'Dirigo' (I Direct)." },
+        { n: "Maryland", c: "md", f: "It is the only US state flag based on English heraldry (the Calvert family)." },
+        { n: "Massachusetts", c: "ma", f: "Features an Algonquian Native American holding a bow." },
+        { n: "Michigan", c: "mi", f: "The flag depicts three Latin mottos, including 'Tuebor' (I Will Defend)." },
+        { n: "Minnesota", c: "mn", f: "Minnesota adopted a brand new, simplified flag design in 2024." },
+        { n: "Mississippi", c: "ms", f: "The 'New Magnolia' flag was adopted in 2021 by a massive public vote." },
+        { n: "Missouri", c: "mo", f: "The 24 stars represent Missouri's status as the 24th state admitted to the Union." },
+        { n: "Montana", c: "mt", f: "The word 'Montana' was added in 1981 to help distinguish it from other blue flags." },
+        { n: "Nebraska", c: "ne", f: "The seal shows a blacksmith, a settler's cabin, and a steamboat on the Missouri River." },
+        { n: "Nevada", c: "nv", f: "The 'Battle Born' motto refers to Nevada becoming a state during the Civil War." },
+        { n: "New Hampshire", c: "nh", f: "The flag depicts the frigate Raleigh, built in Portsmouth in 1776." },
+        { n: "New Jersey", c: "nj", f: "The 'buff' background color was chosen by George Washington for military uniforms." },
+        { n: "New Mexico", c: "nm", f: "Features the ancient Zia sun symbol, representing the circle of life." },
+        { n: "New York", c: "ny", f: "The two figures represent Liberty and Justice supporting the state coat of arms." },
+        { n: "North Carolina", c: "nc", f: "Features the dates of the Mecklenburg Declaration and the Halifax Resolves." },
+        { n: "North Dakota", c: "nd", f: "The design is based on the banner carried by troops in the Philippine-American War." },
+        { n: "Ohio", c: "oh", f: "It is the only state flag that is not rectangular; it's a swallowtail burgee." },
+        { n: "Oklahoma", c: "ok", f: "Features an Osage warrior's buffalo-hide shield decorated with eagle feathers." },
+        { n: "Oregon", c: "or", f: "It is the only US flag with different designs on the front and back (the back has a beaver)." },
+        { n: "Pennsylvania", c: "pa", f: "The horses on the coat of arms represent the state's agricultural strength." },
+        { n: "Rhode Island", c: "ri", f: "The anchor has been a symbol of the state since 1647; the 13 stars represent the 13 colonies." },
+        { n: "South Carolina", c: "sc", f: "The Palmetto tree helped defend against British warships in 1776." },
+        { n: "South Dakota", c: "sd", f: "The rays of the sun represent the state's nickname: The Mount Rushmore State." },
+        { n: "Tennessee", c: "tn", f: "The three stars represent the three grand divisions of the state: East, Middle, and West." },
+        { n: "Texas", c: "tx", f: "The 'Lone Star' flag was originally the national flag of the Republic of Texas." },
+        { n: "Utah", c: "ut", f: "Utah's new 2024 flag features a beehive representing industry and progress." },
+        { n: "Vermont", c: "vt", f: "The pine tree, cow, and sheaves of wheat represent Vermont's forests and farms." },
+        { n: "Virginia", c: "va", f: "The motto 'Sic Semper Tyrannis' means 'Thus always to tyrants'." },
+        { n: "Washington", c: "wa", f: "The only state flag with a green background and the only one to show a US President." },
+        { n: "West Virginia", c: "wv", f: "The white field represents purity, and the blue border represents the Union." },
+        { n: "Wisconsin", c: "wi", f: "Features a sailor and a miner to represent the state's diverse labor history." },
+        { n: "Wyoming", c: "wy", f: "The bison represents the local fauna; the seal on its side represents the law." }
     ];
 
     const grid = document.getElementById('flagGrid');
 
+    // Generate Gallery
     states.forEach(s => {
         const card = document.createElement('div');
         card.className = 'state-card';
         card.innerHTML = `
-            <img src="https://flagcdn.com/w320/us-${s.c}.png" alt="${s.n}">
-            <div style="font-weight:bold">${s.n}</div>
+            <img src="https://flagcdn.com/w320/us-${s.c}.png" alt="${s.n} Flag">
+            <div style="font-weight:bold; color:#002868;">${s.n}</div>
         `;
-        card.onclick = () => {
-            document.getElementById('modalImg').src = `https://flagcdn.com/w1280/us-${s.c}.png`;
-            document.getElementById('modalTitle').innerText = s.n;
-            document.getElementById('modalFact').innerText = s.f;
-            document.getElementById('flagModal').style.display = 'flex';
-            
-            // Set up copy button
-            document.getElementById('copyBtn').onclick = (e) => {
-                e.stopPropagation();
-                navigator.clipboard.writeText(s.f);
-                const originalText = document.getElementById('copyBtn').innerText;
-                document.getElementById('copyBtn').innerText = "Copied!";
-                setTimeout(() => { document.getElementById('copyBtn').innerText = originalText; }, 2000);
-            };
-        };
+        card.onclick = () => openModal(s);
         grid.appendChild(card);
     });
 
+    function openModal(state) {
+        document.getElementById('modalImg').src = `https://flagcdn.com/w1280/us-${state.c}.png`;
+        document.getElementById('modalTitle').innerText = state.n;
+        document.getElementById('modalFact').innerText = state.f;
+        document.getElementById('flagModal').style.display = 'flex';
+        
+        // Copy Button Logic
+        document.getElementById('copyBtn').onclick = (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(state.f);
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "Copied!";
+            btn.style.backgroundColor = "#28a745";
+            setTimeout(() => { 
+                btn.innerText = "Copy Fun Fact"; 
+                btn.style.backgroundColor = "#002868";
+            }, 2000);
+        };
+    }
+
+    function closeModal() {
+        document.getElementById('flagModal').style.display = 'none';
+    }
+
+    // Search Logic
     function filterStates() {
         const val = document.getElementById('stateSearch').value.toLowerCase();
         document.querySelectorAll('.state-card').forEach(card => {
-            card.style.display = card.innerText.toLowerCase().includes(val) ? 'block' : 'none';
+            const name = card.innerText.toLowerCase();
+            card.style.display = name.includes(val) ? 'block' : 'none';
         });
     }
 
     // Close on background click
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('flagModal')) {
-            document.getElementById('flagModal').style.display = "none";
-        }
+    window.onclick = function(e) {
+        if (e.target == document.getElementById('flagModal')) closeModal();
     }
 </script>
 </body>
