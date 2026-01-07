@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Top 50 Retail Websites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --card-bg: #ffffff;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --border: #e5e7eb;
+      --radius: 0.75rem;
+    }
+
+    /* Base / Mobile-first styles */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: #fff;
+      padding: 1.5rem 1rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.6rem;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    main {
+      padding: 1rem;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .search-group,
+    .sort-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    input[type="search"],
+    select {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 100%;
+    }
+
+    input[type="search"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .category-section {
+      margin-top: 1.5rem;
+    }
+
+    .category-section h2 {
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem 0;
+      color: #111827;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:focus-within,
+    .card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .card a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .card a:focus,
+    .card a:hover {
+      text-decoration: underline;
+    }
+
+    .category {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .no-results {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Tablet and up */
+    @media (min-width: 640px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .controls {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+
+      .search-group {
+        flex: 2;
+      }
+
+      .sort-group {
+        flex: 1;
+      }
+    }
+
+    /* Desktop and up */
+    @media (min-width: 1024px) {
+      main {
+        padding: 2rem;
+      }
+
+      .list.grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1rem;
+      }
+
+      .category-section .list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Top 50 Retail Websites</h1>
+    <p>
+      A list of 50 top retail websites based on 2025 US retail sales data. Sort
+      alphabetically or by category, and search instantly.
+    </p>
+  </header>
+
+  <main>
+    <section class="controls" aria-label="Search and sort controls">
+      <div class="search-group">
+        <label for="searchInput">Search by retailer name or category</label>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search retailers…"
+          aria-label="Search retailers"
+        />
+      </div>
+
+      <div class="sort-group">
+        <label for="sortSelect">Sort options</label>
+        <select id="sortSelect" aria-label="Sort retailers">
+          <option value="alpha" selected>Alphabetical (A–Z)</option>
+          <option value="category">Grouped by category</option>
+        </select>
+      </div>
+    </section>
+
+    <section id="results" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const data = [
+      {"name":"Walmart","category":"General merchandise","url":"https://walmart.com"},
+      {"name":"Amazon.com","category":"E-commerce","url":"https://amazon.com"},
+      {"name":"Costco Wholesale","category":"Warehouse club","url":"https://costco.com"},
+      {"name":"The Kroger Co.","category":"Grocery","url":"https://kroger.com"},
+      {"name":"The Home Depot","category":"Home improvement","url":"https://homedepot.com"},
+      {"name":"CVS Health Corporation","category":"Pharmacy","url":"https://cvs.com"},
+      {"name":"Walgreens Boots Alliance","category":"Pharmacy","url":"https://walgreens.com"},
+      {"name":"Target","category":"General merchandise","url":"https://target.com"},
+      {"name":"Lowe's Companies","category":"Home improvement","url":"https://lowes.com"},
+      {"name":"Albertsons Companies","category":"Grocery","url":"https://albertsons.com"},
+      {"name":"Apple Stores / iTunes","category":"Consumer electronics","url":"https://apple.com"},
+      {"name":"Publix Super Markets","category":"Grocery","url":"https://publix.com"},
+      {"name":"Royal Ahold Delhaize USA","category":"Grocery","url":"https://aholddelhaizeusa.com"},
+      {"name":"Aldi","category":"Grocery","url":"https://aldi.us"},
+      {"name":"TJX Companies","category":"Off-price retailer","url":"https://tjx.com"},
+      {"name":"H.E. Butt Grocery","category":"Grocery","url":"https://heb.com"},
+      {"name":"Dollar General","category":"Dollar store","url":"https://dollargeneral.com"},
+      {"name":"Best Buy","category":"Consumer electronics","url":"https://bestbuy.com"},
+      {"name":"Dollar Tree","category":"Dollar store","url":"https://dollartree.com"},
+      {"name":"7-Eleven","category":"Convenience store","url":"https://7-eleven.com"},
+      {"name":"Ace Hardware","category":"Hardware","url":"https://acehardware.com"},
+      {"name":"BJ's Wholesale Club","category":"Warehouse club","url":"https://bjs.com"},
+      {"name":"Meijer","category":"Grocery","url":"https://meijer.com"},
+      {"name":"Macy's","category":"Department store","url":"https://macys.com"},
+      {"name":"Ross Stores","category":"Off-price retailer","url":"https://rossstores.com"},
+      {"name":"AT&T Wireless","category":"Telecom","url":"https://att.com"},
+      {"name":"Verizon Wireless","category":"Telecom","url":"https://verizon.com"},
+      {"name":"Wakefern / ShopRite","category":"Grocery","url":"https://shoprite.com"},
+      {"name":"O'Reilly Auto Parts","category":"Auto parts","url":"https://oreillyauto.com"},
+      {"name":"AutoZone","category":"Auto parts","url":"https://autozone.com"},
+      {"name":"Kohl's","category":"Department store","url":"https://kohls.com"},
+      {"name":"Tractor Supply Co.","category":"Rural lifestyle","url":"https://tractorsupply.com"},
+      {"name":"Nordstrom","category":"Department store","url":"https://nordstrom.com"},
+      {"name":"Hy-Vee","category":"Grocery","url":"https://hy-vee.com"},
+      {"name":"Dick's Sporting Goods","category":"Sporting goods","url":"https://dickssportinggoods.com"},
+      {"name":"Gap","category":"Apparel","url":"https://gap.com"},
+      {"name":"Menards","category":"Home improvement","url":"https://menards.com"},
+      {"name":"Wegmans Food Market","category":"Grocery","url":"https://wegmans.com"},
+      {"name":"Sherwin-Williams","category":"Paint and coatings","url":"https://sherwin-williams.com"},
+      {"name":"Rite Aid","category":"Pharmacy","url":"https://riteaid.com"},
+      {"name":"Health Mart Systems","category":"Pharmacy","url":"https://healthmart.com"},
+      {"name":"Chewy.com","category":"Pet supplies","url":"https://chewy.com"},
+      {"name":"Alimentation Couche-Tard","category":"Convenience store","url":"https://couche-tard.com"},
+      {"name":"Ulta Beauty","category":"Beauty","url":"https://ulta.com"},
+      {"name":"Winco Foods","category":"Grocery","url":"https://wincofoods.com"},
+      {"name":"Giant Eagle","category":"Grocery","url":"https://gianteagle.com"},
+      {"name":"Burlington","category":"Off-price retailer","url":"https://burlington.com"},
+      {"name":"Wayfair","category":"E-commerce (home goods)","url":"https://wayfair.com"},
+      {"name":"Good Neighbor Pharmacy","category":"Pharmacy","url":"https://goodneighborpharmacy.com"},
+      {"name":"Sephora (LVMH)","category":"Beauty","url":"https://sephora.com"}
+    ];
+
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const results = document.getElementById("results");
+
+    function render() {
+      const query = searchInput.value.trim().toLowerCase();
+      const sortMode = sortSelect.value;
+
+      const filtered = data.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+
+      results.innerHTML = "";
+
+      if (filtered.length === 0) {
+        results.innerHTML =
+          '<div class="no-results">No retailers match your search.</div>';
+        return;
+      }
+
+      if (sortMode === "alpha") {
+        const sorted = [...filtered].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        const list = document.createElement("div");
+        list.className = "list grid";
+
+        sorted.forEach(item => {
+          list.appendChild(createCard(item));
+        });
+
+        results.appendChild(list);
+      } else {
+        const groups = {};
+        filtered.forEach(item => {
+          if (!groups[item.category]) {
+            groups[item.category] = [];
+          }
+          groups[item.category].push(item);
+        });
+
+        Object.keys(groups)
+          .sort((a, b) => a.localeCompare(b))
+          .forEach(category => {
+            const section = document.createElement("section");
+            section.className = "category-section";
+
+            const heading = document.createElement("h2");
+            heading.textContent = category;
+            section.appendChild(heading);
+
+            const list = document.createElement("div");
+            list.className = "list";
+
+            groups[category]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .forEach(item => {
+                list.appendChild(createCard(item));
+              });
+
+            section.appendChild(list);
+            results.appendChild(section);
+          });
+      }
+    }
+
+    function createCard(item) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const link = document.createElement("a");
+      link.href = item.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = item.name;
+
+      const category = document.createElement("div");
+      category.className = "category";
+      category.textContent = item.category;
+
+      card.appendChild(link);
+      card.appendChild(category);
+
+      return card;
+    }
+
+    searchInput.addEventListener("input", render);
+    sortSelect.addEventListener("change", render);
+
+    render();
+  </script>
+</body>
+</html>
