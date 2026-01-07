@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Major Cities Interactive Map</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        .header-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Image -->
+    <img src="header.jpg" alt="Texas Major Cities: Dallas, Houston, Austin, and San Antonio Skylines" class="header-image">
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Texas Major Cities (Population > 100,000)</h1>
+
+        <!-- Interactive Map -->
+        <div id="map" class="mb-5"></div>
+
+        <!-- City Data Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>City Name</th>
+                        <th>Population</th>
+                        <th>GPS Coordinates</th>
+                        <th>Official Website</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Abilene</td>
+                        <td>131,818</td>
+                        <td>32.45, -99.73</td>
+                        <td><a href="https://www.abilenetx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Allen</td>
+                        <td>115,793</td>
+                        <td>33.1, -96.67</td>
+                        <td><a href="https://www.cityofallen.org/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Amarillo</td>
+                        <td>204,519</td>
+                        <td>35.22, -101.83</td>
+                        <td><a href="https://www.amarillo.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Arlington</td>
+                        <td>405,995</td>
+                        <td>32.74, -97.11</td>
+                        <td><a href="https://www.arlingtontx.gov/Home" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Austin</td>
+                        <td>1,000,511</td>
+                        <td>30.27, -97.74</td>
+                        <td><a href="https://www.austintexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Beaumont</td>
+                        <td>112,396</td>
+                        <td>30.09, -94.1</td>
+                        <td><a href="https://www.beaumonttexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Brownsville</td>
+                        <td>193,296</td>
+                        <td>25.9, -97.5</td>
+                        <td><a href="https://www.brownsvilletx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Carrollton</td>
+                        <td>135,929</td>
+                        <td>32.95, -96.89</td>
+                        <td><a href="https://www.cityofcarrollton.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>College Station</td>
+                        <td>129,834</td>
+                        <td>30.63, -96.33</td>
+                        <td><a href="https://www.cstx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Conroe</td>
+                        <td>120,417</td>
+                        <td>30.31, -95.46</td>
+                        <td><a href="https://www.cityofconroe.org/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Corpus Christi</td>
+                        <td>317,075</td>
+                        <td>27.8, -97.4</td>
+                        <td><a href="https://www.corpuschristitx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Dallas</td>
+                        <td>1,331,752</td>
+                        <td>32.78, -96.81</td>
+                        <td><a href="https://dallascityhall.com/Pages/default.aspx" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Denton</td>
+                        <td>172,215</td>
+                        <td>33.21, -97.13</td>
+                        <td><a href="https://www.cityofdenton.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Edinburg</td>
+                        <td>110,724</td>
+                        <td>26.3, -98.16</td>
+                        <td><a href="https://cityofedinburg.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>El Paso</td>
+                        <td>682,308</td>
+                        <td>31.76, -106.49</td>
+                        <td><a href="https://www.elpasotexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Fort Worth</td>
+                        <td>1,029,221</td>
+                        <td>32.73, -97.32</td>
+                        <td><a href="https://www.fortworthtexas.gov/Home" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Frisco</td>
+                        <td>243,319</td>
+                        <td>33.15, -96.82</td>
+                        <td><a href="https://www.friscotexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Garland</td>
+                        <td>251,440</td>
+                        <td>32.91, -96.64</td>
+                        <td><a href="https://www.garlandtx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Georgetown</td>
+                        <td>109,502</td>
+                        <td>30.63, -97.68</td>
+                        <td><a href="https://georgetowntexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Grand Prairie</td>
+                        <td>210,113</td>
+                        <td>32.75, -97</td>
+                        <td><a href="https://www.gptx.org/Home" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Houston</td>
+                        <td>2,412,920</td>
+                        <td>29.76, -95.36</td>
+                        <td><a href="https://houstontx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Irving</td>
+                        <td>258,348</td>
+                        <td>32.81, -96.95</td>
+                        <td><a href="https://www.irvingtx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Killeen</td>
+                        <td>162,330</td>
+                        <td>31.12, -97.73</td>
+                        <td><a href="https://www.killeentexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Laredo</td>
+                        <td>262,701</td>
+                        <td>27.51, -99.51</td>
+                        <td><a href="https://www.cityoflaredo.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>League City</td>
+                        <td>119,405</td>
+                        <td>29.51, -95.09</td>
+                        <td><a href="https://www.leaguecitytx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Lewisville</td>
+                        <td>138,371</td>
+                        <td>33.05, -96.99</td>
+                        <td><a href="https://www.cityoflewisville.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Lubbock</td>
+                        <td>275,595</td>
+                        <td>33.58, -101.86</td>
+                        <td><a href="https://ci.lubbock.tx.us/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>McAllen</td>
+                        <td>150,377</td>
+                        <td>26.2, -98.23</td>
+                        <td><a href="https://www.mcallen.net/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>McKinney</td>
+                        <td>235,030</td>
+                        <td>33.2, -96.62</td>
+                        <td><a href="https://www.mckinneytexas.org/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Mesquite</td>
+                        <td>150,265</td>
+                        <td>32.77, -96.6</td>
+                        <td><a href="https://cityofmesquite.com/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Midland</td>
+                        <td>146,297</td>
+                        <td>32, -102.08</td>
+                        <td><a href="https://www.midlandtexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>New Braunfels</td>
+                        <td>122,675</td>
+                        <td>29.7, -98.12</td>
+                        <td><a href="https://newbraunfels.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Odessa</td>
+                        <td>120,951</td>
+                        <td>31.85, -102.37</td>
+                        <td><a href="https://www.odessa-tx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Pasadena</td>
+                        <td>149,159</td>
+                        <td>29.69, -95.21</td>
+                        <td><a href="https://www.pasadenatx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Pearland</td>
+                        <td>130,522</td>
+                        <td>29.56, -95.29</td>
+                        <td><a href="https://www.pearlandtx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Plano</td>
+                        <td>295,002</td>
+                        <td>33.02, -96.7</td>
+                        <td><a href="https://www.plano.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Richardson</td>
+                        <td>117,949</td>
+                        <td>32.95, -96.73</td>
+                        <td><a href="https://www.cor.net/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Round Rock</td>
+                        <td>139,055</td>
+                        <td>30.51, -97.68</td>
+                        <td><a href="https://www.roundrocktexas.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>San Angelo</td>
+                        <td>100,182</td>
+                        <td>31.46, -100.44</td>
+                        <td><a href="https://www.sanangelo.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>San Antonio</td>
+                        <td>1,548,485</td>
+                        <td>29.42, -98.49</td>
+                        <td><a href="https://www.sa.gov/Home" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Sugar Land</td>
+                        <td>109,602</td>
+                        <td>29.62, -95.63</td>
+                        <td><a href="https://www.sugarlandtx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Tyler</td>
+                        <td>113,706</td>
+                        <td>32.35, -95.3</td>
+                        <td><a href="https://www.cityoftyler.org/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Waco</td>
+                        <td>148,124</td>
+                        <td>31.55, -97.15</td>
+                        <td><a href="https://www.waco-texas.com/Home" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                    <tr>
+                        <td>Wichita Falls</td>
+                        <td>102,344</td>
+                        <td>33.91, -98.49</td>
+                        <td><a href="https://www.wichitafallstx.gov/" target="_blank" rel="noopener noreferrer">Website</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-light">
+        <p>Generated for Texas Cities Overview - 2026</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS for Map -->
+    <script>
+        // City data (populations without commas for numbers)
+        const cities = [
+            { name: 'Houston', pop: 2412920, lat: 29.76, lng: -95.36, url: 'https://houstontx.gov/' },
+            { name: 'San Antonio', pop: 1548485, lat: 29.42, lng: -98.49, url: 'https://www.sa.gov/Home' },
+            { name: 'Dallas', pop: 1331752, lat: 32.78, lng: -96.81, url: 'https://dallascityhall.com/Pages/default.aspx' },
+            { name: 'Fort Worth', pop: 1029221, lat: 32.73, lng: -97.32, url: 'https://www.fortworthtexas.gov/Home' },
+            { name: 'Austin', pop: 1000511, lat: 30.27, lng: -97.74, url: 'https://www.austintexas.gov/' },
+            { name: 'El Paso', pop: 682308, lat: 31.76, lng: -106.49, url: 'https://www.elpasotexas.gov/' },
+            { name: 'Arlington', pop: 405995, lat: 32.74, lng: -97.11, url: 'https://www.arlingtontx.gov/Home' },
+            { name: 'Corpus Christi', pop: 317075, lat: 27.8, lng: -97.4, url: 'https://www.corpuschristitx.gov/' },
+            { name: 'Plano', pop: 295002, lat: 33.02, lng: -96.7, url: 'https://www.plano.gov/' },
+            { name: 'Lubbock', pop: 275595, lat: 33.58, lng: -101.86, url: 'https://ci.lubbock.tx.us/' },
+            { name: 'Laredo', pop: 262701, lat: 27.51, lng: -99.51, url: 'https://www.cityoflaredo.com/' },
+            { name: 'Irving', pop: 258348, lat: 32.81, lng: -96.95, url: 'https://www.irvingtx.gov/' },
+            { name: 'Garland', pop: 251440, lat: 32.91, lng: -96.64, url: 'https://www.garlandtx.gov/' },
+            { name: 'Frisco', pop: 243319, lat: 33.15, lng: -96.82, url: 'https://www.friscotexas.gov/' },
+            { name: 'McKinney', pop: 235030, lat: 33.2, lng: -96.62, url: 'https://www.mckinneytexas.org/' },
+            { name: 'Grand Prairie', pop: 210113, lat: 32.75, lng: -97, url: 'https://www.gptx.org/Home' },
+            { name: 'Amarillo', pop: 204519, lat: 35.22, lng: -101.83, url: 'https://www.amarillo.gov/' },
+            { name: 'Brownsville', pop: 193296, lat: 25.9, lng: -97.5, url: 'https://www.brownsvilletx.gov/' },
+            { name: 'Denton', pop: 172215, lat: 33.21, lng: -97.13, url: 'https://www.cityofdenton.com/' },
+            { name: 'Killeen', pop: 162330, lat: 31.12, lng: -97.73, url: 'https://www.killeentexas.gov/' },
+            { name: 'McAllen', pop: 150377, lat: 26.2, lng: -98.23, url: 'https://www.mcallen.net/' },
+            { name: 'Mesquite', pop: 150265, lat: 32.77, lng: -96.6, url: 'https://cityofmesquite.com/' },
+            { name: 'Pasadena', pop: 149159, lat: 29.69, lng: -95.21, url: 'https://www.pasadenatx.gov/' },
+            { name: 'Waco', pop: 148124, lat: 31.55, lng: -97.15, url: 'https://www.waco-texas.com/Home' },
+            { name: 'Midland', pop: 146297, lat: 32, lng: -102.08, url: 'https://www.midlandtexas.gov/' },
+            { name: 'Round Rock', pop: 139055, lat: 30.51, lng: -97.68, url: 'https://www.roundrocktexas.gov/' },
+            { name: 'Lewisville', pop: 138371, lat: 33.05, lng: -96.99, url: 'https://www.cityoflewisville.com/' },
+            { name: 'Carrollton', pop: 135929, lat: 32.95, lng: -96.89, url: 'https://www.cityofcarrollton.com/' },
+            { name: 'Abilene', pop: 131818, lat: 32.45, lng: -99.73, url: 'https://www.abilenetx.gov/' },
+            { name: 'Pearland', pop: 130522, lat: 29.56, lng: -95.29, url: 'https://www.pearlandtx.gov/' },
+            { name: 'College Station', pop: 129834, lat: 30.63, lng: -96.33, url: 'https://www.cstx.gov/' },
+            { name: 'New Braunfels', pop: 122675, lat: 29.7, lng: -98.12, url: 'https://newbraunfels.gov/' },
+            { name: 'Odessa', pop: 120951, lat: 31.85, lng: -102.37, url: 'https://www.odessa-tx.gov/' },
+            { name: 'Conroe', pop: 120417, lat: 30.31, lng: -95.46, url: 'https://www.cityofconroe.org/' },
+            { name: 'League City', pop: 119405, lat: 29.51, lng: -95.09, url: 'https://www.leaguecitytx.gov/' },
+            { name: 'Richardson', pop: 117949, lat: 32.95, lng: -96.73, url: 'https://www.cor.net/' },
+            { name: 'Allen', pop: 115793, lat: 33.1, lng: -96.67, url: 'https://www.cityofallen.org/' },
+            { name: 'Tyler', pop: 113706, lat: 32.35, lng: -95.3, url: 'https://www.cityoftyler.org/' },
+            { name: 'Beaumont', pop: 112396, lat: 30.09, lng: -94.1, url: 'https://www.beaumonttexas.gov/' },
+            { name: 'Edinburg', pop: 110724, lat: 26.3, lng: -98.16, url: 'https://cityofedinburg.com/' },
+            { name: 'Sugar Land', pop: 109602, lat: 29.62, lng: -95.63, url: 'https://www.sugarlandtx.gov/' },
+            { name: 'Georgetown', pop: 109502, lat: 30.63, lng: -97.68, url: 'https://georgetowntexas.gov/' },
+            { name: 'Wichita Falls', pop: 102344, lat: 33.91, lng: -98.49, url: 'https://www.wichitafallstx.gov/' },
+            { name: 'San Angelo', pop: 100182, lat: 31.46, lng: -100.44, url: 'https://www.sanangelo.gov/' }
+        ];
+
+        // Initialize map
+        const map = L.map('map').setView([31.9686, -99.9018], 6);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add markers
+        cities.forEach(city => {
+            const marker = L.marker([city.lat, city.lng]).addTo(map);
+            marker.bindPopup(`<b>${city.name}</b><br>Population: ${city.pop.toLocaleString()}`);
+            marker.on('click', () => {
+                window.open(city.url, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
