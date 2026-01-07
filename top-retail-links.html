@@ -1,367 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Top 50 Retail Websites</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 100 Retail Websites 2026</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
 
-  <style>
-    :root {
-      --bg: #f7f8fa;
-      --card-bg: #ffffff;
-      --text: #1f2933;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --border: #e5e7eb;
-      --radius: 0.75rem;
-    }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
 
-    /* Base / Mobile-first styles */
-    * {
-      box-sizing: border-box;
-    }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
+        h1 { text-align: center; margin-bottom: 5px; color: #0f172a; }
+        p.subtitle { text-align: center; color: #64748b; margin-bottom: 30px; }
 
-    header {
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: #fff;
-      padding: 1.5rem 1rem;
-    }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
-    header h1 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.6rem;
-    }
+        .search-box {
+            flex-grow: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
 
-    header p {
-      margin: 0;
-      font-size: 0.95rem;
-      opacity: 0.95;
-    }
+        .search-box:focus { border-color: var(--primary); ring: 2px solid #bfdbfe; }
 
-    main {
-      padding: 1rem;
-      max-width: 72rem;
-      margin: 0 auto;
-    }
+        .btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
+        .btn:hover { background: #1d4ed8; }
 
-    .search-group,
-    .sort-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-    label {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
+        th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 12px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 2px solid var(--border);
+        }
 
-    input[type="search"],
-    select {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 100%;
-    }
+        th:hover { background: #e2e8f0; }
 
-    input[type="search"]:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-    }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
 
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
+        tr:hover { background-color: #f8fafc; }
 
-    .category-section {
-      margin-top: 1.5rem;
-    }
+        .url-link { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .url-link:hover { text-decoration: underline; }
 
-    .category-section h2 {
-      font-size: 1.1rem;
-      margin: 0 0 0.5rem 0;
-      color: #111827;
-    }
+        .category-tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.9rem 1rem;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .card:focus-within,
-    .card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-    }
-
-    .card a {
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 1rem;
-    }
-
-    .card a:focus,
-    .card a:hover {
-      text-decoration: underline;
-    }
-
-    .category {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
-    }
-
-    .no-results {
-      padding: 1.5rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    /* Tablet and up */
-    @media (min-width: 640px) {
-      header h1 {
-        font-size: 2rem;
-      }
-
-      .controls {
-        flex-direction: row;
-        align-items: flex-end;
-      }
-
-      .search-group {
-        flex: 2;
-      }
-
-      .sort-group {
-        flex: 1;
-      }
-    }
-
-    /* Desktop and up */
-    @media (min-width: 1024px) {
-      main {
-        padding: 2rem;
-      }
-
-      .list.grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-        gap: 1rem;
-      }
-
-      .category-section .list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-        gap: 1rem;
-      }
-    }
-  </style>
+        @media (max-width: 600px) {
+            .hide-mobile { display: none; }
+            .container { padding: 15px; }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Top 50 Retail Websites</h1>
-    <p>
-      A list of 50 top retail websites based on 2025 US retail sales data. Sort
-      alphabetically or by category, and search instantly.
-    </p>
-  </header>
 
-  <main>
-    <section class="controls" aria-label="Search and sort controls">
-      <div class="search-group">
-        <label for="searchInput">Search by retailer name or category</label>
-        <input
-          type="search"
-          id="searchInput"
-          placeholder="Search retailers…"
-          aria-label="Search retailers"
-        />
-      </div>
+<div class="container">
+    <h1>Top 100 Retailers 2026</h1>
+    <p class="subtitle">Global leaders by revenue, traffic, and market influence.</p>
 
-      <div class="sort-group">
-        <label for="sortSelect">Sort options</label>
-        <select id="sortSelect" aria-label="Sort retailers">
-          <option value="alpha" selected>Alphabetical (A–Z)</option>
-          <option value="category">Grouped by category</option>
-        </select>
-      </div>
-    </section>
+    <div class="controls">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search by store name or category...">
+        <button class="btn" onclick="toggleView()">Switch: Industry / Alpha</button>
+    </div>
 
-    <section id="results" aria-live="polite"></section>
-  </main>
+    <table id="retailerTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">Rank</th>
+                <th onclick="sortTable(1)">Store Name</th>
+                <th onclick="sortTable(2)">Category</th>
+                <th class="hide-mobile">Website</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+</div>
 
-  <script>
-    const data = [
-      {"name":"Walmart","category":"General merchandise","url":"https://walmart.com"},
-      {"name":"Amazon.com","category":"E-commerce","url":"https://amazon.com"},
-      {"name":"Costco Wholesale","category":"Warehouse club","url":"https://costco.com"},
-      {"name":"The Kroger Co.","category":"Grocery","url":"https://kroger.com"},
-      {"name":"The Home Depot","category":"Home improvement","url":"https://homedepot.com"},
-      {"name":"CVS Health Corporation","category":"Pharmacy","url":"https://cvs.com"},
-      {"name":"Walgreens Boots Alliance","category":"Pharmacy","url":"https://walgreens.com"},
-      {"name":"Target","category":"General merchandise","url":"https://target.com"},
-      {"name":"Lowe's Companies","category":"Home improvement","url":"https://lowes.com"},
-      {"name":"Albertsons Companies","category":"Grocery","url":"https://albertsons.com"},
-      {"name":"Apple Stores / iTunes","category":"Consumer electronics","url":"https://apple.com"},
-      {"name":"Publix Super Markets","category":"Grocery","url":"https://publix.com"},
-      {"name":"Royal Ahold Delhaize USA","category":"Grocery","url":"https://aholddelhaizeusa.com"},
-      {"name":"Aldi","category":"Grocery","url":"https://aldi.us"},
-      {"name":"TJX Companies","category":"Off-price retailer","url":"https://tjx.com"},
-      {"name":"H.E. Butt Grocery","category":"Grocery","url":"https://heb.com"},
-      {"name":"Dollar General","category":"Dollar store","url":"https://dollargeneral.com"},
-      {"name":"Best Buy","category":"Consumer electronics","url":"https://bestbuy.com"},
-      {"name":"Dollar Tree","category":"Dollar store","url":"https://dollartree.com"},
-      {"name":"7-Eleven","category":"Convenience store","url":"https://7-eleven.com"},
-      {"name":"Ace Hardware","category":"Hardware","url":"https://acehardware.com"},
-      {"name":"BJ's Wholesale Club","category":"Warehouse club","url":"https://bjs.com"},
-      {"name":"Meijer","category":"Grocery","url":"https://meijer.com"},
-      {"name":"Macy's","category":"Department store","url":"https://macys.com"},
-      {"name":"Ross Stores","category":"Off-price retailer","url":"https://rossstores.com"},
-      {"name":"AT&T Wireless","category":"Telecom","url":"https://att.com"},
-      {"name":"Verizon Wireless","category":"Telecom","url":"https://verizon.com"},
-      {"name":"Wakefern / ShopRite","category":"Grocery","url":"https://shoprite.com"},
-      {"name":"O'Reilly Auto Parts","category":"Auto parts","url":"https://oreillyauto.com"},
-      {"name":"AutoZone","category":"Auto parts","url":"https://autozone.com"},
-      {"name":"Kohl's","category":"Department store","url":"https://kohls.com"},
-      {"name":"Tractor Supply Co.","category":"Rural lifestyle","url":"https://tractorsupply.com"},
-      {"name":"Nordstrom","category":"Department store","url":"https://nordstrom.com"},
-      {"name":"Hy-Vee","category":"Grocery","url":"https://hy-vee.com"},
-      {"name":"Dick's Sporting Goods","category":"Sporting goods","url":"https://dickssportinggoods.com"},
-      {"name":"Gap","category":"Apparel","url":"https://gap.com"},
-      {"name":"Menards","category":"Home improvement","url":"https://menards.com"},
-      {"name":"Wegmans Food Market","category":"Grocery","url":"https://wegmans.com"},
-      {"name":"Sherwin-Williams","category":"Paint and coatings","url":"https://sherwin-williams.com"},
-      {"name":"Rite Aid","category":"Pharmacy","url":"https://riteaid.com"},
-      {"name":"Health Mart Systems","category":"Pharmacy","url":"https://healthmart.com"},
-      {"name":"Chewy.com","category":"Pet supplies","url":"https://chewy.com"},
-      {"name":"Alimentation Couche-Tard","category":"Convenience store","url":"https://couche-tard.com"},
-      {"name":"Ulta Beauty","category":"Beauty","url":"https://ulta.com"},
-      {"name":"Winco Foods","category":"Grocery","url":"https://wincofoods.com"},
-      {"name":"Giant Eagle","category":"Grocery","url":"https://gianteagle.com"},
-      {"name":"Burlington","category":"Off-price retailer","url":"https://burlington.com"},
-      {"name":"Wayfair","category":"E-commerce (home goods)","url":"https://wayfair.com"},
-      {"name":"Good Neighbor Pharmacy","category":"Pharmacy","url":"https://goodneighborpharmacy.com"},
-      {"name":"Sephora (LVMH)","category":"Beauty","url":"https://sephora.com"}
+<script>
+    const retailers = [
+        { rank: 1, name: "Amazon", cat: "General / Marketplace", url: "amazon.com" },
+        { rank: 2, name: "Walmart", cat: "General / Grocery", url: "walmart.com" },
+        { rank: 3, name: "Alibaba / Taobao", cat: "General / Marketplace", url: "taobao.com" },
+        { rank: 4, name: "Costco", cat: "General / Warehouse", url: "costco.com" },
+        { rank: 5, name: "Home Depot", cat: "Home Improvement", url: "homedepot.com" },
+        { rank: 6, name: "Target", cat: "General Retail", url: "target.com" },
+        { rank: 7, name: "eBay", cat: "Marketplace / Auction", url: "ebay.com" },
+        { rank: 8, name: "JD.com", cat: "General Retail", url: "jd.com" },
+        { rank: 9, name: "Kroger", cat: "Grocery", url: "kroger.com" },
+        { rank: 10, name: "Best Buy", cat: "Electronics", url: "bestbuy.com" },
+        { rank: 11, name: "Apple", cat: "Electronics", url: "apple.com" },
+        { rank: 12, name: "Lowe's", cat: "Home Improvement", url: "lowes.com" },
+        { rank: 13, name: "Aliexpress", cat: "Marketplace", url: "aliexpress.com" },
+        { rank: 14, name: "CVS Pharmacy", cat: "Health / Beauty", url: "cvs.com" },
+        { rank: 15, name: "Walgreens", cat: "Health / Beauty", url: "walgreens.com" },
+        { rank: 16, name: "Temu", cat: "General / Marketplace", url: "temu.com" },
+        { rank: 17, name: "Shein", cat: "Fashion", url: "shein.com" },
+        { rank: 18, name: "Macy's", cat: "Department Store", url: "macys.com" },
+        { rank: 19, name: "Aldi", cat: "Grocery", url: "aldi.us" },
+        { rank: 20, name: "Wayfair", cat: "Home / Furniture", url: "wayfair.com" },
+        { rank: 21, name: "IKEA", cat: "Home / Furniture", url: "ikea.com" },
+        { rank: 22, name: "Nike", cat: "Apparel / Sport", url: "nike.com" },
+        { rank: 23, name: "Sephora", cat: "Beauty", url: "sephora.com" },
+        { rank: 24, name: "Rakuten", cat: "Marketplace", url: "rakuten.com" },
+        { rank: 25, name: "T.J. Maxx", cat: "Fashion / Discount", url: "tjmaxx.com" },
+        { rank: 26, name: "Nordstrom", cat: "Department Store", url: "nordstrom.com" },
+        { rank: 27, name: "Gap", cat: "Apparel", url: "gap.com" },
+        { rank: 28, name: "Zulily", cat: "Fashion / Kids", url: "zulily.com" },
+        { rank: 29, name: "Chewy", cat: "Pets", url: "chewy.com" },
+        { rank: 30, name: "Dollar General", cat: "Discount", url: "dollargeneral.com" },
+        { rank: 31, name: "Publix", cat: "Grocery", url: "publix.com" },
+        { rank: 32, name: "H&M", cat: "Fashion", url: "hm.com" },
+        { rank: 33, name: "Zara", cat: "Fashion", url: "zara.com" },
+        { rank: 34, name: "Sam's Club", cat: "Warehouse", url: "samsclub.com" },
+        { rank: 35, name: "Mercado Libre", cat: "Marketplace", url: "mercadolibre.com" },
+        { rank: 36, name: "Etsy", cat: "Marketplace / Crafts", url: "etsy.com" },
+        { rank: 37, name: "Kohl's", cat: "Department Store", url: "kohls.com" },
+        { rank: 38, name: "AutoZone", cat: "Automotive", url: "autozone.com" },
+        { rank: 39, name: "PetSmart", cat: "Pets", url: "petsmart.com" },
+        { rank: 40, name: "Ulta Beauty", cat: "Beauty", url: "ulta.com" },
+        { rank: 41, name: "Williams-Sonoma", cat: "Home / Kitchen", url: "williams-sonoma.com" },
+        { rank: 42, name: "Dick's Sporting Goods", cat: "Sports", url: "dickssportinggoods.com" },
+        { rank: 43, name: "Overstock (Bed Bath & Beyond)", cat: "Home", url: "bedbathandbeyond.com" },
+        { rank: 44, name: "Lululemon", cat: "Apparel", url: "lululemon.com" },
+        { rank: 45, name: "Staples", cat: "Office Supplies", url: "staples.com" },
+        { rank: 46, name: "Office Depot", cat: "Office Supplies", url: "officedepot.com" },
+        { rank: 47, name: "GameStop", cat: "Gaming / Electronics", url: "gamestop.com" },
+        { rank: 48, name: "Foot Locker", cat: "Apparel / Shoes", url: "footlocker.com" },
+        { rank: 49, name: "Newegg", cat: "Electronics", url: "newegg.com" },
+        { rank: 50, name: "Victoria's Secret", cat: "Apparel", url: "victoriassecret.com" },
+        { rank: 51, name: "Old Navy", cat: "Apparel", url: "oldnavy.com" },
+        { rank: 52, name: "REI", cat: "Outdoors", url: "rei.com" },
+        { rank: 53, name: "Adidas", cat: "Apparel / Sport", url: "adidas.com" },
+        { rank: 54, name: "Uniqlo", cat: "Apparel", url: "uniqlo.com" },
+        { rank: 55, name: "Bass Pro Shops", cat: "Outdoors", url: "basspro.com" },
+        { rank: 56, name: "Bed Bath & Beyond", cat: "Home", url: "bedbathandbeyond.com" },
+        { rank: 57, name: "Dillard's", cat: "Department Store", url: "dillards.com" },
+        { rank: 58, name: "Meijer", cat: "Grocery / General", url: "meijer.com" },
+        { rank: 59, name: "WinCo Foods", cat: "Grocery", url: "wincofoods.com" },
+        { rank: 60, name: "H-E-B", cat: "Grocery", url: "heb.com" },
+        { rank: 61, name: "Sherwin-Williams", cat: "Home Improvement", url: "sherwin-williams.com" },
+        { rank: 62, name: "Advance Auto Parts", cat: "Automotive", url: "advanceautoparts.com" },
+        { rank: 63, name: "O'Reilly Auto", cat: "Automotive", url: "oreillyauto.com" },
+        { rank: 64, name: "Burlington", cat: "Fashion / Discount", url: "burlington.com" },
+        { rank: 65, name: "Ross Stores", cat: "Fashion / Discount", url: "rossstores.com" },
+        { rank: 66, name: "Big Lots", cat: "Discount", url: "biglots.com" },
+        { rank: 67, name: "Michaels", cat: "Crafts", url: "michaels.com" },
+        { rank: 68, name: "Joann", cat: "Crafts", url: "joann.com" },
+        { rank: 69, name: "Petco", cat: "Pets", url: "petco.com" },
+        { rank: 70, name: "Academy Sports", cat: "Sports", url: "academy.com" },
+        { rank: 71, name: "QVC", cat: "Marketplace / Video", url: "qvc.com" },
+        { rank: 72, name: "HSN", cat: "Marketplace / Video", url: "hsn.com" },
+        { rank: 73, name: "Fanatics", cat: "Sports Apparel", url: "fanatics.com" },
+        { rank: 74, name: "Cabela's", cat: "Outdoors", url: "cabelas.com" },
+        { rank: 75, name: "Belk", cat: "Department Store", url: "belk.com" },
+        { rank: 76, name: "JCPenney", cat: "Department Store", url: "jcpenney.com" },
+        { rank: 77, name: "Neiman Marcus", cat: "Luxury Dept Store", url: "neimanmarcus.com" },
+        { rank: 78, name: "Saks Fifth Avenue", cat: "Luxury Dept Store", url: "saks.com" },
+        { rank: 79, name: "Crate & Barrel", cat: "Home / Furniture", url: "crateandbarrel.com" },
+        { rank: 80, name: "Pottery Barn", cat: "Home / Furniture", url: "potterybarn.com" },
+        { rank: 81, name: "West Elm", cat: "Home / Furniture", url: "westelm.com" },
+        { rank: 82, name: "B&H Photo", cat: "Electronics", url: "bhphotovideo.com" },
+        { rank: 83, name: "Zappos", cat: "Apparel / Shoes", url: "zappos.com" },
+        { rank: 84, name: "StockX", cat: "Marketplace / Shoes", url: "stockx.com" },
+        { rank: 85, name: "Poshmark", cat: "Marketplace / Fashion", url: "poshmark.com" },
+        { rank: 86, name: "ThredUp", cat: "Marketplace / Fashion", url: "thredup.com" },
+        { rank: 87, name: "Build.com", cat: "Home Improvement", url: "build.com" },
+        { rank: 88, name: "Tractor Supply", cat: "Farm / Rural", url: "tractorsupply.com" },
+        { rank: 89, name: "Ace Hardware", cat: "Home Improvement", url: "acehardware.com" },
+        { rank: 90, name: "Menards", cat: "Home Improvement", url: "menards.com" },
+        { rank: 91, name: "Harbor Freight", cat: "Tools", url: "harborfreight.com" },
+        { rank: 92, name: "Whole Foods", cat: "Grocery", url: "wholefoodsmarket.com" },
+        { rank: 93, name: "Sprouts Farmers Market", cat: "Grocery", url: "sprouts.com" },
+        { rank: 94, name: "Trader Joe's", cat: "Grocery", url: "traderjoes.com" },
+        { rank: 95, name: "Hy-Vee", cat: "Grocery", url: "hy-vee.com" },
+        { rank: 96, name: "Wegmans", cat: "Grocery", url: "wegmans.com" },
+        { rank: 97, name: "BJ's Wholesale", cat: "Warehouse", url: "bjs.com" },
+        { rank: 98, name: "Dell", cat: "Electronics", url: "dell.com" },
+        { rank: 99, name: "HP", cat: "Electronics", url: "hp.com" },
+        { rank: 100, name: "Samsung", cat: "Electronics", url: "samsung.com" }
     ];
 
-    const searchInput = document.getElementById("searchInput");
-    const sortSelect = document.getElementById("sortSelect");
-    const results = document.getElementById("results");
+    let currentSort = 'rank';
+    let isAlpha = false;
 
-    function render() {
-      const query = searchInput.value.trim().toLowerCase();
-      const sortMode = sortSelect.value;
+    function renderTable(data) {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+        data.forEach(item => {
+            const row = `<tr>
+                <td>${item.rank}</td>
+                <td><strong>${item.name}</strong></td>
+                <td><span class="category-tag">${item.cat}</span></td>
+                <td class="hide-mobile"><a href="https://${item.url}" class="url-link" target="_blank">${item.url}</a></td>
+            </tr>`;
+            body.innerHTML += row;
+        });
+    }
 
-      const filtered = data.filter(item =>
-        item.name.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query)
-      );
-
-      results.innerHTML = "";
-
-      if (filtered.length === 0) {
-        results.innerHTML =
-          '<div class="no-results">No retailers match your search.</div>';
-        return;
-      }
-
-      if (sortMode === "alpha") {
-        const sorted = [...filtered].sort((a, b) =>
-          a.name.localeCompare(b.name)
+    // Search function
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = retailers.filter(r => 
+            r.name.toLowerCase().includes(term) || 
+            r.cat.toLowerCase().includes(term)
         );
+        renderTable(filtered);
+    });
 
-        const list = document.createElement("div");
-        list.className = "list grid";
-
-        sorted.forEach(item => {
-          list.appendChild(createCard(item));
+    // Toggle logic
+    function toggleView() {
+        isAlpha = !isAlpha;
+        const sorted = [...retailers].sort((a, b) => {
+            return isAlpha ? a.name.localeCompare(b.name) : a.rank - b.rank;
         });
-
-        results.appendChild(list);
-      } else {
-        const groups = {};
-        filtered.forEach(item => {
-          if (!groups[item.category]) {
-            groups[item.category] = [];
-          }
-          groups[item.category].push(item);
-        });
-
-        Object.keys(groups)
-          .sort((a, b) => a.localeCompare(b))
-          .forEach(category => {
-            const section = document.createElement("section");
-            section.className = "category-section";
-
-            const heading = document.createElement("h2");
-            heading.textContent = category;
-            section.appendChild(heading);
-
-            const list = document.createElement("div");
-            list.className = "list";
-
-            groups[category]
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .forEach(item => {
-                list.appendChild(createCard(item));
-              });
-
-            section.appendChild(list);
-            results.appendChild(section);
-          });
-      }
+        renderTable(sorted);
     }
 
-    function createCard(item) {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const link = document.createElement("a");
-      link.href = item.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = item.name;
-
-      const category = document.createElement("div");
-      category.className = "category";
-      category.textContent = item.category;
-
-      card.appendChild(link);
-      card.appendChild(category);
-
-      return card;
+    // Sort by column
+    function sortTable(n) {
+        let sorted;
+        if (n === 0) sorted = [...retailers].sort((a, b) => a.rank - b.rank);
+        if (n === 1) sorted = [...retailers].sort((a, b) => a.name.localeCompare(b.name));
+        if (n === 2) sorted = [...retailers].sort((a, b) => a.cat.localeCompare(b.cat));
+        renderTable(sorted);
     }
 
-    searchInput.addEventListener("input", render);
-    sortSelect.addEventListener("change", render);
+    // Initial render
+    renderTable(retailers);
+</script>
 
-    render();
-  </script>
 </body>
 </html>
