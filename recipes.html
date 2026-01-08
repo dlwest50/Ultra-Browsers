@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 50 Healthy Recipes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #search { padding: 10px; width: 300px; margin-right: 10px; }
+        #sort { padding: 10px; }
+        .recipe { cursor: pointer; padding: 10px; border: 1px solid #ddd; margin: 10px 0; }
+        .recipe h3 { margin: 0; }
+        .details { display: none; padding: 10px; background: #f9f9f9; }
+        .details.show { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Top 50 Quick and Easy Healthy Recipes</h1>
+    <input type="text" id="search" placeholder="Search recipes...">
+    <select id="sort">
+        <option value="">All Categories</option>
+        <option value="Breakfast/Brunch">Breakfast/Brunch</option>
+        <option value="Salads & Bowls">Salads & Bowls</option>
+        <option value="Stir-Fries & Skillet Meals">Stir-Fries & Skillet Meals</option>
+        <option value="Grilled/Baked Proteins">Grilled/Baked Proteins</option>
+        <option value="Soups & Stews">Soups & Stews</option>
+        <option value="Pasta & Grain Dishes">Pasta & Grain Dishes</option>
+        <option value="Vegetarian/Vegan Mains">Vegetarian/Vegan Mains</option>
+        <option value="Seafood & Fish">Seafood & Fish</option>
+        <option value="Other Quick Ideas">Other Quick Ideas</option>
+    </select>
+    <div id="list"></div>
+
+    <script>
+        const recipes = [
+            {
+                name: "Avocado Toast with Poached Eggs",
+                category: "Breakfast/Brunch",
+                ingredients: ["2 eggs", "2 slices whole grain bread", "1/3 avocado", "2 tablespoons shaved Parmesan"],
+                steps: ["Toast the bread.", "Mash the avocado and spread on toast.", "Poach the eggs and place on top.", "Sprinkle with Parmesan."]
+            },
+            {
+                name: "Greek Yogurt Parfait with Berries and Nuts",
+                category: "Breakfast/Brunch",
+                ingredients: ["1 cup nonfat plain Greek yogurt", "1/4 cup raspberries", "1/4 cup blueberries", "1/4 cup sliced almonds", "2 teaspoons honey"],
+                steps: ["Layer yogurt in a glass.", "Add berries and nuts.", "Drizzle with honey.", "Repeat layers if desired."]
+            },
+            {
+                name: "Overnight Oats with Chia Seeds and Fruit",
+                category: "Breakfast/Brunch",
+                ingredients: ["1/2 cup rolled oats", "1/2 cup milk", "1/4 cup Greek yogurt", "1 tablespoon chia seeds", "1 tablespoon maple syrup", "Fresh fruit for topping"],
+                steps: ["Mix oats, milk, yogurt, chia, and syrup in a jar.", "Refrigerate overnight.", "Top with fruit in the morning."]
+            },
+            {
+                name: "Veggie Omelet with Spinach and Tomatoes",
+                category: "Breakfast/Brunch",
+                ingredients: ["2 large eggs", "1 cup baby spinach", "1 small tomato, chopped", "1/4 cup shredded cheese", "Salt and pepper to taste"],
+                steps: ["Whisk eggs with salt and pepper.", "Sauté spinach and tomatoes.", "Pour eggs over veggies and cook until set.", "Sprinkle with cheese and fold."]
+            },
+            {
+                name: "Smoothie Bowl with Spinach, Banana, and Protein Powder",
+                category: "Breakfast/Brunch",
+                ingredients: ["1 banana", "1 cup spinach", "1/2 cup almond milk", "1 tbsp almond butter", "1 scoop protein powder", "Toppings: granola, berries"],
+                steps: ["Blend banana, spinach, milk, butter, and protein.", "Pour into bowl.", "Add toppings."]
+            },
+            {
+                name: "Grilled Chicken Salad with Mixed Greens and Vinaigrette",
+                category: "Salads & Bowls",
+                ingredients: ["2 cups mixed greens", "1 grilled chicken breast", "1/2 cucumber", "1 bell pepper", "Cherry tomatoes", "Vinaigrette: olive oil, vinegar, salt"],
+                steps: ["Grill chicken and slice.", "Toss greens with veggies.", "Add chicken and drizzle vinaigrette."]
+            },
+            {
+                name: "Quinoa Bowl with Roasted Veggies and Tahini Dressing",
+                category: "Salads & Bowls",
+                ingredients: ["1 cup cooked quinoa", "Roasted veggies: carrots, broccoli, onion", "Tahini dressing: tahini, lemon, water, garlic"],
+                steps: ["Cook quinoa.", "Roast veggies at 400°F for 20 min.", "Mix dressing.", "Assemble bowl and drizzle."]
+            },
+            {
+                name: "Chickpea Salad with Cucumber, Tomato, and Feta",
+                category: "Salads & Bowls",
+                ingredients: ["1 can chickpeas", "1 cucumber", "2 tomatoes", "1/4 cup feta", "Olive oil, lemon, salt"],
+                steps: ["Drain chickpeas.", "Chop veggies.", "Toss with feta and dressing."]
+            },
+            {
+                name: "Tuna Avocado Salad",
+                category: "Salads & Bowls",
+                ingredients: ["2 cans tuna", "2 avocados", "1/4 cup red onion", "Lime juice", "Cilantro"],
+                steps: ["Drain tuna.", "Mash avocado.", "Mix all ingredients."]
+            },
+            {
+                name: "Greek Salad with Olives and Grilled Shrimp",
+                category: "Salads & Bowls",
+                ingredients: ["Mixed greens", "Cucumber, tomatoes, red onion", "Kalamata olives", "Feta", "Grilled shrimp", "Olive oil dressing"],
+                steps: ["Grill shrimp.", "Chop veggies.", "Toss all together."]
+            },
+            {
+                name: "Buddha Bowl with Sweet Potato and Hummus",
+                category: "Salads & Bowls",
+                ingredients: ["1 sweet potato, roasted", "1/2 cup hummus", "Quinoa", "Veggies: kale, avocado", "Tahini sauce"],
+                steps: ["Roast sweet potato.", "Cook quinoa.", "Assemble with hummus and sauce."]
+            },
+            {
+                name: "Caprese Salad with Tomatoes, Mozzarella, and Basil",
+                category: "Salads & Bowls",
+                ingredients: ["3 tomatoes", "8 oz mozzarella", "Fresh basil", "Olive oil", "Balsamic vinegar"],
+                steps: ["Slice tomatoes and mozzarella.", "Layer with basil.", "Drizzle oil and vinegar."]
+            },
+            {
+                name: "Chicken and Broccoli Stir-Fry",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 lb chicken thighs", "2 cups broccoli", "Garlic, ginger", "Soy sauce", "Red pepper flakes"],
+                steps: ["Stir-fry chicken.", "Add broccoli and seasonings.", "Cook until tender."]
+            },
+            {
+                name: "Shrimp and Asparagus Sauté",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 lb shrimp", "1 lb asparagus", "Garlic", "Olive oil", "Lemon juice"],
+                steps: ["Sauté shrimp.", "Add asparagus.", "Season with garlic and lemon."]
+            },
+            {
+                name: "Beef and Veggie Stir-Fry",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 lb beef sirloin", "Broccoli, bell pepper, carrots", "Soy sauce", "Garlic"],
+                steps: ["Stir-fry beef.", "Add veggies.", "Sauce with soy and garlic."]
+            },
+            {
+                name: "Tofu Vegetable Stir-Fry with Soy Sauce",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 block tofu", "Mixed veggies", "Soy sauce", "Sesame oil", "Ginger"],
+                steps: ["Fry tofu.", "Add veggies.", "Sauce and stir."]
+            },
+            {
+                name: "Ground Turkey Enchilada Skillet",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 lb ground turkey", "Black beans", "Enchilada sauce", "Cheese", "Tortillas"],
+                steps: ["Brown turkey.", "Add beans and sauce.", "Top with cheese."]
+            },
+            {
+                name: "Lemon Garlic Shrimp with Zucchini Noodles",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["1 lb shrimp", "2 zucchinis, spiralized", "Garlic, lemon", "Butter"],
+                steps: ["Sauté shrimp with garlic and lemon.", "Add zoodles.", "Toss."]
+            },
+            {
+                name: "Honey Garlic Chicken with Veggies",
+                category: "Stir-Fries & Skillet Meals",
+                ingredients: ["Chicken breasts", "Broccoli, carrots", "Honey, garlic, soy sauce"],
+                steps: ["Stir-fry chicken and veggies.", "Add sauce."]
+            },
+            {
+                name: "Grilled Salmon with Asparagus",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Salmon fillets", "Asparagus", "Olive oil", "Lemon", "Herbs"],
+                steps: ["Grill salmon and asparagus.", "Season with lemon."]
+            },
+            {
+                name: "Baked Miso Citrus Salmon",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Salmon", "Miso paste", "Citrus juice", "Honey"],
+                steps: ["Mix glaze.", "Bake salmon."]
+            },
+            {
+                name: "Grilled Chicken Fajitas",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Chicken", "Bell peppers, onion", "Fajita seasoning", "Tortillas"],
+                steps: ["Grill chicken and veggies.", "Serve in tortillas."]
+            },
+            {
+                name: "Baked Cod with Herbs",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Cod fillets", "Herbs: thyme, parsley", "Lemon", "Olive oil"],
+                steps: ["Season cod.", "Bake at 400°F."]
+            },
+            {
+                name: "Turkey Burgers with Spinach",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Ground turkey", "Spinach", "Feta", "Eggs"],
+                steps: ["Mix ingredients.", "Form patties and grill."]
+            },
+            {
+                name: "Harissa Chicken with Broccoli",
+                category: "Grilled/Baked Proteins",
+                ingredients: ["Chicken thighs", "Harissa paste", "Broccoli", "Orange juice"],
+                steps: ["Marinate chicken.", "Bake with broccoli."]
+            },
+            {
+                name: "Chickpea Curry Soup",
+                category: "Soups & Stews",
+                ingredients: ["Chickpeas", "Onion, garlic, ginger", "Curry powder", "Coconut milk"],
+                steps: ["Sauté aromatics.", "Add chickpeas and broth.", "Simmer."]
+            },
+            {
+                name: "Vegetable Lentil Soup",
+                category: "Soups & Stews",
+                ingredients: ["Lentils", "Carrots, onion, celery", "Tomatoes", "Spices"],
+                steps: ["Sauté veggies.", "Add lentils and broth.", "Simmer."]
+            },
+            {
+                name: "Tomato Basil Soup with Grilled Cheese",
+                category: "Soups & Stews",
+                ingredients: ["Tomatoes", "Basil", "Onion, garlic", "Broth", "Whole-grain bread and cheese"],
+                steps: ["Blend tomatoes and herbs.", "Simmer soup.", "Make grilled cheese."]
+            },
+            {
+                name: "Quick Quinoa Chili",
+                category: "Soups & Stews",
+                ingredients: ["Quinoa", "Beans", "Tomatoes", "Onion", "Chili powder"],
+                steps: ["Cook quinoa in chili base.", "Add beans."]
+            },
+            {
+                name: "Egg Drop Soup with Spinach",
+                category: "Soups & Stews",
+                ingredients: ["Broth", "Eggs", "Spinach", "Ginger", "Green onion"],
+                steps: ["Boil broth.", "Add spinach.", "Drizzle beaten eggs."]
+            },
+            {
+                name: "Whole-Wheat Spaghetti with Pesto and Veggies",
+                category: "Pasta & Grain Dishes",
+                ingredients: ["Whole-wheat spaghetti", "Pesto", "Veggies: spinach, tomatoes", "Parmesan"],
+                steps: ["Cook pasta.", "Toss with pesto and veggies."]
+            },
+            {
+                name: "Pea and Spinach Carbonara",
+                category: "Pasta & Grain Dishes",
+                ingredients: ["Pasta", "Peas, spinach", "Eggs", "Parmesan", "Garlic"],
+                steps: ["Cook pasta with peas and spinach.", "Mix with egg sauce."]
+            },
+            {
+                name: "Soba Noodle Bowl with Veggies",
+                category: "Pasta & Grain Dishes",
+                ingredients: ["Soba noodles", "Veggies: broccoli, carrots", "Soy sauce", "Sesame oil"],
+                steps: ["Cook noodles.", "Stir-fry veggies.", "Toss together."]
+            },
+            {
+                name: "Sesame Chicken Noodles",
+                category: "Pasta & Grain Dishes",
+                ingredients: ["Noodles", "Chicken", "Sesame oil", "Soy sauce", "Veggies"],
+                steps: ["Cook noodles.", "Stir-fry chicken and veggies.", "Add sauce."]
+            },
+            {
+                name: "Orzo with White Beans and Sun-Dried Tomatoes",
+                category: "Pasta & Grain Dishes",
+                ingredients: ["Orzo", "White beans", "Sun-dried tomatoes", "Spinach", "Feta"],
+                steps: ["Cook orzo.", "Mix with beans and tomatoes."]
+            },
+            {
+                name: "Masala Chickpeas with Tofu",
+                category: "Vegetarian/Vegan Mains",
+                ingredients: ["Chickpeas", "Tofu", "Onion, garlic", "Masala spices", "Tomatoes"],
+                steps: ["Sauté tofu.", "Add chickpeas and spices."]
+            },
+            {
+                name: "Veggie-Loaded Frittata",
+                category: "Vegetarian/Vegan Mains",
+                ingredients: ["Eggs", "Veggies: bell peppers, onion, spinach", "Cheese"],
+                steps: ["Sauté veggies.", "Pour eggs over.", "Bake."]
+            },
+            {
+                name: "Black Bean Tacos",
+                category: "Vegetarian/Vegan Mains",
+                ingredients: ["Black beans", "Tortillas", "Avocado", "Salsa", "Cilantro"],
+                steps: ["Heat beans.", "Assemble tacos."]
+            },
+            {
+                name: "Roasted Veggie Wraps",
+                category: "Vegetarian/Vegan Mains",
+                ingredients: ["Roasted veggies", "Wraps", "Hummus", "Greens"],
+                steps: ["Roast veggies.", "Spread hummus on wrap.", "Add veggies and roll."]
+            },
+            {
+                name: "Vegan Quinoa Chili",
+                category: "Vegetarian/Vegan Mains",
+                ingredients: ["Quinoa", "Beans", "Tomatoes", "Onion", "Spices"],
+                steps: ["Cook quinoa in chili base.", "Add beans."]
+            },
+            {
+                name: "Bourbon Glazed Salmon",
+                category: "Seafood & Fish",
+                ingredients: ["Salmon", "Bourbon", "Brown sugar", "Soy sauce", "Garlic"],
+                steps: ["Mix glaze.", "Bake or grill salmon."]
+            },
+            {
+                name: "Scallops with Bell Peppers",
+                category: "Seafood & Fish",
+                ingredients: ["Scallops", "Bell peppers", "Garlic", "Olive oil"],
+                steps: ["Sauté scallops and peppers."]
+            },
+            {
+                name: "Tuna Mornay",
+                category: "Seafood & Fish",
+                ingredients: ["Tuna", "Pasta", "Cheese sauce", "Milk", "Flour"],
+                steps: ["Make cheese sauce.", "Mix with tuna and pasta.", "Bake."]
+            },
+            {
+                name: "Pan-Seared Tilapia with Lemon",
+                category: "Seafood & Fish",
+                ingredients: ["Tilapia fillets", "Lemon", "Butter", "Garlic", "Herbs"],
+                steps: ["Pan-sear tilapia.", "Add lemon butter sauce."]
+            },
+            {
+                name: "Egg Roll in a Bowl",
+                category: "Other Quick Ideas",
+                ingredients: ["Ground pork or turkey", "Coleslaw mix", "Soy sauce", "Ginger", "Garlic"],
+                steps: ["Brown meat.", "Add coleslaw and sauce.", "Cook until tender."]
+            },
+            {
+                name: "Sheet-Pan Chicken and Sweet Potatoes",
+                category: "Other Quick Ideas",
+                ingredients: ["Chicken thighs", "Sweet potatoes", "Broccoli", "Olive oil", "Spices"],
+                steps: ["Toss all on sheet pan.", "Bake at 425°F."]
+            },
+            {
+                name: "Coconut-Lime Chicken",
+                category: "Other Quick Ideas",
+                ingredients: ["Chicken", "Coconut milk", "Lime", "Garlic", "Ginger"],
+                steps: ["Sauté chicken.", "Add coconut-lime sauce.", "Simmer."]
+            },
+            {
+                name: "Air Fryer Pork Chops with Veggies",
+                category: "Other Quick Ideas",
+                ingredients: ["Pork chops", "Veggies: broccoli, carrots", "Oil", "Seasoning"],
+                steps: ["Season pork and veggies.", "Air fry at 400°F."]
+            },
+            {
+                name: "Parmesan Chopped Salad",
+                category: "Other Quick Ideas",
+                ingredients: ["Romaine lettuce", "Parmesan", "Shallot", "Lemon dressing"],
+                steps: ["Chop lettuce.", "Toss with Parmesan and dressing."]
+            },
+            {
+                name: "Mediterranean Stuffed Peppers",
+                category: "Other Quick Ideas",
+                ingredients: ["Bell peppers", "Quinoa or rice", "Tomatoes, feta", "Olives", "Herbs"],
+                steps: ["Stuff peppers.", "Bake."]
+            }
+        ];
+
+        function renderRecipes(filtered) {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            filtered.forEach(recipe => {
+                const div = document.createElement('div');
+                div.className = 'recipe';
+                div.innerHTML = `<h3>${recipe.name} (${recipe.category})</h3>
+                                 <div class="details">
+                                     <h4>Ingredients:</h4><ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+                                     <h4>Steps:</h4><ol>${recipe.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+                                 </div>`;
+                div.addEventListener('click', () => {
+                    const details = div.querySelector('.details');
+                    details.classList.toggle('show');
+                });
+                list.appendChild(div);
+            });
+        }
+
+        function filterRecipes() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const category = document.getElementById('sort').value;
+            let filtered = recipes;
+            if (search) {
+                filtered = filtered.filter(r => r.name.toLowerCase().includes(search));
+            }
+            if (category) {
+                filtered = filtered.filter(r => r.category === category);
+            }
+            renderRecipes(filtered);
+        }
+
+        document.getElementById('search').addEventListener('input', filterRecipes);
+        document.getElementById('sort').addEventListener('change', filterRecipes);
+        renderRecipes(recipes);
+    </script>
+</body>
+</html>
