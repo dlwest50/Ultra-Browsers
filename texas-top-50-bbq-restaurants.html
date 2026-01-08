@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texas BBQ Trail: Top 50 of 2025/2026</title>
+    <title>Interactive Top 50 Texas BBQ Map</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -11,31 +11,48 @@
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
         #map { height: 100vh; width: 100%; }
 
+        /* Header Styling */
         .map-header {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 10px; left: 10px;
             z-index: 1000; background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-align: center; border-top: 5px solid #d35400; width: 320px;
+            padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 5px solid #d35400;
+        }
+        h1 { margin: 0; font-size: 1.2rem; color: #333; }
+        
+        /* Search Bar Styling */
+        .search-container {
+            position: absolute; top: 10px; right: 10px;
+            z-index: 1000; background: white;
+            padding: 10px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; gap: 5px;
+        }
+        #searchInput {
+            padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;
+        }
+        #searchBtn {
+            padding: 8px 12px; background: #d35400; color: white;
+            border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
         }
 
-        h1 { margin: 0; font-size: 1.4rem; color: #333; }
-        p { margin: 5px 0 0; font-size: 0.85rem; color: #d35400; font-weight: bold; }
-
-        /* Teardrop Marker Style */
+        /* Numbered Teardrop Style */
+        .teardrop-wrapper { position: relative; }
         .teardrop {
-            width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+            width: 34px; height: 34px; border-radius: 50% 50% 50% 0;
             background: #e67e22; position: absolute; transform: rotate(-45deg);
-            left: 50%; top: 50%; margin: -15px 0 0 -15px;
+            left: 50%; top: 50%; margin: -17px 0 0 -17px;
             border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.4);
         }
-        .teardrop::after {
-            content: ""; width: 8px; height: 8px; margin: 11px 0 0 11px;
-            background: white; position: absolute; border-radius: 50%;
+        .marker-number {
+            position: absolute; width: 34px; text-align: center;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; font-weight: bold; font-size: 14px; z-index: 10;
         }
 
-        .custom-popup { text-align: center; }
+        .custom-popup { text-align: center; padding: 5px; }
         .bbq-btn {
-            display: inline-block; margin-top: 10px; padding: 6px 10px;
+            display: inline-block; margin-top: 8px; padding: 6px 10px;
             background-color: #d35400; color: white !important;
             text-decoration: none; border-radius: 4px; font-size: 0.8rem;
         }
@@ -44,8 +61,13 @@
 <body>
 
 <div class="map-header">
-    <h1>The BBQ 50</h1>
-    <p>Official 2025/2026 Texas Monthly Top Picks</p>
+    <h1>Texas BBQ Top 50</h1>
+    <div style="font-size: 0.8rem; color: #666;">Official 2025/2026 Rankings</div>
+</div>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by name or rank (e.g. 1)...">
+    <button id="searchBtn">Find</button>
 </div>
 
 <div id="map"></div>
@@ -59,76 +81,115 @@
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Curated Top 50 List based on 2025 Rankings (Sample Selection)
     const bbqSpots = [
-        { name: "Burnt Bean Co. (#1)", city: "Seguin", coords: [29.5687, -97.9646], url: "https://www.burntbeanco.com" },
-        { name: "LeRoy and Lewis (#2)", city: "Austin", coords: [30.2104, -97.7958], url: "https://leroyandlewisbbq.com" },
-        { name: "Goldee’s Barbecue (#3)", city: "Fort Worth", coords: [32.6521, -97.2343], url: "https://www.goldeesbbq.com" },
-        { name: "Redbird BBQ (#4)", city: "Port Neches", coords: [29.9880, -93.9604], url: "https://www.redbirdbbq.com" },
-        { name: "GW’s BBQ (#5)", city: "San Juan", coords: [26.1895, -98.1553], url: "https://www.facebook.com/gwsbbqcatering" },
-        { name: "InterStellar BBQ (#6)", city: "Austin", coords: [30.4503, -97.7719], url: "https://www.theinterstellarbbq.com" },
-        { name: "Dayne’s Craft Barbecue (#7)", city: "Aledo", coords: [32.6931, -97.6019], url: "https://daynescraftbarbecue.com" },
-        { name: "LaVaca BBQ (#8)", city: "Port Lavaca", coords: [28.6147, -96.6264], url: "https://www.lavacabbq.com" },
-        { name: "Truth Barbeque (#9)", city: "Houston", coords: [29.7715, -95.3915], url: "https://www.truthbbq.com" },
-        { name: "Evie Mae’s Pit Barbeque (#10)", city: "Wolfforth", coords: [33.5042, -102.0089], url: "https://www.eviemaesbbq.com" },
-        { name: "Franklin Barbecue", city: "Austin", coords: [30.2701, -97.7313], url: "https://franklinbbq.com" },
-        { name: "Snow’s BBQ", city: "Lexington", coords: [30.4109, -97.0114], url: "https://snowsbbq.com" },
-        { name: "Cattleack Barbeque", city: "Dallas", coords: [32.9234, -96.8458], url: "https://www.cattleackbbq.com" },
-        { name: "Panther City BBQ", city: "Fort Worth", coords: [32.7317, -97.3323], url: "https://www.panthercitybbq.com" },
-        { name: "CorkScrew BBQ", city: "Spring", coords: [30.0822, -95.4439], url: "https://www.corkscrewbbq.com" },
-        { name: "Sunbird Barbecue", city: "Longview", coords: [32.5057, -94.7410], url: "https://www.sunbirdbarbecue.com" },
-        { name: "Brendyn's BBQ", city: "Nacogdoches", coords: [31.6035, -94.6555], url: "https://www.brendynsbbq.com" },
-        { name: "Slaughter's BBQ Co.", city: "Sulphur Springs", coords: [33.1384, -95.6011], url: "https://www.slaughtersbbq.com" },
-        { name: "2M Smokehouse", city: "San Antonio", coords: [29.3891, -98.3934], url: "https://www.2msmokehouse.com" },
-        { name: "Barbs B Q", city: "Lockhart", coords: [29.8847, -97.6713], url: "https://www.barbsbq.com" },
-        { name: "Tejas Chocolate & BBQ", city: "Tomball", coords: [30.0982, -95.6138], url: "https://www.tejaschocolate.com" },
-        { name: "Hutchins BBQ", city: "McKinney", coords: [33.2017, -96.6433], url: "https://hutchinsbbq.com" },
-        { name: "Killen's Barbecue", city: "Pearland", coords: [29.5587, -95.2811], url: "https://www.killensbarbecue.com" },
-        { name: "Slow Bone BBQ", city: "Dallas", coords: [32.7951, -96.8205], url: "https://www.slowbone.com" },
-        { name: "Sabar BBQ", city: "Fort Worth", coords: [32.7486, -97.3323], url: "https://www.facebook.com/SabarBBQ" },
-        { name: "Brisket & Rice", city: "Houston", coords: [29.8943, -95.5971], url: "https://www.brisketnrice.com" },
-        { name: "Jennings & Co. BBQ", city: "Montgomery", coords: [30.3916, -95.6961], url: "https://www.jenningsandcobbq.com" },
-        { name: "Rosemeyer Bar-B-Q", city: "Spring", coords: [30.1005, -95.3945], url: "https://www.rosemeyerbbq.com" },
-        { name: "KG BBQ", city: "Austin", coords: [30.2584, -97.7111], url: "https://www.kgbbq.com" },
-        { name: "La Barbecue", city: "Austin", coords: [30.2554, -97.7144], url: "https://www.labarbecue.com" },
-        { name: "Micklethwait Craft Meats", city: "Austin", coords: [30.2647, -97.7241], url: "https://craftmeatsaustin.com" },
-        { name: "Terry Black's BBQ", city: "Austin", coords: [30.2596, -97.7548], url: "https://www.terryblacksbbq.com" },
-        { name: "Louie Mueller Barbecue", city: "Taylor", coords: [30.5705, -97.4095], url: "https://www.louiemuellerbarbecue.com" },
-        { name: "Kreuz Market", city: "Lockhart", coords: [29.8911, -97.6775], url: "https://www.kreuzmarket.com" },
-        { name: "Black's Barbecue", city: "Lockhart", coords: [29.8825, -97.6715], url: "https://www.blacksbbq.com" },
-        { name: "Smitty's Market", city: "Lockhart", coords: [29.8856, -97.6708], url: "https://www.smittysmarket.com" },
-        { name: "City Market", city: "Luling", coords: [29.6805, -97.6475], url: "https://www.lulingcitymarket.com" },
-        { name: "Valentina's Tex Mex BBQ", city: "Buda", coords: [30.0833, -97.8422], url: "https://www.valentinastexmexbbq.com" },
-        { name: "Brotherton's Black Iron", city: "Pflugerville", coords: [30.4503, -97.6015], url: "https://www.blackironbbq.com" },
-        { name: "Eaker Barbecue", city: "Fredericksburg", coords: [30.2750, -98.8720], url: "https://www.eakerbarbecue.com" },
-        { name: "Guess Family BBQ", city: "Waco", coords: [31.5493, -97.1467], url: "https://www.guessfamilybbq.com" },
-        { name: "Baker Boys BBQ", city: "Gonzales", coords: [29.5015, -97.4455], url: "https://www.bakerboysbbq.com" },
-        { name: "1701 Barbecue", city: "Beaumont", coords: [30.0860, -94.1135], url: "https://www.1701barbecue.com" },
-        { name: "Convenience West", city: "Marfa", coords: [30.3105, -104.0205], url: "https://www.conveniencewest.com" },
-        { name: "Desert Oak Barbecue", city: "El Paso", coords: [31.7619, -106.4850], url: "https://www.desertoakbarbecue.com" },
-        { name: "Smokey Joe's BBQ", city: "Dallas", coords: [32.7115, -96.8045], url: "https://www.smokeyjoesbbqdallas.com" },
-        { name: "Zavala's Barbecue", city: "Grand Prairie", coords: [32.7445, -96.9945], url: "https://www.zavalasbbq.com" },
-        { name: "Smoke Sessions BBQ", city: "Royse City", coords: [32.9755, -96.3325], url: "https://www.smokesessionsbarbecue.com" },
-        { name: "Pustka Family Barbeque", city: "Temple", coords: [31.0982, -97.3432], url: "https://www.pustkafamilybbq.com" },
-        { name: "Teddy's Barbecue", city: "Weslaco", coords: [26.1595, -97.9908], url: "https://www.teddysbarbecue.com" }
+        { rank: 1, name: "Burnt Bean Co.", city: "Seguin", coords: [29.5687, -97.9646], url: "https://www.burntbeanco.com" },
+        { rank: 2, name: "LeRoy and Lewis", city: "Austin", coords: [30.2104, -97.7958], url: "https://leroyandlewisbbq.com" },
+        { rank: 3, name: "Goldee’s Barbecue", city: "Fort Worth", coords: [32.6521, -97.2343], url: "https://www.goldeesbbq.com" },
+        { rank: 4, name: "Redbird BBQ", city: "Port Neches", coords: [29.9880, -93.9604], url: "https://www.redbirdbbq.com" },
+        { rank: 5, name: "GW’s BBQ", city: "San Juan", coords: [26.1895, -98.1553], url: "https://www.facebook.com/gwsbbqcatering" },
+        { rank: 6, name: "InterStellar BBQ", city: "Austin", coords: [30.4503, -97.7719], url: "https://www.theinterstellarbbq.com" },
+        { rank: 7, name: "Dayne’s Craft Barbecue", city: "Aledo", coords: [32.6931, -97.6019], url: "https://daynescraftbarbecue.com" },
+        { rank: 8, name: "LaVaca BBQ", city: "Port Lavaca", coords: [28.6147, -96.6264], url: "https://www.lavacabbq.com" },
+        { rank: 9, name: "Truth Barbeque", city: "Houston", coords: [29.7715, -95.3915], url: "https://www.truthbbq.com" },
+        { rank: 10, name: "Evie Mae’s Pit Barbeque", city: "Wolfforth", coords: [33.5042, -102.0089], url: "https://www.eviemaesbbq.com" },
+        { rank: 11, name: "Franklin Barbecue", city: "Austin", coords: [30.2701, -97.7313], url: "https://franklinbbq.com" },
+        { rank: 12, name: "Snow’s BBQ", city: "Lexington", coords: [30.4109, -97.0114], url: "https://snowsbbq.com" },
+        { rank: 13, name: "Cattleack Barbeque", city: "Dallas", coords: [32.9234, -96.8458], url: "https://www.cattleackbbq.com" },
+        { rank: 14, name: "Panther City BBQ", city: "Fort Worth", coords: [32.7317, -97.3323], url: "https://www.panthercitybbq.com" },
+        { rank: 15, name: "CorkScrew BBQ", city: "Spring", coords: [30.0822, -95.4439], url: "https://www.corkscrewbbq.com" },
+        { rank: 16, name: "Sunbird Barbecue", city: "Longview", coords: [32.5057, -94.7410], url: "https://www.sunbirdbarbecue.com" },
+        { rank: 17, name: "Brendyn's BBQ", city: "Nacogdoches", coords: [31.6035, -94.6555], url: "https://www.brendynsbbq.com" },
+        { rank: 18, name: "Slaughter's BBQ Co.", city: "Sulphur Springs", coords: [33.1384, -95.6011], url: "https://www.slaughtersbbq.com" },
+        { rank: 19, name: "2M Smokehouse", city: "San Antonio", coords: [29.3891, -98.3934], url: "https://www.2msmokehouse.com" },
+        { rank: 20, name: "Barbs B Q", city: "Lockhart", coords: [29.8847, -97.6713], url: "https://www.barbsbq.com" },
+        { rank: 21, name: "Tejas Chocolate & BBQ", city: "Tomball", coords: [30.0982, -95.6138], url: "https://www.tejaschocolate.com" },
+        { rank: 22, name: "Hutchins BBQ", city: "McKinney", coords: [33.2017, -96.6433], url: "https://hutchinsbbq.com" },
+        { rank: 23, name: "Killen's Barbecue", city: "Pearland", coords: [29.5587, -95.2811], url: "https://www.killensbarbecue.com" },
+        { rank: 24, name: "Slow Bone BBQ", city: "Dallas", coords: [32.7951, -96.8205], url: "https://www.slowbone.com" },
+        { rank: 25, name: "Sabar BBQ", city: "Fort Worth", coords: [32.7486, -97.3323], url: "https://www.facebook.com/SabarBBQ" },
+        { rank: 26, name: "Brisket & Rice", city: "Houston", coords: [29.8943, -95.5971], url: "https://www.brisketnrice.com" },
+        { rank: 27, name: "Jennings & Co. BBQ", city: "Montgomery", coords: [30.3916, -95.6961], url: "https://www.jenningsandcobbq.com" },
+        { rank: 28, name: "Rosemeyer Bar-B-Q", city: "Spring", coords: [30.1005, -95.3945], url: "https://www.rosemeyerbbq.com" },
+        { rank: 29, name: "KG BBQ", city: "Austin", coords: [30.2584, -97.7111], url: "https://www.kgbbq.com" },
+        { rank: 30, name: "La Barbecue", city: "Austin", coords: [30.2554, -97.7144], url: "https://www.labarbecue.com" },
+        { rank: 31, name: "Micklethwait Craft Meats", city: "Austin", coords: [30.2647, -97.7241], url: "https://craftmeatsaustin.com" },
+        { rank: 32, name: "Terry Black's BBQ", city: "Austin", coords: [30.2596, -97.7548], url: "https://www.terryblacksbbq.com" },
+        { rank: 33, name: "Louie Mueller Barbecue", city: "Taylor", coords: [30.5705, -97.4095], url: "https://www.louiemuellerbarbecue.com" },
+        { rank: 34, name: "Kreuz Market", city: "Lockhart", coords: [29.8911, -97.6775], url: "https://www.kreuzmarket.com" },
+        { rank: 35, name: "Black's Barbecue", city: "Lockhart", coords: [29.8825, -97.6715], url: "https://www.blacksbbq.com" },
+        { rank: 36, name: "Smitty's Market", city: "Lockhart", coords: [29.8856, -97.6708], url: "https://www.smittysmarket.com" },
+        { rank: 37, name: "City Market", city: "Luling", coords: [29.6805, -97.6475], url: "https://www.lulingcitymarket.com" },
+        { rank: 38, name: "Valentina's Tex Mex BBQ", city: "Buda", coords: [30.0833, -97.8422], url: "https://www.valentinastexmexbbq.com" },
+        { rank: 39, name: "Brotherton's Black Iron", city: "Pflugerville", coords: [30.4503, -97.6015], url: "https://www.blackironbbq.com" },
+        { rank: 40, name: "Eaker Barbecue", city: "Fredericksburg", coords: [30.2750, -98.8720], url: "https://www.eakerbarbecue.com" },
+        { rank: 41, name: "Guess Family BBQ", city: "Waco", coords: [31.5493, -97.1467], url: "https://www.guessfamilybbq.com" },
+        { rank: 42, name: "Baker Boys BBQ", city: "Gonzales", coords: [29.5015, -97.4455], url: "https://www.bakerboysbbq.com" },
+        { rank: 43, name: "1701 Barbecue", city: "Beaumont", coords: [30.0860, -94.1135], url: "https://www.1701barbecue.com" },
+        { rank: 44, name: "Convenience West", city: "Marfa", coords: [30.3105, -104.0205], url: "https://www.conveniencewest.com" },
+        { rank: 45, name: "Desert Oak Barbecue", city: "El Paso", coords: [31.7619, -106.4850], url: "https://www.desertoakbarbecue.com" },
+        { rank: 46, name: "Smokey Joe's BBQ", city: "Dallas", coords: [32.7115, -96.8045], url: "https://www.smokeyjoesbbqdallas.com" },
+        { rank: 47, name: "Zavala's Barbecue", city: "Grand Prairie", coords: [32.7445, -96.9945], url: "https://www.zavalasbbq.com" },
+        { rank: 48, name: "Smoke Sessions BBQ", city: "Royse City", coords: [32.9755, -96.3325], url: "https://www.smokesessionsbarbecue.com" },
+        { rank: 49, name: "Pustka Family Barbeque", city: "Temple", coords: [31.0982, -97.3432], url: "https://www.pustkafamilybbq.com" },
+        { rank: 50, name: "Teddy's Barbecue", city: "Weslaco", coords: [26.1595, -97.9908], url: "https://www.teddysbarbecue.com" }
     ];
 
-    const teardropIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: "<div class='teardrop'></div>",
-        iconSize: [30, 42], iconAnchor: [15, 42], popupAnchor: [0, -40]
-    });
+    const markerMap = {}; // To store markers for search access
 
     bbqSpots.forEach(spot => {
-        L.marker(spot.coords, { icon: teardropIcon })
-            .addTo(map)
-            .bindPopup(`
-                <div class="custom-popup">
-                    <strong>${spot.name}</strong><br>
-                    ${spot.city}, TX<br>
-                    <a href="${spot.url}" target="_blank" class="bbq-btn">Visit Website</a>
-                </div>
-            `);
+        // Create custom div icon with rank number
+        const icon = L.divIcon({
+            className: 'teardrop-wrapper',
+            html: `<div class='teardrop'></div><div class='marker-number'>${spot.rank}</div>`,
+            iconSize: [34, 46],
+            iconAnchor: [17, 46],
+            popupAnchor: [0, -42]
+        });
+
+        const marker = L.marker(spot.coords, { icon: icon }).addTo(map);
+        
+        const popupContent = `
+            <div class="custom-popup">
+                <strong>#${spot.rank}: ${spot.name}</strong><br>
+                ${spot.city}, TX<br>
+                <a href="${spot.url}" target="_blank" class="bbq-btn">Visit Website</a>
+            </div>
+        `;
+        
+        marker.bindPopup(popupContent);
+        markerMap[spot.rank] = marker; // Store by rank
+        markerMap[spot.name.toLowerCase()] = marker; // Store by name
+    });
+
+    // Search Functionality
+    function performSearch() {
+        const input = document.getElementById('searchInput').value.toLowerCase().trim();
+        let targetMarker = null;
+
+        // Find by rank or name
+        if (markerMap[input]) {
+            targetMarker = markerMap[input];
+        } else {
+            // Partial name match search
+            for (let key in markerMap) {
+                if (key.includes(input)) {
+                    targetMarker = markerMap[key];
+                    break;
+                }
+            }
+        }
+
+        if (targetMarker) {
+            map.setView(targetMarker.getLatLng(), 12);
+            targetMarker.openPopup();
+        } else {
+            alert("No BBQ joint found for: " + input);
+        }
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', performSearch);
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
     });
 </script>
 
