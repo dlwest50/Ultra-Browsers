@@ -3,74 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Top 50 Texas BBQ Map</title>
+    <title>Texas BBQ Top 50 Explorer</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; }
-        #map { height: 100vh; width: 100%; }
-
-        /* Header Styling */
-        .map-header {
-            position: absolute; top: 10px; left: 10px;
-            z-index: 1000; background: rgba(255, 255, 255, 0.95);
-            padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-left: 5px solid #d35400;
-        }
-        h1 { margin: 0; font-size: 1.2rem; color: #333; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
         
-        /* Search Bar Styling */
-        .search-container {
-            position: absolute; top: 10px; right: 10px;
-            z-index: 1000; background: white;
-            padding: 10px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex; gap: 5px;
-        }
-        #searchInput {
-            padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px;
-        }
-        #searchBtn {
-            padding: 8px 12px; background: #d35400; color: white;
-            border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
-        }
+        /* Main Layout Container */
+        .main-container { display: flex; height: 100vh; width: 100vw; }
 
-        /* Numbered Teardrop Style */
+        /* Sidebar Styling */
+        .sidebar {
+            width: 320px;
+            background: #f8f9fa;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            z-index: 2000;
+        }
+        .sidebar-header {
+            padding: 20px;
+            background: #333;
+            color: white;
+            text-align: center;
+        }
+        .sidebar-header h2 { margin: 0; font-size: 1.2rem; }
+        
+        .restaurant-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .list-item:hover { background: #e9ecef; }
+        .list-rank {
+            background: #d35400;
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .list-info strong { display: block; color: #333; font-size: 0.95rem; }
+        .list-info span { font-size: 0.8rem; color: #666; }
+
+        /* Map and Header Styling */
+        .map-container { flex-grow: 1; position: relative; }
+        #map { height: 100%; width: 100%; }
+
+        .map-header {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; background: rgba(255, 255, 255, 0.95);
+            padding: 12px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center; border-bottom: 4px solid #d35400; width: auto; min-width: 300px;
+        }
+        .map-header h1 { margin: 0; font-size: 1.6rem; color: #333; }
+        .sub-header { font-size: 0.9rem; color: #d35400; font-weight: bold; }
+
+        .search-container {
+            position: absolute; top: 95px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; background: white; padding: 8px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; gap: 5px;
+        }
+        #searchInput { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 220px; }
+        #searchBtn { padding: 8px 15px; background: #d35400; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        /* Marker Styles */
         .teardrop-wrapper { position: relative; }
         .teardrop {
-            width: 34px; height: 34px; border-radius: 50% 50% 50% 0;
+            width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
             background: #e67e22; position: absolute; transform: rotate(-45deg);
-            left: 50%; top: 50%; margin: -17px 0 0 -17px;
+            left: 50%; top: 50%; margin: -15px 0 0 -15px;
             border: 2px solid #fff; box-shadow: 0 0 4px rgba(0,0,0,0.4);
         }
         .marker-number {
-            position: absolute; width: 34px; text-align: center;
+            position: absolute; width: 30px; text-align: center;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: white; font-weight: bold; font-size: 14px; z-index: 10;
+            color: white; font-weight: bold; font-size: 12px; z-index: 10;
         }
-
-        .custom-popup { text-align: center; padding: 5px; }
         .bbq-btn {
             display: inline-block; margin-top: 8px; padding: 6px 10px;
             background-color: #d35400; color: white !important;
-            text-decoration: none; border-radius: 4px; font-size: 0.8rem;
+            text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 
-<div class="map-header">
-    <h1>Texas BBQ Top 50</h1>
-    <div style="font-size: 0.8rem; color: #666;">Official 2025/2026 Rankings</div>
-</div>
+<div class="main-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>The Top 50 List</h2>
+        </div>
+        <ul class="restaurant-list" id="restaurantList">
+            </ul>
+    </div>
 
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search by name or rank (e.g. 1)...">
-    <button id="searchBtn">Find</button>
-</div>
+    <div class="map-container">
+        <div class="map-header">
+            <h1>Texas BBQ Top 50</h1>
+            <div class="sub-header">Official 2025/2026 Rankings</div>
+        </div>
 
-<div id="map"></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search name or rank...">
+            <button id="searchBtn">Find</button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -134,63 +192,55 @@
         { rank: 50, name: "Teddy's Barbecue", city: "Weslaco", coords: [26.1595, -97.9908], url: "https://www.teddysbarbecue.com" }
     ];
 
-    const markerMap = {}; // To store markers for search access
+    const markerMap = {}; 
+    const listContainer = document.getElementById('restaurantList');
 
     bbqSpots.forEach(spot => {
-        // Create custom div icon with rank number
+        // 1. Create Marker
         const icon = L.divIcon({
             className: 'teardrop-wrapper',
             html: `<div class='teardrop'></div><div class='marker-number'>${spot.rank}</div>`,
-            iconSize: [34, 46],
-            iconAnchor: [17, 46],
-            popupAnchor: [0, -42]
+            iconSize: [30, 42], iconAnchor: [15, 42], popupAnchor: [0, -40]
         });
-
         const marker = L.marker(spot.coords, { icon: icon }).addTo(map);
-        
-        const popupContent = `
-            <div class="custom-popup">
-                <strong>#${spot.rank}: ${spot.name}</strong><br>
-                ${spot.city}, TX<br>
-                <a href="${spot.url}" target="_blank" class="bbq-btn">Visit Website</a>
+        marker.bindPopup(`
+            <div style="text-align:center">
+                <strong>#${spot.rank}: ${spot.name}</strong><br>${spot.city}, TX<br>
+                <a href="${spot.url}" target="_blank" class="bbq-btn">Website</a>
+            </div>
+        `);
+        markerMap[spot.rank] = marker; 
+        markerMap[spot.name.toLowerCase()] = marker; 
+
+        // 2. Create Sidebar List Item
+        const li = document.createElement('li');
+        li.className = 'list-item';
+        li.innerHTML = `
+            <div class="list-rank">${spot.rank}</div>
+            <div class="list-info">
+                <strong>${spot.name}</strong>
+                <span>${spot.city}, TX</span>
             </div>
         `;
-        
-        marker.bindPopup(popupContent);
-        markerMap[spot.rank] = marker; // Store by rank
-        markerMap[spot.name.toLowerCase()] = marker; // Store by name
+        li.onclick = () => {
+            map.setView(marker.getLatLng(), 14);
+            marker.openPopup();
+        };
+        listContainer.appendChild(li);
     });
 
-    // Search Functionality
+    // Search Logic
     function performSearch() {
-        const input = document.getElementById('searchInput').value.toLowerCase().trim();
-        let targetMarker = null;
-
-        // Find by rank or name
-        if (markerMap[input]) {
-            targetMarker = markerMap[input];
-        } else {
-            // Partial name match search
-            for (let key in markerMap) {
-                if (key.includes(input)) {
-                    targetMarker = markerMap[key];
-                    break;
-                }
-            }
+        const val = document.getElementById('searchInput').value.toLowerCase().trim();
+        let m = markerMap[val];
+        if(!m) {
+            for(let key in markerMap) { if(key.includes(val)) { m = markerMap[key]; break; } }
         }
-
-        if (targetMarker) {
-            map.setView(targetMarker.getLatLng(), 12);
-            targetMarker.openPopup();
-        } else {
-            alert("No BBQ joint found for: " + input);
-        }
+        if(m) { map.setView(m.getLatLng(), 14); m.openPopup(); }
+        else { alert("Not found."); }
     }
-
-    document.getElementById('searchBtn').addEventListener('click', performSearch);
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') performSearch();
-    });
+    document.getElementById('searchBtn').onclick = performSearch;
+    document.getElementById('searchInput').onkeypress = (e) => { if(e.key==='Enter') performSearch(); };
 </script>
 
 </body>
