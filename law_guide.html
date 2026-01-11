@@ -10,6 +10,7 @@
             --gold: #c5a059;
             --light: #f4f7f6;
             --accent: #2c3e50;
+            --link-blue: #3498db;
         }
 
         body {
@@ -83,7 +84,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             margin-bottom: 40px;
-            display: none; /* Hidden by default for interactivity */
+            display: none; 
         }
 
         .active {
@@ -110,9 +111,10 @@
 
         .card {
             border: 1px solid #ddd;
-            padding: 15px;
+            padding: 20px;
             border-radius: 5px;
             background: #fafafa;
+            margin-bottom: 15px;
         }
 
         .card h3 {
@@ -120,6 +122,7 @@
             color: var(--accent);
         }
 
+        /* Standard Link Style */
         .btn-link {
             display: inline-block;
             margin-top: 10px;
@@ -128,8 +131,21 @@
             font-weight: bold;
         }
 
-        .btn-link:hover {
-            text-decoration: underline;
+        /* Resources Button Style */
+        .resource-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .resource-btn:hover {
+            background-color: var(--gold);
         }
 
         ul.reason-list {
@@ -173,23 +189,23 @@
         <div class="city-grid">
             <div class="card">
                 <h3>Oklahoma City, OK</h3>
-                <p><b>McAfee & Taft:</b> Big-name business law.<br><a href="https://www.mcafeetaft.com" class="btn-link">mcafeetaft.com</a></p>
-                <p><b>Crowe & Dunlevy:</b> Oldest & most respected.<br><a href="https://www.crowedunlevy.com" class="btn-link">crowedunlevy.com</a></p>
+                <p><b>McAfee & Taft:</b> Big-name business law.<br><a href="https://www.mcafeetaft.com" target="_blank" class="btn-link">mcafeetaft.com</a></p>
+                <p><b>Crowe & Dunlevy:</b> Oldest & most respected.<br><a href="https://www.crowedunlevy.com" target="_blank" class="btn-link">crowedunlevy.com</a></p>
             </div>
             <div class="card">
                 <h3>Dallas-Fort Worth, TX</h3>
-                <p><b>Haynes and Boone:</b> Corporate gold standard.<br><a href="https://www.haynesboone.com" class="btn-link">haynesboone.com</a></p>
-                <p><b>Baron & Budd:</b> Famous for big lawsuits.<br><a href="https://www.baronandbudd.com" class="btn-link">baronandbudd.com</a></p>
+                <p><b>Haynes and Boone:</b> Corporate gold standard.<br><a href="https://www.haynesboone.com" target="_blank" class="btn-link">haynesboone.com</a></p>
+                <p><b>Baron & Budd:</b> Famous for big lawsuits.<br><a href="https://www.baronandbudd.com" target="_blank" class="btn-link">baronandbudd.com</a></p>
             </div>
             <div class="card">
                 <h3>Wichita Falls, TX</h3>
-                <p><b>Hoover Rogers Law:</b> Injury & accident pros.<br><a href="https://www.hooverrogerslaw.com" class="btn-link">hooverrogerslaw.com</a></p>
-                <p><b>Altman Legal Group:</b> Local injury favorites.<br><a href="https://www.altmanlegal.com" class="btn-link">altmanlegal.com</a></p>
+                <p><b>Hoover Rogers Law:</b> Injury & accident pros.<br><a href="https://www.hooverrogerslaw.com" target="_blank" class="btn-link">hooverrogerslaw.com</a></p>
+                <p><b>Altman Legal Group:</b> Local injury favorites.<br><a href="https://www.altmanlegal.com" target="_blank" class="btn-link">altmanlegal.com</a></p>
             </div>
             <div class="card">
                 <h3>Vernon, TX</h3>
-                <p><b>Heatly, Whitsitt & Williams:</b> Local general practice.<br><a href="http://www.hwwlaw.net" class="btn-link">hwwlaw.net</a></p>
-                <p><b>Wilson, Ellis & Friberg:</b> Wills & real estate.<br><a href="https://www.wilsonellis.com" class="btn-link">wilsonellis.com</a></p>
+                <p><b>Heatly, Whitsitt & Williams:</b> Local general practice.<br><a href="http://www.hwwlaw.net" target="_blank" class="btn-link">hwwlaw.net</a></p>
+                <p><b>Wilson, Ellis & Friberg:</b> Wills & real estate.<br><a href="https://www.wilsonellis.com" target="_blank" class="btn-link">wilsonellis.com</a></p>
             </div>
         </div>
     </section>
@@ -213,25 +229,35 @@
 
     <section id="free" class="content-section">
         <h2>Top 5 Sites for Free Advice</h2>
+        
         <div class="card">
             <h3>1. FindLaw.com</h3>
             <p>The "encyclopedia" of law. Great for reading up on your rights.</p>
+            <a href="https://www.findlaw.com" target="_blank" class="resource-btn">Visit FindLaw</a>
         </div>
+
         <div class="card">
             <h3>2. Justia.com</h3>
             <p>Features an "Ask a Lawyer" forum where you can get free answers.</p>
+            <a href="https://www.justia.com" target="_blank" class="resource-btn">Visit Justia</a>
         </div>
+
         <div class="card">
             <h3>3. LawHelp.org</h3>
             <p>Connects low-income individuals with local Legal Aid offices.</p>
+            <a href="https://www.lawhelp.org" target="_blank" class="resource-btn">Visit LawHelp</a>
         </div>
+
         <div class="card">
             <h3>4. ABA Free Legal Answers</h3>
             <p>A virtual clinic run by the American Bar Association.</p>
+            <a href="https://abafreelegalanswers.org" target="_blank" class="resource-btn">Visit ABA Answers</a>
         </div>
+
         <div class="card">
             <h3>5. TexasLawHelp.org</h3>
             <p>The #1 resource for DIY forms and advice specifically for Texans.</p>
+            <a href="https://texaslawhelp.org" target="_blank" class="resource-btn">Visit TexasLawHelp</a>
         </div>
     </section>
 
