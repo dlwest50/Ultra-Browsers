@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Legal Resource Guide</title>
+    <style>
+        :root {
+            --primary: #1a2a3a;
+            --gold: #c5a059;
+            --light: #f4f7f6;
+            --accent: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cool Legal Header */
+        header {
+            background: linear-gradient(rgba(26, 42, 58, 0.9), rgba(26, 42, 58, 0.9)), 
+                        url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--gold);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-style: italic;
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background: var(--accent);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav button:hover {
+            color: var(--gold);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            display: none; /* Hidden by default for interactivity */
+        }
+
+        .active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        .city-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .btn-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        ul.reason-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.reason-list li {
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-left: 5px solid var(--gold);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Justice Resource Hub</h1>
+    <p>Navigating the Legal Landscape of OK & TX</p>
+</header>
+
+<nav>
+    <button onclick="showSection('firms')">TOP LAW FIRMS</button>
+    <button onclick="showSection('reasons')">WHY HIRE A LAWYER?</button>
+    <button onclick="showSection('free')">FREE RESOURCES</button>
+</nav>
+
+<div class="container">
+
+    <section id="firms" class="content-section active">
+        <h2>Most Popular Local Firms</h2>
+        <div class="city-grid">
+            <div class="card">
+                <h3>Oklahoma City, OK</h3>
+                <p><b>McAfee & Taft:</b> Big-name business law.<br><a href="https://www.mcafeetaft.com" class="btn-link">mcafeetaft.com</a></p>
+                <p><b>Crowe & Dunlevy:</b> Oldest & most respected.<br><a href="https://www.crowedunlevy.com" class="btn-link">crowedunlevy.com</a></p>
+            </div>
+            <div class="card">
+                <h3>Dallas-Fort Worth, TX</h3>
+                <p><b>Haynes and Boone:</b> Corporate gold standard.<br><a href="https://www.haynesboone.com" class="btn-link">haynesboone.com</a></p>
+                <p><b>Baron & Budd:</b> Famous for big lawsuits.<br><a href="https://www.baronandbudd.com" class="btn-link">baronandbudd.com</a></p>
+            </div>
+            <div class="card">
+                <h3>Wichita Falls, TX</h3>
+                <p><b>Hoover Rogers Law:</b> Injury & accident pros.<br><a href="https://www.hooverrogerslaw.com" class="btn-link">hooverrogerslaw.com</a></p>
+                <p><b>Altman Legal Group:</b> Local injury favorites.<br><a href="https://www.altmanlegal.com" class="btn-link">altmanlegal.com</a></p>
+            </div>
+            <div class="card">
+                <h3>Vernon, TX</h3>
+                <p><b>Heatly, Whitsitt & Williams:</b> Local general practice.<br><a href="http://www.hwwlaw.net" class="btn-link">hwwlaw.net</a></p>
+                <p><b>Wilson, Ellis & Friberg:</b> Wills & real estate.<br><a href="https://www.wilsonellis.com" class="btn-link">wilsonellis.com</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="reasons" class="content-section">
+        <h2>Top 10 Reasons People Hire a Lawyer</h2>
+        <p>Most situations involve high stress or money. Here is why people call for help:</p>
+        <ul class="reason-list">
+            <li><strong>1. Criminal Defense:</strong> To stay out of jail and protect rights.</li>
+            <li><strong>2. Divorce/Family Law:</strong> For custody and fair asset division.</li>
+            <li><strong>3. Personal Injury:</strong> To get insurance companies to pay for medical bills.</li>
+            <li><strong>4. Wills & Estate Planning:</strong> To make sure inheritance goes to the right people.</li>
+            <li><strong>5. Real Estate:</strong> Reviewing contracts for buying/selling homes.</li>
+            <li><strong>6. Business Formation:</strong> Setting up LLCs and protecting owners from lawsuits.</li>
+            <li><strong>7. Employment Disputes:</strong> Dealing with wrongful firing or harassment.</li>
+            <li><strong>8. Bankruptcy:</strong> To stop creditors and get a fresh financial start.</li>
+            <li><strong>9. Traffic Tickets:</strong> When a license or insurance rate is at risk.</li>
+            <li><strong>10. Contract Fights:</strong> When someone breaks a signed agreement.</li>
+        </ul>
+    </section>
+
+    <section id="free" class="content-section">
+        <h2>Top 5 Sites for Free Advice</h2>
+        <div class="card">
+            <h3>1. FindLaw.com</h3>
+            <p>The "encyclopedia" of law. Great for reading up on your rights.</p>
+        </div>
+        <div class="card">
+            <h3>2. Justia.com</h3>
+            <p>Features an "Ask a Lawyer" forum where you can get free answers.</p>
+        </div>
+        <div class="card">
+            <h3>3. LawHelp.org</h3>
+            <p>Connects low-income individuals with local Legal Aid offices.</p>
+        </div>
+        <div class="card">
+            <h3>4. ABA Free Legal Answers</h3>
+            <p>A virtual clinic run by the American Bar Association.</p>
+        </div>
+        <div class="card">
+            <h3>5. TexasLawHelp.org</h3>
+            <p>The #1 resource for DIY forms and advice specifically for Texans.</p>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 Regional Legal Resource Hub | Information for educational purposes only.</p>
+</footer>
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Show the selected section
+        document.getElementById(sectionId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
