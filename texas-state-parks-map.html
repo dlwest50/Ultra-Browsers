@@ -16,6 +16,19 @@
         #park-list { list-style: none; padding: 0; margin: 0; }
         #park-list li { padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; }
         #park-list li:hover { background: #f5f5f5; }
+
+        /* Custom tooltip styling */
+        .custom-tooltip {
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            max-width: 300px;
+        }
+
         @media (min-width: 768px) {
             #container { flex-direction: row; }
             #sidebar { width: 320px; max-height: none; border-bottom: none; border-right: 1px solid #ccc; }
@@ -25,12 +38,12 @@
 </head>
 <body>
     <div id="header">
-        <h1>Interactive Map of All Texas State Parks</h1>
+        <h1>Interactive Map of Texas State Parks</h1>
     </div>
     <div id="container">
         <div id="sidebar">
-            <h2>Texas State Parks (~89)</h2>
-            <p>Click a park name to zoom to it on the map, or click its marker to visit the official website (with trails, camping, activities, and more).</p>
+            <h2>Texas State Parks (≈89)</h2>
+            <p>Hover over markers for quick info, click a park name to zoom in, or click a marker to visit the official TPWD site (trails, camping, reservations, etc.).</p>
             <input id="search" type="text" placeholder="Search parks...">
             <ul id="park-list"></ul>
         </div>
@@ -43,100 +56,98 @@
             attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Complete list of Texas State Parks with accurate coordinates (entrance/HQ) and official URLs
-        // Coordinates verified from TPWD sources, Google Maps, and reliable references
-        // This includes nearly all 89+ active state parks, natural areas, and historic sites as of 2026
+        // Complete list with short descriptions for hover tooltips
         const parks = [
-            { name: "Abilene State Park", lat: 32.2405, lng: -99.8798, url: "https://tpwd.texas.gov/state-parks/abilene" },
-            { name: "Acton State Historic Site", lat: 32.4436, lng: -97.6847, url: "https://tpwd.texas.gov/state-parks/acton" },
-            { name: "Atlanta State Park", lat: 33.2307, lng: -94.2497, url: "https://tpwd.texas.gov/state-parks/atlanta" },
-            { name: "Balmorhea State Park", lat: 30.9448, lng: -103.7863, url: "https://tpwd.texas.gov/state-parks/balmorhea" },
-            { name: "Barton Warnock Visitor Center", lat: 29.5083, lng: -103.7608, url: "https://tpwd.texas.gov/state-parks/big-bend-ranch" },
-            { name: "Bastrop State Park", lat: 30.1105, lng: -97.2869, url: "https://tpwd.texas.gov/state-parks/bastrop" },
-            { name: "Battleship Texas State Historic Site", lat: 29.5353, lng: -95.0894, url: "https://tpwd.texas.gov/state-parks/battleship-texas" },
-            { name: "Bentsen-Rio Grande Valley State Park", lat: 26.1728, lng: -98.3836, url: "https://tpwd.texas.gov/state-parks/bentsen-rio-grande-valley" },
-            { name: "Big Bend Ranch State Park", lat: 29.4667, lng: -104.0333, url: "https://tpwd.texas.gov/state-parks/big-bend-ranch" },
-            { name: "Big Spring State Park", lat: 32.2283, lng: -101.4917, url: "https://tpwd.texas.gov/state-parks/big-spring" },
-            { name: "Blanco State Park", lat: 30.0931, lng: -98.4238, url: "https://tpwd.texas.gov/state-parks/blanco" },
-            { name: "Bonham State Park", lat: 33.5467, lng: -96.1433, url: "https://tpwd.texas.gov/state-parks/bonham" },
-            { name: "Brazos Bend State Park", lat: 29.3711, lng: -95.6317, url: "https://tpwd.texas.gov/state-parks/brazos-bend" },
-            { name: "Buescher State Park", lat: 30.0389, lng: -97.1583, url: "https://tpwd.texas.gov/state-parks/buescher" },
-            { name: "Caddo Lake State Park", lat: 32.6833, lng: -94.1833, url: "https://tpwd.texas.gov/state-parks/caddo-lake" },
-            { name: "Caprock Canyons State Park", lat: 34.8100, lng: -101.0533, url: "https://tpwd.texas.gov/state-parks/caprock-canyons" },
-            { name: "Cedar Hill State Park", lat: 32.6167, lng: -96.9833, url: "https://tpwd.texas.gov/state-parks/cedar-hill" },
-            { name: "Choke Canyon State Park", lat: 28.4667, lng: -98.3500, url: "https://tpwd.texas.gov/state-parks/choke-canyon" },
-            { name: "Cleburne State Park", lat: 32.2833, lng: -97.5667, url: "https://tpwd.texas.gov/state-parks/cleburne" },
-            { name: "Colorado Bend State Park", lat: 31.0236, lng: -98.4592, url: "https://tpwd.texas.gov/state-parks/colorado-bend" },
-            { name: "Cooper Lake State Park", lat: 33.3333, lng: -95.6667, url: "https://tpwd.texas.gov/state-parks/cooper-lake" },
-            { name: "Copper Breaks State Park", lat: 34.1167, lng: -99.7333, url: "https://tpwd.texas.gov/state-parks/copper-breaks" },
-            { name: "Daingerfield State Park", lat: 33.0111, lng: -94.7033, url: "https://tpwd.texas.gov/state-parks/daingerfield" },
-            { name: "Davis Mountains State Park", lat: 30.6167, lng: -103.9333, url: "https://tpwd.texas.gov/state-parks/davis-mountains" },
-            { name: "Devils River State Natural Area", lat: 29.9167, lng: -100.9667, url: "https://tpwd.texas.gov/state-parks/devils-river" },
-            { name: "Devil's Sinkhole State Natural Area", lat: 30.0167, lng: -100.2167, url: "https://tpwd.texas.gov/state-parks/devils-sinkhole" },
-            { name: "Dinosaur Valley State Park", lat: 32.2461, lng: -97.8136, url: "https://tpwd.texas.gov/state-parks/dinosaur-valley" },
-            { name: "Eisenhower State Park", lat: 33.8103, lng: -96.6000, url: "https://tpwd.texas.gov/state-parks/eisenhower" },
-            { name: "Enchanted Rock State Natural Area", lat: 30.5061, lng: -98.8200, url: "https://tpwd.texas.gov/state-parks/enchanted-rock" },
-            { name: "Estero Llano Grande State Park", lat: 26.1256, lng: -98.1356, url: "https://tpwd.texas.gov/state-parks/estero-llano-grande" },
-            { name: "Falcon State Park", lat: 26.5833, lng: -99.1500, url: "https://tpwd.texas.gov/state-parks/falcon" },
-            { name: "Fort Boggy State Park", lat: 31.0333, lng: -95.9833, url: "https://tpwd.texas.gov/state-parks/fort-boggy" },
-            { name: "Fort Leaton State Historic Site", lat: 29.5417, lng: -104.3250, url: "https://tpwd.texas.gov/state-parks/fort-leaton" },
-            { name: "Fort Parker State Park", lat: 31.5833, lng: -96.5333, url: "https://tpwd.texas.gov/state-parks/fort-parker" },
-            { name: "Fort Richardson State Park", lat: 33.2167, lng: -98.1667, url: "https://tpwd.texas.gov/state-parks/fort-richardson" },
-            { name: "Franklin Mountains State Park", lat: 31.9105, lng: -106.5182, url: "https://tpwd.texas.gov/state-parks/franklin-mountains" },
-            { name: "Fulton Mansion State Historic Site", lat: 28.1333, lng: -97.0333, url: "https://tpwd.texas.gov/state-parks/fulton-mansion" },
-            { name: "Galveston Island State Park", lat: 29.1983, lng: -94.9519, url: "https://tpwd.texas.gov/state-parks/galveston-island" },
-            { name: "Garner State Park", lat: 29.5833, lng: -99.7333, url: "https://tpwd.texas.gov/state-parks/garner" },
-            { name: "Goliad State Park & Historic Site", lat: 28.6567, lng: -97.3833, url: "https://tpwd.texas.gov/state-parks/goliad" },
-            { name: "Goose Island State Park", lat: 28.1333, lng: -96.9833, url: "https://tpwd.texas.gov/state-parks/goose-island" },
-            { name: "Government Canyon State Natural Area", lat: 29.5500, lng: -98.7667, url: "https://tpwd.texas.gov/state-parks/government-canyon" },
-            { name: "Guadalupe River State Park", lat: 29.8667, lng: -98.5000, url: "https://tpwd.texas.gov/state-parks/guadalupe-river" },
-            { name: "Hill Country State Natural Area", lat: 29.6333, lng: -99.1833, url: "https://tpwd.texas.gov/state-parks/hill-country" },
-            { name: "Hueco Tanks State Park & Historic Site", lat: 31.9222, lng: -106.0433, url: "https://tpwd.texas.gov/state-parks/hueco-tanks" },
-            { name: "Huntsville State Park", lat: 30.6167, lng: -95.5333, url: "https://tpwd.texas.gov/state-parks/huntsville" },
-            { name: "Inks Lake State Park", lat: 30.7389, lng: -98.3850, url: "https://tpwd.texas.gov/state-parks/inks-lake" },
-            { name: "Kickapoo Cavern State Park", lat: 29.6167, lng: -100.4500, url: "https://tpwd.texas.gov/state-parks/kickapoo-cavern" },
-            { name: "Lake Arrowhead State Park", lat: 33.7667, lng: -98.4000, url: "https://tpwd.texas.gov/state-parks/lake-arrowhead" },
-            { name: "Lake Bob Sandlin State Park", lat: 33.0667, lng: -95.1000, url: "https://tpwd.texas.gov/state-parks/lake-bob-sandlin" },
-            { name: "Lake Brownwood State Park", lat: 31.8333, lng: -99.0333, url: "https://tpwd.texas.gov/state-parks/lake-brownwood" },
-            { name: "Lake Casa Blanca International State Park", lat: 27.5333, lng: -99.4500, url: "https://tpwd.texas.gov/state-parks/lake-casa-blanca" },
-            { name: "Lake Colorado City State Park", lat: 32.3167, lng: -100.9333, url: "https://tpwd.texas.gov/state-parks/lake-colorado-city" },
-            { name: "Lake Corpus Christi State Park", lat: 28.0667, lng: -97.8667, url: "https://tpwd.texas.gov/state-parks/lake-corpus-christi" },
-            { name: "Lake Livingston State Park", lat: 30.6667, lng: -95.0167, url: "https://tpwd.texas.gov/state-parks/lake-livingston" },
-            { name: "Lake Mineral Wells State Park", lat: 32.8167, lng: -98.0500, url: "https://tpwd.texas.gov/state-parks/lake-mineral-wells" },
-            { name: "Lake Somerville State Park", lat: 30.3000, lng: -96.6167, url: "https://tpwd.texas.gov/state-parks/lake-somerville" },
-            { name: "Lake Tawakoni State Park", lat: 32.8667, lng: -95.9333, url: "https://tpwd.texas.gov/state-parks/lake-tawakoni" },
-            { name: "Lake Texana State Park", lat: 28.9500, lng: -96.5500, url: "https://tpwd.texas.gov/state-parks/lake-texana" },
-            { name: "Lake Whitney State Park", lat: 31.9167, lng: -97.3667, url: "https://tpwd.texas.gov/state-parks/lake-whitney" },
-            { name: "Lockhart State Park", lat: 29.8500, lng: -97.7000, url: "https://tpwd.texas.gov/state-parks/lockhart" },
-            { name: "Lost Maples State Natural Area", lat: 29.8200, lng: -99.5750, url: "https://tpwd.texas.gov/state-parks/lost-maples" },
-            { name: "Lyndon B. Johnson State Park & Historic Site", lat: 30.2333, lng: -98.6333, url: "https://tpwd.texas.gov/state-parks/lyndon-b-johnson" },
-            { name: "Martin Creek Lake State Park", lat: 32.2667, lng: -94.5667, url: "https://tpwd.texas.gov/state-parks/martin-creek-lake" },
-            { name: "Martin Dies, Jr. State Park", lat: 30.8500, lng: -94.1667, url: "https://tpwd.texas.gov/state-parks/martin-dies-jr" },
-            { name: "McKinney Falls State Park", lat: 30.1833, lng: -97.7167, url: "https://tpwd.texas.gov/state-parks/mckinney-falls" },
-            { name: "Meridian State Park", lat: 31.8833, lng: -97.7000, url: "https://tpwd.texas.gov/state-parks/meridian" },
-            { name: "Mission Tejas State Park", lat: 31.5500, lng: -95.0167, url: "https://tpwd.texas.gov/state-parks/mission-tejas" },
-            { name: "Monahans Sandhills State Park", lat: 31.6167, lng: -102.8167, url: "https://tpwd.texas.gov/state-parks/monahans-sandhills" },
-            { name: "Mother Neff State Park", lat: 31.3167, lng: -97.4667, url: "https://tpwd.texas.gov/state-parks/mother-neff" },
-            { name: "Mustang Island State Park", lat: 27.6667, lng: -97.2333, url: "https://tpwd.texas.gov/state-parks/mustang-island" },
-            { name: "Old Tunnel State Park", lat: 30.1000, lng: -98.8167, url: "https://tpwd.texas.gov/state-parks/old-tunnel" },
-            { name: "Palmetto State Park", lat: 29.6000, lng: -97.5833, url: "https://tpwd.texas.gov/state-parks/palmetto" },
-            { name: "Palo Duro Canyon State Park", lat: 34.9500, lng: -101.6667, url: "https://tpwd.texas.gov/state-parks/palo-duro-canyon" },
-            { name: "Palo Pinto Mountains State Park", lat: 32.6000, lng: -98.3000, url: "https://tpwd.texas.gov/state-parks/palo-pinto-mountains" },
-            { name: "Pedernales Falls State Park", lat: 30.3083, lng: -98.2583, url: "https://tpwd.texas.gov/state-parks/pedernales-falls" },
-            { name: "Port Isabel Lighthouse State Historic Site", lat: 26.0667, lng: -97.2167, url: "https://tpwd.texas.gov/state-parks/port-isabel-lighthouse" },
-            { name: "Possum Kingdom State Park", lat: 32.8667, lng: -98.4333, url: "https://tpwd.texas.gov/state-parks/possum-kingdom" },
-            { name: "Purtis Creek State Park", lat: 32.3667, lng: -95.9833, url: "https://tpwd.texas.gov/state-parks/purtis-creek" },
-            { name: "Ray Roberts Lake State Park", lat: 33.3667, lng: -97.0167, url: "https://tpwd.texas.gov/state-parks/ray-roberts-lake" },
-            { name: "Resaca de la Palma State Park", lat: 25.9833, lng: -97.5667, url: "https://tpwd.texas.gov/state-parks/resaca-de-la-palma" },
-            { name: "San Angelo State Park", lat: 31.4667, lng: -100.5000, url: "https://tpwd.texas.gov/state-parks/san-angelo" },
-            { name: "Sea Rim State Park", lat: 29.6833, lng: -94.0333, url: "https://tpwd.texas.gov/state-parks/sea-rim" },
-            { name: "Seminole Canyon State Park & Historic Site", lat: 29.7000, lng: -101.3167, url: "https://tpwd.texas.gov/state-parks/seminole-canyon" },
-            { name: "Sheldon Lake State Park", lat: 29.8500, lng: -95.1667, url: "https://tpwd.texas.gov/state-parks/sheldon-lake" },
-            { name: "South Llano River State Park", lat: 30.4500, lng: -99.8000, url: "https://tpwd.texas.gov/state-parks/south-llano-river" },
-            { name: "Stephen F. Austin State Park", lat: 29.8167, lng: -96.1000, url: "https://tpwd.texas.gov/state-parks/stephen-f-austin" },
-            { name: "Tyler State Park", lat: 32.4814, lng: -95.2894, url: "https://tpwd.texas.gov/state-parks/tyler" },
-            { name: "Village Creek State Park", lat: 30.2500, lng: -94.1833, url: "https://tpwd.texas.gov/state-parks/village-creek" },
-            { name: "Wyler Aerial Tramway State Park", lat: 31.8000, lng: -106.4833, url: "https://tpwd.texas.gov/state-parks/wyler-aerial-tramway" }
+            { name: "Abilene State Park", lat: 32.2405, lng: -99.8798, url: "https://tpwd.texas.gov/state-parks/abilene", desc: "Oak woodlands, fishing lakes, camping, hiking trails" },
+            { name: "Acton State Historic Site", lat: 32.4436, lng: -97.6847, url: "https://tpwd.texas.gov/state-parks/acton", desc: "Grave of Elizabeth Crockett, quiet historic pioneer site" },
+            { name: "Atlanta State Park", lat: 33.2307, lng: -94.2497, url: "https://tpwd.texas.gov/state-parks/atlanta", desc: "Pineywoods lake, swimming, fishing, picnicking" },
+            { name: "Balmorhea State Park", lat: 30.9448, lng: -103.7863, url: "https://tpwd.texas.gov/state-parks/balmorhea", desc: "World's largest spring-fed pool, swimming, birding" },
+            { name: "Barton Warnock Visitor Center", lat: 29.5083, lng: -103.7608, url: "https://tpwd.texas.gov/state-parks/big-bend-ranch", desc: "Desert exhibits, gateway to Big Bend Ranch SP" },
+            { name: "Bastrop State Park", lat: 30.1105, lng: -97.2869, url: "https://tpwd.texas.gov/state-parks/bastrop", desc: "Lost Pines forest, hiking, fishing, cabins" },
+            { name: "Battleship Texas State Historic Site", lat: 29.5353, lng: -95.0894, url: "https://tpwd.texas.gov/state-parks/battleship-texas", desc: "WWII battleship tours, naval history exhibits" },
+            { name: "Bentsen-Rio Grande Valley State Park", lat: 26.1728, lng: -98.3836, url: "https://tpwd.texas.gov/state-parks/bentsen-rio-grande-valley", desc: "World-class birding, tropical trails, butterflies" },
+            { name: "Big Bend Ranch State Park", lat: 29.4667, lng: -104.0333, url: "https://tpwd.texas.gov/state-parks/big-bend-ranch", desc: "Rugged desert canyons, rafting, mountain biking, dark skies" },
+            { name: "Big Spring State Park", lat: 32.2283, lng: -101.4917, url: "https://tpwd.texas.gov/state-parks/big-spring", desc: "Scenic overlooks, hiking, picnicking on mesa top" },
+            { name: "Blanco State Park", lat: 30.0931, lng: -98.4238, url: "https://tpwd.texas.gov/state-parks/blanco", desc: "Swimming holes on Blanco River, camping, fishing" },
+            { name: "Bonham State Park", lat: 33.5467, lng: -96.1433, url: "https://tpwd.texas.gov/state-parks/bonham", desc: "Lake swimming, fishing, hiking, disc golf" },
+            { name: "Brazos Bend State Park", lat: 29.3711, lng: -95.6317, url: "https://tpwd.texas.gov/state-parks/brazos-bend", desc: "Alligators, oak forests, hiking, fishing, stargazing" },
+            { name: "Buescher State Park", lat: 30.0389, lng: -97.1583, url: "https://tpwd.texas.gov/state-parks/buescher", desc: "Pineywoods trails, fishing, birding, camping" },
+            { name: "Caddo Lake State Park", lat: 32.6833, lng: -94.1833, url: "https://tpwd.texas.gov/state-parks/caddo-lake", desc: "Cypress bayous, canoeing, fishing, wildlife viewing" },
+            { name: "Caprock Canyons State Park", lat: 34.8100, lng: -101.0533, url: "https://tpwd.texas.gov/state-parks/caprock-canyons", desc: "Bison herds, hiking, canyons, dark skies" },
+            { name: "Cedar Hill State Park", lat: 32.6167, lng: -96.9833, url: "https://tpwd.texas.gov/state-parks/cedar-hill", desc: "Lake Joe Pool, mountain biking, equestrian trails" },
+            { name: "Choke Canyon State Park", lat: 28.4667, lng: -98.3500, url: "https://tpwd.texas.gov/state-parks/choke-canyon", desc: "Large reservoir, fishing, birding, boating" },
+            { name: "Cleburne State Park", lat: 32.2833, lng: -97.5667, url: "https://tpwd.texas.gov/state-parks/cleburne", desc: "Lake swimming, fishing, hiking, camping" },
+            { name: "Colorado Bend State Park", lat: 31.0236, lng: -98.4592, url: "https://tpwd.texas.gov/state-parks/colorado-bend", desc: "Waterfalls, caves, kayaking, stargazing" },
+            { name: "Cooper Lake State Park", lat: 33.3333, lng: -95.6667, url: "https://tpwd.texas.gov/state-parks/cooper-lake", desc: "Fishing, boating, hiking, birding on large lake" },
+            { name: "Copper Breaks State Park", lat: 34.1167, lng: -99.7333, url: "https://tpwd.texas.gov/state-parks/copper-breaks", desc: "Canyons, Lake Copper Breaks, hiking, fishing" },
+            { name: "Daingerfield State Park", lat: 33.0111, lng: -94.7033, url: "https://tpwd.texas.gov/state-parks/daingerfield", desc: "Pine forest lake, swimming, fishing, trails" },
+            { name: "Davis Mountains State Park", lat: 30.6167, lng: -103.9333, url: "https://tpwd.texas.gov/state-parks/davis-mountains", desc: "Mountain scenery, hiking, birding, stargazing" },
+            { name: "Devils River State Natural Area", lat: 29.9167, lng: -100.9667, url: "https://tpwd.texas.gov/state-parks/devils-river", desc: "Pristine river, paddling, hiking, remote camping" },
+            { name: "Devil's Sinkhole State Natural Area", lat: 30.0167, lng: -100.2167, url: "https://tpwd.texas.gov/state-parks/devils-sinkhole", desc: "Bat watching tours, karst cave features (limited access)" },
+            { name: "Dinosaur Valley State Park", lat: 32.2461, lng: -97.8136, url: "https://tpwd.texas.gov/state-parks/dinosaur-valley", desc: "Dinosaur tracks in riverbed, hiking, swimming" },
+            { name: "Eisenhower State Park", lat: 33.8103, lng: -96.6000, url: "https://tpwd.texas.gov/state-parks/eisenhower", desc: "Lake Texoma, camping, fishing, water sports" },
+            { name: "Enchanted Rock State Natural Area", lat: 30.5061, lng: -98.8200, url: "https://tpwd.texas.gov/state-parks/enchanted-rock", desc: "Giant granite dome, hiking, rock climbing, views" },
+            { name: "Estero Llano Grande State Park", lat: 26.1256, lng: -98.1356, url: "https://tpwd.texas.gov/state-parks/estero-llano-grande", desc: "Wetlands, world-class birding, boardwalks" },
+            { name: "Falcon State Park", lat: 26.5833, lng: -99.1500, url: "https://tpwd.texas.gov/state-parks/falcon", desc: "Falcon Reservoir, fishing, boating, birding" },
+            { name: "Fort Boggy State Park", lat: 31.0333, lng: -95.9833, url: "https://tpwd.texas.gov/state-parks/fort-boggy", desc: "Wooded trails, fishing ponds, primitive camping" },
+            { name: "Fort Leaton State Historic Site", lat: 29.5417, lng: -104.3250, url: "https://tpwd.texas.gov/state-parks/fort-leaton", desc: "Adobe fort museum, border history, gardens" },
+            { name: "Fort Parker State Park", lat: 31.5833, lng: -96.5333, url: "https://tpwd.texas.gov/state-parks/fort-parker", desc: "Lake, fishing, hiking, historic fort site" },
+            { name: "Fort Richardson State Park", lat: 33.2167, lng: -98.1667, url: "https://tpwd.texas.gov/state-parks/fort-richardson", desc: "Restored 1860s frontier fort, trails, camping" },
+            { name: "Franklin Mountains State Park", lat: 31.9105, lng: -106.5182, url: "https://tpwd.texas.gov/state-parks/franklin-mountains", desc: "Desert mountains, rock climbing, hiking, views" },
+            { name: "Fulton Mansion State Historic Site", lat: 28.1333, lng: -97.0333, url: "https://tpwd.texas.gov/state-parks/fulton-mansion", desc: "Victorian mansion tours, coastal history" },
+            { name: "Galveston Island State Park", lat: 29.1983, lng: -94.9519, url: "https://tpwd.texas.gov/state-parks/galveston-island", desc: "Beach camping, fishing, birding, kayaking" },
+            { name: "Garner State Park", lat: 29.5833, lng: -99.7333, url: "https://tpwd.texas.gov/state-parks/garner", desc: "Frio River swimming, hiking, scenic drives" },
+            { name: "Goliad State Park & Historic Site", lat: 28.6567, lng: -97.3833, url: "https://tpwd.texas.gov/state-parks/goliad", desc: "Restored Spanish mission, history, camping" },
+            { name: "Goose Island State Park", lat: 28.1333, lng: -96.9833, url: "https://tpwd.texas.gov/state-parks/goose-island", desc: "Coastal live oaks, fishing pier, birding" },
+            { name: "Government Canyon State Natural Area", lat: 29.5500, lng: -98.7667, url: "https://tpwd.texas.gov/state-parks/government-canyon", desc: "Canyons, hiking, mountain biking, dinosaur tracks" },
+            { name: "Guadalupe River State Park", lat: 29.8667, lng: -98.5000, url: "https://tpwd.texas.gov/state-parks/guadalupe-river", desc: "River tubing, fishing, hiking, camping" },
+            { name: "Hill Country State Natural Area", lat: 29.6333, lng: -99.1833, url: "https://tpwd.texas.gov/state-parks/hill-country", desc: "Equestrian trails, hiking, primitive camping" },
+            { name: "Hueco Tanks State Park & Historic Site", lat: 31.9222, lng: -106.0433, url: "https://tpwd.texas.gov/state-parks/hueco-tanks", desc: "Rock art, bouldering, guided tours (reservations needed)" },
+            { name: "Huntsville State Park", lat: 30.6167, lng: -95.5333, url: "https://tpwd.texas.gov/state-parks/huntsville", desc: "Lake Raven, swimming, fishing, trails" },
+            { name: "Inks Lake State Park", lat: 30.7389, lng: -98.3850, url: "https://tpwd.texas.gov/state-parks/inks-lake", desc: "Granite hills, swimming, kayaking, hiking" },
+            { name: "Kickapoo Cavern State Park", lat: 29.6167, lng: -100.4500, url: "https://tpwd.texas.gov/state-parks/kickapoo-cavern", desc: "Caves (tours seasonal), hiking, birding" },
+            { name: "Lake Arrowhead State Park", lat: 33.7667, lng: -98.4000, url: "https://tpwd.texas.gov/state-parks/lake-arrowhead", desc: "Lake fishing, boating, camping, trails" },
+            { name: "Lake Bob Sandlin State Park", lat: 33.0667, lng: -95.1000, url: "https://tpwd.texas.gov/state-parks/lake-bob-sandlin", desc: "Fishing, boating, hiking, disc golf" },
+            { name: "Lake Brownwood State Park", lat: 31.8333, lng: -99.0333, url: "https://tpwd.texas.gov/state-parks/lake-brownwood", desc: "Lake activities, fishing, camping, trails" },
+            { name: "Lake Casa Blanca International State Park", lat: 27.5333, lng: -99.4500, url: "https://tpwd.texas.gov/state-parks/lake-casa-blanca", desc: "Lake fishing, birding, disc golf, camping" },
+            { name: "Lake Colorado City State Park", lat: 32.3167, lng: -100.9333, url: "https://tpwd.texas.gov/state-parks/lake-colorado-city", desc: "Fishing, boating, swimming, windsurfing" },
+            { name: "Lake Corpus Christi State Park", lat: 28.0667, lng: -97.8667, url: "https://tpwd.texas.gov/state-parks/lake-corpus-christi", desc: "Large lake, fishing, boating, camping" },
+            { name: "Lake Livingston State Park", lat: 30.6667, lng: -95.0167, url: "https://tpwd.texas.gov/state-parks/lake-livingston", desc: "Lake swimming, fishing, hiking, equestrian" },
+            { name: "Lake Mineral Wells State Park", lat: 32.8167, lng: -98.0500, url: "https://tpwd.texas.gov/state-parks/lake-mineral-wells", desc: "Rock climbing, hiking, lake fishing, trails" },
+            { name: "Lake Somerville State Park", lat: 30.3000, lng: -96.6167, url: "https://tpwd.texas.gov/state-parks/lake-somerville", desc: "Large lake, fishing, boating, equestrian trails" },
+            { name: "Lake Tawakoni State Park", lat: 32.8667, lng: -95.9333, url: "https://tpwd.texas.gov/state-parks/lake-tawakoni", desc: "Fishing (catfish capital), boating, camping" },
+            { name: "Lake Texana State Park", lat: 28.9500, lng: -96.5500, url: "https://tpwd.texas.gov/state-parks/lake-texana", desc: "Lake fishing, boating, birding, camping" },
+            { name: "Lake Whitney State Park", lat: 31.9167, lng: -97.3667, url: "https://tpwd.texas.gov/state-parks/lake-whitney", desc: "Clear lake, boating, fishing, hiking" },
+            { name: "Lockhart State Park", lat: 29.8500, lng: -97.7000, url: "https://tpwd.texas.gov/state-parks/lockhart", desc: "Creek swimming, fishing, hiking, picnicking" },
+            { name: "Lost Maples State Natural Area", lat: 29.8200, lng: -99.5750, url: "https://tpwd.texas.gov/state-parks/lost-maples", desc: "Fall foliage, hiking, swimming in river" },
+            { name: "Lyndon B. Johnson State Park & Historic Site", lat: 30.2333, lng: -98.6333, url: "https://tpwd.texas.gov/state-parks/lyndon-b-johnson", desc: "LBJ history, living history farm, hiking" },
+            { name: "Martin Creek Lake State Park", lat: 32.2667, lng: -94.5667, url: "https://tpwd.texas.gov/state-parks/martin-creek-lake", desc: "Lake fishing, boating, eclipse viewing area" },
+            { name: "Martin Dies, Jr. State Park", lat: 30.8500, lng: -94.1667, url: "https://tpwd.texas.gov/state-parks/martin-dies-jr", desc: "Reservoir, fishing, boating, nature trails" },
+            { name: "McKinney Falls State Park", lat: 30.1833, lng: -97.7167, url: "https://tpwd.texas.gov/state-parks/mckinney-falls", desc: "Waterfalls, swimming holes, hiking near Austin" },
+            { name: "Meridian State Park", lat: 31.8833, lng: -97.7000, url: "https://tpwd.texas.gov/state-parks/meridian", desc: "Lake, fishing, hiking, CCC architecture" },
+            { name: "Mission Tejas State Park", lat: 31.5500, lng: -95.0167, url: "https://tpwd.texas.gov/state-parks/mission-tejas", desc: "Historic mission replica, pineywoods hiking" },
+            { name: "Monahans Sandhills State Park", lat: 31.6167, lng: -102.8167, url: "https://tpwd.texas.gov/state-parks/monahans-sandhills", desc: "Sand dunes, dune surfing, stargazing" },
+            { name: "Mother Neff State Park", lat: 31.3167, lng: -97.4667, url: "https://tpwd.texas.gov/state-parks/mother-neff", desc: "Oldest state park, river swimming, trails" },
+            { name: "Mustang Island State Park", lat: 27.6667, lng: -97.2333, url: "https://tpwd.texas.gov/state-parks/mustang-island", desc: "Gulf beach camping, fishing, kayaking" },
+            { name: "Old Tunnel State Park", lat: 30.1000, lng: -98.8167, url: "https://tpwd.texas.gov/state-parks/old-tunnel", desc: "Bat watching (seasonal), picnicking, trails" },
+            { name: "Palmetto State Park", lat: 29.6000, lng: -97.5833, url: "https://tpwd.texas.gov/state-parks/palmetto", desc: "Oxbow lake, hiking, fishing, botanical area" },
+            { name: "Palo Duro Canyon State Park", lat: 34.9500, lng: -101.6667, url: "https://tpwd.texas.gov/state-parks/palo-duro-canyon", desc: "Second-largest canyon, hiking, horseback riding" },
+            { name: "Palo Pinto Mountains State Park", lat: 32.6000, lng: -98.3000, url: "https://tpwd.texas.gov/state-parks/palo-pinto-mountains", desc: "Rugged hills, lake, hiking, recent opening" },
+            { name: "Pedernales Falls State Park", lat: 30.3083, lng: -98.2583, url: "https://tpwd.texas.gov/state-parks/pedernales-falls", desc: "River falls, swimming, hiking, birding" },
+            { name: "Port Isabel Lighthouse State Historic Site", lat: 26.0667, lng: -97.2167, url: "https://tpwd.texas.gov/state-parks/port-isabel-lighthouse", desc: "Historic lighthouse, coastal views, museum" },
+            { name: "Possum Kingdom State Park", lat: 32.8667, lng: -98.4333, url: "https://tpwd.texas.gov/state-parks/possum-kingdom", desc: "Clear lake, boating, fishing, cliffs" },
+            { name: "Purtis Creek State Park", lat: 32.3667, lng: -95.9833, url: "https://tpwd.texas.gov/state-parks/purtis-creek", desc: "Fishing (bass), hiking, catch-and-release lake" },
+            { name: "Ray Roberts Lake State Park", lat: 33.3667, lng: -97.0167, url: "https://tpwd.texas.gov/state-parks/ray-roberts-lake", desc: "Large lake, fishing, boating, equestrian" },
+            { name: "Resaca de la Palma State Park", lat: 25.9833, lng: -97.5667, url: "https://tpwd.texas.gov/state-parks/resaca-de-la-palma", desc: "Resaca wetlands, birding, trails" },
+            { name: "San Angelo State Park", lat: 31.4667, lng: -100.5000, url: "https://tpwd.texas.gov/state-parks/san-angelo", desc: "O.C. Fisher Reservoir, fishing, mountain biking" },
+            { name: "Sea Rim State Park", lat: 29.6833, lng: -94.0333, url: "https://tpwd.texas.gov/state-parks/sea-rim", desc: "Marsh & beach, kayaking, fishing, birding" },
+            { name: "Seminole Canyon State Park & Historic Site", lat: 29.7000, lng: -101.3167, url: "https://tpwd.texas.gov/state-parks/seminole-canyon", desc: "Ancient rock art, guided canyon tours" },
+            { name: "Sheldon Lake State Park", lat: 29.8500, lng: -95.1667, url: "https://tpwd.texas.gov/state-parks/sheldon-lake", desc: "Wetlands, birding, environmental education" },
+            { name: "South Llano River State Park", lat: 30.4500, lng: -99.8000, url: "https://tpwd.texas.gov/state-parks/south-llano-river", desc: "Clear river, tubing, fishing, turkey viewing" },
+            { name: "Stephen F. Austin State Park", lat: 29.8167, lng: -96.1000, url: "https://tpwd.texas.gov/state-parks/stephen-f-austin", desc: "Pine forests, Brazos River, hiking, camping" },
+            { name: "Tyler State Park", lat: 32.4814, lng: -95.2894, url: "https://tpwd.texas.gov/state-parks/tyler", desc: "Tall pines, lake swimming, fishing, trails" },
+            { name: "Village Creek State Park", lat: 30.2500, lng: -94.1833, url: "https://tpwd.texas.gov/state-parks/village-creek", desc: "Pineywoods, canoeing, fishing, hiking" },
+            { name: "Wyler Aerial Tramway State Park", lat: 31.8000, lng: -106.4833, url: "https://tpwd.texas.gov/state-parks/wyler-aerial-tramway", desc: "Aerial tram rides, panoramic El Paso views" }
         ];
 
         parks.sort((a, b) => a.name.localeCompare(b.name));
@@ -153,8 +164,19 @@
             });
             list.appendChild(li);
 
-            const marker = L.marker([park.lat, park.lng]).addTo(map)
-                .bindPopup(`<b>${park.name}</b><br><a href="${park.url}" target="_blank">Visit Official Website</a> (Trails, Camping, etc.)`);
+            const marker = L.marker([park.lat, park.lng]).addTo(map);
+
+            let tooltipContent = `<b>${park.name}</b>`;
+            if (park.desc) tooltipContent += `<br>${park.desc}`;
+            marker.bindTooltip(tooltipContent, {
+                permanent: false,
+                direction: 'top',
+                offset: [0, -12],
+                opacity: 1,
+                className: 'custom-tooltip'
+            });
+
+            marker.bindPopup(`<b>${park.name}</b><br>${park.desc || ''}<br><br><a href="${park.url}" target="_blank">Official TPWD Site →</a>`);
 
             marker.on('click', () => {
                 window.open(park.url, '_blank');
