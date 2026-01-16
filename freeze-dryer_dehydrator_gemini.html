@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freeze Drying & Dehydration Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 50px; }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header svg { position: absolute; bottom: -10px; left: 0; width: 100%; height: 50px; fill: var(--bg); }
+        .hero-content h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .hero-content p { font-size: 1.1rem; opacity: 0.9; font-weight: 300; }
+
+        .container { max-width: 1100px; margin: -40px auto 0; padding: 0 20px; position: relative; z-index: 10; }
+
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        @media (max-width: 768px) { .input-grid { grid-template-columns: 1fr; } }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; }
+        input:focus { outline: none; border-color: var(--primary); }
+
+        .toggle-group { display: flex; background: var(--border); padding: 4px; border-radius: 10px; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; transition: all 0.2s; }
+        .toggle-btn.active { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); color: var(--primary); }
+
+        #results-area { display: none; animation: fadeIn 0.4s ease-out; }
+        .results-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
+
+        .instruction-card, .data-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+        .instruction-step { display: flex; gap: 15px; margin-bottom: 15px; }
+        .step-num { background: var(--primary); color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+
+        .metric-badge { display: flex; align-items: center; gap: 8px; padding: 12px; background: #f1f5f9; border-radius: 8px; margin-bottom: 10px; }
+        .metric-label { font-size: 0.8rem; color: var(--text-muted); }
+        .metric-value { font-weight: 700; font-size: 1.1rem; display: block; }
+
+        .warning-box { background: #fff7ed; border-left: 4px solid var(--warning); padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 0.9rem; }
+        .danger-box { background: #fef2f2; border-left: 4px solid var(--danger); padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 0.9rem; color: #991b1b; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; flex: 1; transition: opacity 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--border); color: var(--text-main); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="hero-content">
+        <h1>Freeze Drying & Dehydration Guide</h1>
+        <p>Professional preservation data for over 100 food items</p>
+    </div>
+    <svg viewBox="0 0 1440 320"><path d="M0,160L80,176C160,192,320,224,480,213.3C640,203,800,149,960,144C1120,139,1280,181,1360,202.7L1440,224L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path></svg>
+</header>
+
+<div class="container">
+    <div class="main-card">
+        <div class="toggle-group">
+            <button class="toggle-btn active" id="unit-imp" onclick="setUnit('imperial')">Imperial (lb/°F)</button>
+            <button class="toggle-btn" id="unit-met" onclick="setUnit('metric')">Metric (kg/°C)</button>
+        </div>
+
+        <div class="input-grid">
+            <div>
+                <label>Method</label>
+                <div class="toggle-group" style="margin-bottom:0">
+                    <button id="btn-fd" class="toggle-btn active" onclick="setMethod('freeze')">Freeze Dry</button>
+                    <button id="btn-de" class="toggle-btn" onclick="setMethod('dehydrate')">Dehydrate</button>
+                </div>
+            </div>
+            <div>
+                <label for="food-search">Select Food Product</label>
+                <input type="text" id="food-search" list="food-list" placeholder="Start typing (e.g. Dragonfruit...)" oninput="calculate()">
+                <datalist id="food-list"></datalist>
+            </div>
+            <div>
+                <label>Elec. Rate ($/kWh)</label>
+                <input type="number" id="elec-rate" value="0.14" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+
+        <div id="results-area">
+            <div class="results-grid">
+                <div class="instruction-card">
+                    <h3 id="res-title" style="margin-bottom:20px; color: var(--primary);">---</h3>
+                    <div id="instruction-steps"></div>
+                    <div id="safety-warning"></div>
+                </div>
+
+                <div class="data-card">
+                    <div class="metric-badge">
+                        <span style="font-size: 1.5rem"⏱️</span>
+                        <div>
+                            <span class="metric-label">Estimated Time</span>
+                            <span class="metric-value" id="res-time">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-badge">
+                        <span style="font-size: 1.5rem">⚖️</span>
+                        <div>
+                            <span class="metric-label">Final Yield</span>
+                            <span class="metric-value" id="res-yield">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-badge">
+                        <span style="font-size: 1.5rem">⚡</span>
+                        <div>
+                            <span class="metric-label">Energy Cost</span>
+                            <span class="metric-value" id="res-cost">--</span>
+                        </div>
+                    </div>
+                    <div class="metric-badge">
+                        <span style="font-size: 1.5rem">📦</span>
+                        <div>
+                            <span class="metric-label">Shelf Life</span>
+                            <span class="metric-value" id="res-shelf">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="window.print()">Print Report</button>
+                <button class="btn btn-primary" onclick="saveToLocal()">Save Default Rate</button>
+                <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const foodDatabase = [
+        // FRUITS (40)
+        { name: "Apples (Fuji/Gala)", cat: "Fruit", moisture: 86, costLb: 1.80, pre: "Peel, core, slice 1/4\". Lemon juice dip.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 10 },
+        { name: "Apricots", cat: "Fruit", moisture: 86, costLb: 3.50, pre: "Pit and halve. Flip inside out.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 18 },
+        { name: "Bananas", cat: "Fruit", moisture: 75, costLb: 0.60, pre: "Slice 1/4\" rounds. Do not over-stack.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 12 },
+        { name: "Blackberries", cat: "Fruit", moisture: 88, costLb: 4.50, pre: "Wash and dry. Best left whole.", fdTemp: 125, dhTemp: 135, fdTime: 26, dhTime: 15 },
+        { name: "Blueberries", cat: "Fruit", moisture: 84, costLb: 4.00, pre: "Must 'check' skin by blanching 30s.", blanch: true, fdTemp: 125, dhTemp: 135, fdTime: 32, dhTime: 18 },
+        { name: "Cantaloupe", cat: "Fruit", moisture: 90, costLb: 0.90, pre: "Remove rind, slice into 1\" chunks.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 14 },
+        { name: "Cherries (Sweet)", cat: "Fruit", moisture: 82, costLb: 5.00, pre: "Pit and halve.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 20 },
+        { name: "Cranberries", cat: "Fruit", moisture: 87, costLb: 3.00, pre: "Slice in half or chop. Hard to dry whole.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 14 },
+        { name: "Dragonfruit", cat: "Fruit", moisture: 84, costLb: 6.00, pre: "Peel and cube 1/2\". High visual appeal.", fdTemp: 125, dhTemp: 135, fdTime: 26, dhTime: 12 },
+        { name: "Figs", cat: "Fruit", moisture: 79, costLb: 5.00, pre: "Wash, remove stem, halve.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 15 },
+        { name: "Grapes (Red/Green)", cat: "Fruit", moisture: 81, costLb: 2.20, pre: "Halve to break skin. Whole will not dry.", fdTemp: 125, dhTemp: 135, fdTime: 36, dhTime: 24 },
+        { name: "Guava", cat: "Fruit", moisture: 81, costLb: 4.00, pre: "Slice 1/4\" rounds.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 14 },
+        { name: "Honeydew", cat: "Fruit", moisture: 90, costLb: 0.90, pre: "Remove rind, cube 1\".", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 14 },
+        { name: "Kiwi", cat: "Fruit", moisture: 83, costLb: 3.00, pre: "Peel and slice 1/4\". Very tart when dry.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 12 },
+        { name: "Lemon (Slices)", cat: "Fruit", moisture: 89, costLb: 1.50, pre: "Slice 1/8\". Remove seeds.", fdTemp: 125, dhTemp: 135, fdTime: 22, dhTime: 10 },
+        { name: "Lime (Slices)", cat: "Fruit", moisture: 88, costLb: 1.50, pre: "Slice 1/8\".", fdTemp: 125, dhTemp: 135, fdTime: 22, dhTime: 10 },
+        { name: "Lychee", cat: "Fruit", moisture: 82, costLb: 7.00, pre: "Peel and pit.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 18 },
+        { name: "Mango (Kent/Tommy)", cat: "Fruit", moisture: 83, costLb: 2.50, pre: "Peel and slice 1/2\" strips.", fdTemp: 125, dhTemp: 135, fdTime: 32, dhTime: 14 },
+        { name: "Nectarines", cat: "Fruit", moisture: 88, costLb: 2.50, pre: "Pit and slice 1/2\".", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 12 },
+        { name: "Orange (Slices)", cat: "Fruit", moisture: 87, costLb: 1.20, pre: "Peel or leave rind on. Slice 1/4\".", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 12 },
+        { name: "Papaya", cat: "Fruit", moisture: 88, costLb: 2.00, pre: "Peel, seed, cube 1/2\".", fdTemp: 125, dhTemp: 135, fdTime: 32, dhTime: 14 },
+        { name: "Peaches", cat: "Fruit", moisture: 89, costLb: 2.00, pre: "Pit and slice. Skin on or off.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 12 },
+        { name: "Pears (Bartlett)", cat: "Fruit", moisture: 84, costLb: 1.80, pre: "Peel, core, slice 1/4\".", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 12 },
+        { name: "Persimmon (Fuyu)", cat: "Fruit", moisture: 80, costLb: 3.50, pre: "Peel and slice 1/4\".", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 14 },
+        { name: "Pineapple", cat: "Fruit", moisture: 86, costLb: 1.80, pre: "Core and wedge or chunk.", fdTemp: 125, dhTemp: 135, fdTime: 34, dhTime: 16 },
+        { name: "Plums", cat: "Fruit", moisture: 87, costLb: 2.00, pre: "Pit and halve or slice.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 14 },
+        { name: "Pomegranate (Arils)", cat: "Fruit", moisture: 78, costLb: 5.00, pre: "Remove arils from husk. Dry whole.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 16 },
+        { name: "Raspberries", cat: "Fruit", moisture: 86, costLb: 6.00, pre: "Wash gently. Dry whole.", fdTemp: 125, dhTemp: 135, fdTime: 22, dhTime: 14 },
+        { name: "Rhubarb", cat: "Fruit", moisture: 94, costLb: 3.00, pre: "Slice 1/2\" pieces.", fdTemp: 125, dhTemp: 135, fdTime: 20, dhTime: 10 },
+        { name: "Starfruit", cat: "Fruit", moisture: 91, costLb: 5.00, pre: "Slice 1/4\" stars.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 12 },
+        { name: "Strawberries", cat: "Fruit", moisture: 91, costLb: 3.00, pre: "Slice 1/4\" or halve.", fdTemp: 125, dhTemp: 135, fdTime: 26, dhTime: 12 },
+        { name: "Tangerines", cat: "Fruit", moisture: 85, costLb: 1.50, pre: "Peel and separate segments.", fdTemp: 125, dhTemp: 135, fdTime: 32, dhTime: 14 },
+        { name: "Watermelon", cat: "Fruit", moisture: 92, costLb: 0.50, pre: "Remove rind, cube 1\". Shrinks significantly.", fdTemp: 125, dhTemp: 135, fdTime: 36, dhTime: 18 },
+        { name: "Elderberries", cat: "Fruit", moisture: 80, costLb: 8.00, pre: "Remove from stems. Must cook before eating.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 14 },
+        { name: "Passion Fruit (Pulp)", cat: "Fruit", moisture: 73, costLb: 10.00, pre: "Spread pulp on parchment paper.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 16 },
+        { name: "Jackfruit", cat: "Fruit", moisture: 74, costLb: 4.00, pre: "Peel and slice pods.", fdTemp: 125, dhTemp: 135, fdTime: 32, dhTime: 16 },
+        { name: "Durian", cat: "Fruit", moisture: 65, costLb: 12.00, pre: "Chunk pods. Very strong odor.", fdTemp: 125, dhTemp: 135, fdTime: 36, dhTime: 20 },
+        { name: "Blood Orange", cat: "Fruit", moisture: 87, costLb: 2.50, pre: "Slice 1/8\". Beautiful dark color.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 12 },
+        { name: "Gooseberries", cat: "Fruit", moisture: 88, costLb: 5.00, pre: "Wash and poke skins.", fdTemp: 125, dhTemp: 135, fdTime: 26, dhTime: 16 },
+        { name: "Currants", cat: "Fruit", moisture: 83, costLb: 6.00, pre: "Wash and dry whole.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 14 },
+
+        // VEGETABLES (40)
+        { name: "Artichoke Hearts", cat: "Veg", moisture: 84, costLb: 5.00, pre: "Cook until tender, then slice.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 26, dhTime: 12 },
+        { name: "Asparagus", cat: "Veg", moisture: 93, costLb: 3.50, pre: "Trim ends, slice into 1\" pieces.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Beets", cat: "Veg", moisture: 88, costLb: 1.50, pre: "Peel, slice 1/8\". Blanch to preserve color.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 28, dhTime: 12 },
+        { name: "Broccoli", cat: "Veg", moisture: 89, costLb: 2.50, pre: "Cut into small florets.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 10 },
+        { name: "Brussels Sprouts", cat: "Veg", moisture: 86, costLb: 3.00, pre: "Halve through the stem.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 28, dhTime: 12 },
+        { name: "Cabbage (Green/Red)", cat: "Veg", moisture: 92, costLb: 0.80, pre: "Shred or slice thin.", fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 10 },
+        { name: "Carrots", cat: "Veg", moisture: 88, costLb: 0.90, pre: "Peel and slice 1/8\" rounds.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 10 },
+        { name: "Cauliflower", cat: "Veg", moisture: 92, costLb: 2.50, pre: "Florets or 'rice' texture.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 12 },
+        { name: "Celery", cat: "Veg", moisture: 95, costLb: 1.20, pre: "Slice 1/4\". Perfect for soups.", fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 8 },
+        { name: "Corn (Sweet)", cat: "Veg", moisture: 76, costLb: 1.50, pre: "Remove from cob.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 12 },
+        { name: "Cucumber", cat: "Veg", moisture: 95, costLb: 1.00, pre: "Slice 1/8\". Great with Tajin.", fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Eggplant", cat: "Veg", moisture: 92, costLb: 2.00, pre: "Peel and cube 1/2\".", fdTemp: 125, dhTemp: 125, fdTime: 26, dhTime: 12 },
+        { name: "Garlic (Minced)", cat: "Veg", moisture: 60, costLb: 4.00, pre: "Peel and mince.", fdTemp: 125, dhTemp: 125, fdTime: 18, dhTime: 10 },
+        { name: "Green Beans", cat: "Veg", moisture: 90, costLb: 2.00, pre: "Trim and cut to 1\".", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 26, dhTime: 12 },
+        { name: "Kale", cat: "Veg", moisture: 84, costLb: 2.50, pre: "Remove stems, tear leaves.", fdTemp: 125, dhTemp: 125, fdTime: 18, dhTime: 6 },
+        { name: "Leeks", cat: "Veg", moisture: 83, costLb: 3.00, pre: "Slice whites and light greens.", fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Mushrooms (White)", cat: "Veg", moisture: 92, costLb: 4.00, pre: "Slice 1/4\". Clean with brush.", fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 8 },
+        { name: "Mushrooms (Shiitake)", cat: "Veg", moisture: 90, costLb: 8.00, pre: "Remove stems, slice tops.", fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Okra", cat: "Veg", moisture: 90, costLb: 3.00, pre: "Slice 1/2\" rounds.", fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 12 },
+        { name: "Onions (Yellow/Red)", cat: "Veg", moisture: 89, costLb: 0.80, pre: "Dice or slice. Odor warning.", fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 12 },
+        { name: "Parsnips", cat: "Veg", moisture: 80, costLb: 2.00, pre: "Peel and slice 1/8\".", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 26, dhTime: 10 },
+        { name: "Peas (Green)", cat: "Veg", moisture: 79, costLb: 1.50, pre: "Shell whole. Best if frozen first.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 10 },
+        { name: "Peppers (Bell)", cat: "Veg", moisture: 92, costLb: 2.00, pre: "Seed and dice 1/2\".", fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Peppers (Jalapeño)", cat: "Veg", moisture: 88, costLb: 2.00, pre: "Slice into rings. Wear gloves!", fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 10 },
+        { name: "Potatoes (Russet)", cat: "Veg", moisture: 79, costLb: 0.50, pre: "Peel and dice. Must blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 28, dhTime: 12 },
+        { name: "Potatoes (Sweet)", cat: "Veg", moisture: 77, costLb: 1.20, pre: "Peel, slice/dice, and blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 28, dhTime: 12 },
+        { name: "Pumpkin", cat: "Veg", moisture: 92, costLb: 1.00, pre: "Peel, seed, cube 1/2\". Blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 30, dhTime: 14 },
+        { name: "Radish", cat: "Veg", moisture: 95, costLb: 1.50, pre: "Slice 1/8\".", fdTemp: 125, dhTemp: 125, fdTime: 20, dhTime: 8 },
+        { name: "Spinach", cat: "Veg", moisture: 91, costLb: 3.50, pre: "Wash and dry thoroughly.", fdTemp: 125, dhTemp: 125, fdTime: 18, dhTime: 6 },
+        { name: "Squash (Zucchini)", cat: "Veg", moisture: 95, costLb: 1.50, pre: "Slice 1/4\" rounds.", fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 10 },
+        { name: "Squash (Butternut)", cat: "Veg", moisture: 86, costLb: 1.50, pre: "Peel, cube 1/2\", blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 30, dhTime: 14 },
+        { name: "Tomatoes (Cherry)", cat: "Veg", moisture: 94, costLb: 3.00, pre: "Slice in half.", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 14 },
+        { name: "Tomatoes (Roma)", cat: "Veg", moisture: 94, costLb: 1.50, pre: "Slice 1/4\" or dice.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 14 },
+        { name: "Turnips", cat: "Veg", moisture: 90, costLb: 1.20, pre: "Peel and cube 1/2\". Blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 26, dhTime: 12 },
+        { name: "Asparagus (White)", cat: "Veg", moisture: 93, costLb: 5.00, pre: "Peel lower half, blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 12 },
+        { name: "Bok Choy", cat: "Veg", moisture: 95, costLb: 2.00, pre: "Separate leaves and stems.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 22, dhTime: 10 },
+        { name: "Swiss Chard", cat: "Veg", moisture: 93, costLb: 2.50, pre: "Remove ribs, shred leaves.", fdTemp: 125, dhTemp: 125, fdTime: 18, dhTime: 8 },
+        { name: "Watercress", cat: "Veg", moisture: 95, costLb: 4.00, pre: "Wash carefully.", fdTemp: 125, dhTemp: 125, fdTime: 16, dhTime: 6 },
+        { name: "Ginger (Root)", cat: "Veg", moisture: 79, costLb: 5.00, pre: "Peel and mince or slice thin.", fdTemp: 125, dhTemp: 125, fdTime: 24, dhTime: 12 },
+        { name: "Yams", cat: "Veg", moisture: 70, costLb: 1.50, pre: "Peel, dice, blanch.", blanch: true, fdTemp: 125, dhTemp: 125, fdTime: 30, dhTime: 14 },
+
+        // MEATS & PROTEIN (20)
+        { name: "Beef (Ground 90/10)", cat: "Meat", moisture: 60, costLb: 6.00, pre: "Cook, brown, and rinse fat.", fdTemp: 145, dhTemp: 160, fdTime: 24, dhTime: 10 },
+        { name: "Beef (Steak/Lean)", cat: "Meat", moisture: 70, costLb: 12.00, pre: "Cook to well done, slice thin.", fdTemp: 145, dhTemp: 160, fdTime: 30, dhTime: 12 },
+        { name: "Chicken (Breast)", cat: "Meat", moisture: 74, costLb: 4.50, pre: "Cook to 165°F, shred or dice.", fdTemp: 145, dhTemp: 160, fdTime: 28, dhTime: 10 },
+        { name: "Chicken (Thigh)", cat: "Meat", moisture: 70, costLb: 3.50, pre: "Cook, remove skin/fat, dice.", fdTemp: 145, dhTemp: 160, fdTime: 30, dhTime: 12, fat: "high" },
+        { name: "Turkey (Breast)", cat: "Meat", moisture: 72, costLb: 6.00, pre: "Cook to 165°F, slice thin.", fdTemp: 145, dhTemp: 160, fdTime: 28, dhTime: 10 },
+        { name: "Pork (Loin/Lean)", cat: "Meat", moisture: 68, costLb: 4.00, pre: "Cook to 160°F, remove fat.", fdTemp: 145, dhTemp: 160, fdTime: 30, dhTime: 12 },
+        { name: "Ham (Diced)", cat: "Meat", moisture: 65, costLb: 5.00, pre: "Use lean ham, dice 1/4\".", fdTemp: 145, dhTemp: 160, fdTime: 26, dhTime: 10 },
+        { name: "Shrimp (Cooked)", cat: "Meat", moisture: 75, costLb: 10.00, pre: "Tail off, deveined, cooked.", fdTemp: 145, dhTemp: 155, fdTime: 24, dhTime: 10 },
+        { name: "Salmon (Cooked)", cat: "Meat", moisture: 65, costLb: 14.00, pre: "Flake cooked salmon. High fat.", fdTemp: 145, dhTemp: 160, fdTime: 32, dhTime: 14, fat: "high" },
+        { name: "Whitefish (Cod/Tilapia)", cat: "Meat", moisture: 80, costLb: 8.00, pre: "Cook and flake.", fdTemp: 145, dhTemp: 160, fdTime: 28, dhTime: 12 },
+        { name: "Venison (Lean)", cat: "Meat", moisture: 72, costLb: 0.00, pre: "Cook thoroughly, slice thin.", fdTemp: 145, dhTemp: 160, fdTime: 30, dhTime: 10 },
+        { name: "Bison (Ground)", cat: "Meat", moisture: 62, costLb: 10.00, pre: "Cook and rinse fat.", fdTemp: 145, dhTemp: 160, fdTime: 26, dhTime: 10 },
+        { name: "Lamb (Lean)", cat: "Meat", moisture: 65, costLb: 12.00, pre: "Cook, remove all visible fat.", fdTemp: 145, dhTemp: 160, fdTime: 32, dhTime: 12, fat: "high" },
+        { name: "Eggs (Scrambled)", cat: "Meat", moisture: 75, costLb: 2.00, pre: "Cook fully (no oil/butter).", fdTemp: 145, dhTemp: 150, fdTime: 20, dhTime: 10 },
+        { name: "Yogurt", cat: "Dairy", moisture: 85, costLb: 3.00, pre: "Spread thin on silicone mats.", fdTemp: 125, dhTemp: 135, fdTime: 24, dhTime: 12 },
+        { name: "Cottage Cheese", cat: "Dairy", moisture: 80, costLb: 3.50, pre: "Spread evenly on mats.", fdTemp: 125, dhTemp: 135, fdTime: 30, dhTime: 14 },
+        { name: "Tofu (Firm)", cat: "Veg", moisture: 82, costLb: 2.50, pre: "Press out water, cube 1/2\".", fdTemp: 125, dhTemp: 135, fdTime: 28, dhTime: 12 },
+        { name: "Duck (Breast)", cat: "Meat", moisture: 65, costLb: 15.00, pre: "Remove skin/fat, cook well.", fdTemp: 145, dhTemp: 160, fdTime: 34, dhTime: 14, fat: "high" },
+        { name: "Scallops", cat: "Meat", moisture: 79, costLb: 18.00, pre: "Cook and slice if large.", fdTemp: 145, dhTemp: 155, fdTime: 28, dhTime: 12 },
+        { name: "Lobster (Cooked)", cat: "Meat", moisture: 77, costLb: 25.00, pre: "Chop into 1/2\" pieces.", fdTemp: 145, dhTemp: 155, fdTime: 30, dhTime: 12 }
+    ];
+
+    let currentMethod = 'freeze';
+    let currentUnits = 'imperial';
+
+    function init() {
+        const list = document.getElementById('food-list');
+        foodDatabase.sort((a,b) => a.name.localeCompare(b.name)).forEach(food => {
+            const opt = document.createElement('option');
+            opt.value = food.name;
+            list.appendChild(opt);
+        });
+        const savedRate = localStorage.getItem('elecRate');
+        if(savedRate) document.getElementById('elec-rate').value = savedRate;
+    }
+
+    function setMethod(m) {
+        currentMethod = m;
+        document.getElementById('btn-fd').className = m === 'freeze' ? 'toggle-btn active' : 'toggle-btn';
+        document.getElementById('btn-de').className = m === 'dehydrate' ? 'toggle-btn active' : 'toggle-btn';
+        calculate();
+    }
+
+    function setUnit(u) {
+        currentUnits = u;
+        document.getElementById('unit-imp').className = u === 'imperial' ? 'toggle-btn active' : 'toggle-btn';
+        document.getElementById('unit-met').className = u === 'metric' ? 'toggle-btn active' : 'toggle-btn';
+        calculate();
+    }
+
+    function calculate() {
+        const val = document.getElementById('food-search').value;
+        const food = foodDatabase.find(f => f.name === val);
+        const rate = parseFloat(document.getElementById('elec-rate').value) || 0.14;
+
+        if (!food) {
+            document.getElementById('results-area').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+        document.getElementById('res-title').innerText = `${food.name} (${food.cat})`;
+
+        const isFD = currentMethod === 'freeze';
+        const time = isFD ? food.fdTime : food.dhTime;
+        const temp = isFD ? food.fdTemp : food.dhTemp;
+        const watts = isFD ? 1100 : 600;
+        const cost = (watts * time / 1000) * rate;
+        const yieldPerc = (100 - food.moisture + 2) / 100;
+        
+        const displayTemp = currentUnits === 'imperial' ? `${temp}°F` : `${Math.round((temp-32)*5/9)}°C`;
+        const weight = currentUnits === 'imperial' ? "10 lbs" : "4.5 kg";
+        const finalWeight = currentUnits === 'imperial' ? (10 * yieldPerc).toFixed(2) + " lbs" : (4.5 * yieldPerc).toFixed(2) + " kg";
+
+        document.getElementById('res-time').innerText = `${time} - ${Math.round(time*1.2)} Hrs`;
+        document.getElementById('res-yield').innerText = `${finalWeight} (from ${weight})`;
+        document.getElementById('res-cost').innerText = `$${cost.toFixed(2)} (Batch)`;
+        document.getElementById('res-shelf').innerText = isFD ? "25+ Years" : "1-2 Years";
+
+        let steps = [
+            `<strong>Prep:</strong> ${food.pre}`,
+            `<strong>Loading:</strong> ${isFD ? 'Single layer on trays.' : 'Uniform spacing for airflow.'}`,
+            `<strong>Thermal:</strong> Process at ${displayTemp}.`
+        ];
+        if(food.blanch) steps.unshift(`<strong>Blanch:</strong> Steam 2-3 min then ice bath.`);
+
+        document.getElementById('instruction-steps').innerHTML = steps.map((s, i) => `
+            <div class="instruction-step">
+                <div class="step-num">${i+1}</div>
+                <div>${s}</div>
+            </div>`).join('');
+
+        let safety = "";
+        if(food.cat === "Meat") safety = `<div class="danger-box"><strong>USDA SAFETY:</strong> Pre-cook all meats to safe internal temps before processing. Dehydration alone is not a substitute for cooking.</div>`;
+        if(food.fat === "high") safety += `<div class="warning-box"><strong>FAT CONTENT:</strong> High fat reduces shelf life. Store in a cool, dark place and check for rancidity after 6 months.</div>`;
+        document.getElementById('safety-warning').innerHTML = safety;
+    }
+
+    function saveToLocal() {
+        localStorage.setItem('elecRate', document.getElementById('elec-rate').value);
+        alert("Rate saved!");
+    }
+
+    function resetForm() {
+        document.getElementById('food-search').value = "";
+        document.getElementById('results-area').style.display = 'none';
+    }
+
+    init();
+</script>
+</body>
+</html>
