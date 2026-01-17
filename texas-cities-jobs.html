@@ -1,45 +1,170 @@
-Please rewrite this code to be mobile phone friendly and make the header shorts and the font smaller. Right now it take up too much of the screen and the mobile phone version only shows half a screen. <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Texas City Government Career Opportunities</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas City Gov Jobs</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
-        #map { height: 600px; margin-top: 20px; }
-        input { padding: 8px; width: 300px; }
-        button { padding: 8px; }
-        select { padding: 8px; margin-right: 10px; }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+        }
+
+        header {
+            background: #f5f5f5;
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .controls {
+            padding: 10px 12px;
+            background: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        input[type="text"],
+        select,
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="text"] {
+            flex: 1 1 220px;
+            min-width: 180px;
+        }
+
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            min-width: 90px;
+        }
+
+        button:hover {
+            background: #0055aa;
+        }
+
+        select {
+            flex: 1 1 160px;
+            min-width: 140px;
+        }
+
+        #map {
+            height: calc(100vh - 140px); /* Adjust based on header + controls height */
+            min-height: 300px;
+        }
+
+        /* Mobile-first: small screens get stacked layout + smaller elements */
+        @media (max-width: 600px) {
+            header {
+                padding: 8px 10px;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+            .subtitle {
+                font-size: 0.85rem;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+                padding: 8px 10px;
+            }
+            input[type="text"],
+            select,
+            button {
+                width: 100%;
+                font-size: 1.05rem; /* Slightly larger for touch */
+                padding: 12px;
+            }
+            #map {
+                height: calc(100vh - 180px); /* More space for taller stacked controls */
+            }
+        }
+
+        /* Larger tablets/desktops */
+        @media (min-width: 768px) {
+            header {
+                padding: 12px 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            .controls {
+                justify-content: center;
+            }
+            #map {
+                height: 65vh; /* or 600px if you prefer fixed */
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Texas City Government Career Opportunities</h1>
-    <h2>Explore rewarding public service jobs with city governments across the Lone Star State</h2>
-    <input type="text" id="search" placeholder="Search for a city (e.g., Houston)" list="cities-list">
-    <button onclick="searchCity()">Search</button>
-    <select id="population-filter" onchange="applyFilters()">
-        <option value="">Filter by Population</option>
-        <option value=">1000000">&gt; 1,000,000</option>
-        <option value="100000-1000000">100,000 - 1,000,000</option>
-        <option value="50000-100000">50,000 - 100,000</option>
-        <option value="20000-50000">20,000 - 50,000</option>
-    </select>
-    <select id="region-filter" onchange="applyFilters()">
-        <option value="">Filter by Region</option>
-        <option value="North">North Texas</option>
-        <option value="Central">Central Texas</option>
-        <option value="South">South Texas</option>
-        <option value="West">West Texas</option>
-        <option value="East">East Texas</option>
-    </select>
+    <header>
+        <h1>Texas City Government Jobs</h1>
+        <p class="subtitle">Explore public service career opportunities across Texas</p>
+    </header>
+
+    <div class="controls">
+        <input type="text" id="search" placeholder="Search city (e.g. Houston)" list="cities-list">
+        <button onclick="searchCity()">Search</button>
+        <select id="population-filter" onchange="applyFilters()">
+            <option value="">Filter by Population</option>
+            <option value=">1000000">> 1,000,000</option>
+            <option value="100000-1000000">100,000 – 1,000,000</option>
+            <option value="50000-100000">50,000 – 100,000</option>
+            <option value="20000-50000">20,000 – 50,000</option>
+        </select>
+        <select id="region-filter" onchange="applyFilters()">
+            <option value="">Filter by Region</option>
+            <option value="North">North Texas</option>
+            <option value="Central">Central Texas</option>
+            <option value="South">South Texas</option>
+            <option value="West">West Texas</option>
+            <option value="East">East Texas</option>
+        </select>
+    </div>
+
     <div id="map"></div>
+
     <datalist id="cities-list"></datalist>
+
     <script>
-        var map = L.map('map').setView([31.9686, -99.9018], 6); // Center on Texas
+        var map = L.map('map').setView([31.9686, -99.9018], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
         var cities = [
             {name: "Houston", lat: 29.7604267, lon: -95.3698028, link: "https://www.houstontx.gov/hr/careers.html", population: 2412920, region: "East"},
             {name: "San Antonio", lat: 29.4241219, lon: -98.49362819999999, link: "https://www.sa.gov/Directory/Initiatives/Join-Our-Team/Career-Opportunities", population: 1548485, region: "South"},
@@ -103,47 +228,62 @@ Please rewrite this code to be mobile phone friendly and make the header shorts 
             {name: "San Marcos", lat: 29.883275, lon: -97.941394, link: "https://www.governmentjobs.com/careers/sanmarcostx", population: 73803, region: "Central"},
             {name: "Harlingen", lat: 26.190631, lon: -97.696103, link: "https://harlingentx.gov/departments/human_resources/index.php", population: 71264, region: "South"}
         ];
+
         var markers = [];
         var datalist = document.getElementById('cities-list');
+
         cities.forEach(function(city) {
             var option = document.createElement('option');
             option.value = city.name;
             datalist.appendChild(option);
+
             var marker = L.marker([city.lat, city.lon]).addTo(map);
             marker.bindPopup(city.name);
             marker.on('click', function() {
                 window.open(city.link, '_blank');
             });
-            markers.push({name: city.name.toLowerCase(), marker: marker, latlng: [city.lat, city.lon], population: city.population, region: city.region});
-        });
-        function searchCity() {
-            var input = document.getElementById('search').value.toLowerCase();
-            var found = markers.find(function(m) {
-                return m.name.includes(input);
+
+            markers.push({
+                name: city.name.toLowerCase(),
+                marker: marker,
+                latlng: [city.lat, city.lon],
+                population: city.population,
+                region: city.region
             });
+        });
+
+        function searchCity() {
+            var input = document.getElementById('search').value.toLowerCase().trim();
+            var found = markers.find(m => m.name.includes(input));
             if (found) {
                 map.setView(found.latlng, 12);
                 found.marker.openPopup();
             } else {
-                alert('City not found. Please check spelling.');
+                alert('City not found. Try checking the spelling.');
             }
         }
+
         function applyFilters() {
             var popFilter = document.getElementById('population-filter').value;
             var regionFilter = document.getElementById('region-filter').value.toLowerCase();
+
             markers.forEach(function(m) {
                 var show = true;
+
                 if (popFilter) {
-                    var [min, max] = popFilter.split('-').map(Number);
-                    if (max) {
-                        show = show && m.population >= min && m.population < max;
-                    } else {
+                    if (popFilter.startsWith('>')) {
+                        var min = Number(popFilter.slice(1));
                         show = show && m.population > min;
+                    } else {
+                        var [min, max] = popFilter.split('-').map(Number);
+                        show = show && m.population >= min && m.population < max;
                     }
                 }
+
                 if (regionFilter) {
                     show = show && m.region.toLowerCase() === regionFilter;
                 }
+
                 if (show) {
                     m.marker.addTo(map);
                 } else {
@@ -151,12 +291,16 @@ Please rewrite this code to be mobile phone friendly and make the header shorts 
                 }
             });
         }
-        // Allow Enter key to trigger search
-        document.getElementById('search').addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
+
+        // Enter key support
+        document.getElementById('search').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
                 searchCity();
             }
         });
+
+        // Optional: invalidate size on window resize (helps Leaflet)
+        window.addEventListener('resize', () => map.invalidateSize());
     </script>
 </body>
 </html>
