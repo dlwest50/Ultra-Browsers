@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US Weather Pro Dashboard</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+            --bg-color: #0f172a;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-color);
+            color: white;
+            transition: background 0.8s ease;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        input {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: white;
+            width: 250px;
+            backdrop-filter: blur(5px);
+        }
+
+        button {
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover { background: #2563eb; }
+
+        .unit-toggle { background: #64748b; }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal & Forecast */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; max-width: 800px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 30px;
+            z-index: 1000;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .forecast-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .forecast-item {
+            flex: 0 0 100px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+        }
+
+        /* Dynamic Background Classes */
+        .bg-clear { background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%); }
+        .bg-clouds { background: linear-gradient(to bottom, #606c88 0%, #3f4c6b 100%); }
+        .bg-rain { background: linear-gradient(to bottom, #203a43, #2c5364); }
+        .bg-snow { background: linear-gradient(to bottom, #83a4d4, #b6fbff); }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Enter US City Name...">
+        <button onclick="searchCity()">Add City</button>
+        <button class="unit-toggle" onclick="toggleUnits()">Toggle °F / °C</button>
+    </div>
+
+    <div class="dashboard" id="grid"></div>
+
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div id="modal">
+        <button style="float:right" onclick="closeModal()">✕</button>
+        <h2 id="m-city">City</h2>
+        <div class="stats-grid" id="m-stats"></div>
+        <h3>24-Hour Forecast (3hr intervals)</h3>
+        <div class="forecast-container" id="m-forecast"></div>
+    </div>
+
+    <script>
+        const API_KEY = '670aa02f9fcf9929005e83db05943e1f'; // PASTE YOUR KEY HERE
+        let units = 'imperial'; 
+        
+        // List of 50 locations (shorthand names)
+        const initialCities = [
+            "New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose",
+            "Austin", "Jacksonville", "Fort Worth", "Columbus", "Charlotte", "Indianapolis", "San Francisco", "Seattle", "Denver", "Oklahoma City",
+            "Nashville", "El Paso", "Washington", "Las Vegas", "Boston", "Portland", "Louisville", "Memphis", "Detroit", "Baltimore",
+            "Milwaukee", "Albuquerque", "Tucson", "Fresno", "Sacramento", "Mesa", "Kansas City", "Atlanta", "Omaha", "Colorado Springs",
+            "Raleigh", "Virginia Beach", "Long Beach", "Miami", "Oakland", "Minneapolis", "Tulsa", "Tampa", "Arlington", "New Orleans"
+        ];
+
+        async function fetchWeather(cityName) {
+            try {
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},US&units=${units}&appid=${API_KEY}`);
+                const data = await res.json();
+                if(data.cod !== 200) return;
+                createCard(data);
+            } catch (e) { console.error(e); }
+        }
+
+        function createCard(data) {
+            const grid = document.getElementById('grid');
+            const card = document.createElement('div');
+            card.className = 'card';
+            const tempUnit = units === 'imperial' ? '°F' : '°C';
+            
+            card.innerHTML = `
+                <h3>${data.name}</h3>
+                <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" width="60">
+                <div style="font-size: 2rem; font-weight: bold;">${Math.round(data.main.temp)}${tempUnit}</div>
+                <p style="text-transform: capitalize">${data.weather[0].description}</p>
+            `;
+            card.onclick = () => showDetails(data);
+            grid.prepend(card);
+        }
+
+        async function showDetails(data) {
+            updateBackground(data.weather[0].main);
+            const tempUnit = units === 'imperial' ? '°F' : '°C';
+            const speedUnit = units === 'imperial' ? 'mph' : 'm/s';
+            
+            document.getElementById('m-city').innerText = data.name;
+            document.getElementById('m-stats').innerHTML = `
+                <div class="forecast-item"><strong>Humidity</strong><br>${data.main.humidity}%</div>
+                <div class="forecast-item"><strong>Wind</strong><br>${data.wind.speed} ${speedUnit}</div>
+                <div class="forecast-item"><strong>Sunrise</strong><br>${new Date(data.sys.sunrise * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                <div class="forecast-item"><strong>Sunset</strong><br>${new Date(data.sys.sunset * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+            `;
+
+            // Forecast Logic
+            const fRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${data.coord.lat}&lon=${data.coord.lon}&units=${units}&appid=${API_KEY}`);
+            const fData = await fRes.json();
+            const fList = document.getElementById('m-forecast');
+            fList.innerHTML = '';
+            
+            fData.list.slice(0, 8).forEach(item => {
+                const hour = document.createElement('div');
+                hour.className = 'forecast-item';
+                hour.innerHTML = `
+                    <div style="font-size: 0.7rem">${new Date(item.dt * 1000).toLocaleTimeString([], {hour:'2-digit'})}</div>
+                    <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}.png">
+                    <div>${Math.round(item.main.temp)}°</div>
+                `;
+                fList.appendChild(hour);
+            });
+
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function updateBackground(weather) {
+            document.body.className = ''; // Reset
+            const w = weather.toLowerCase();
+            if(w.includes('clear')) document.body.classList.add('bg-clear');
+            else if(w.includes('cloud')) document.body.classList.add('bg-clouds');
+            else if(w.includes('rain') || w.includes('drizzle')) document.body.classList.add('bg-rain');
+            else if(w.includes('snow')) document.body.classList.add('bg-snow');
+        }
+
+        function toggleUnits() {
+            units = units === 'imperial' ? 'metric' : 'imperial';
+            document.getElementById('grid').innerHTML = '';
+            initialCities.slice(0, 12).forEach(fetchWeather); // Reload first few
+        }
+
+        function searchCity() {
+            const input = document.getElementById('search-input');
+            if(input.value) {
+                fetchWeather(input.value);
+                input.value = '';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.body.className = ''; // Reset background to midnight blue
+        }
+
+        // Initialize with first 12 cities (to avoid hitting API limits immediately)
+        initialCities.slice(0, 12).forEach(fetchWeather);
+    </script>
+</body>
+</html>
