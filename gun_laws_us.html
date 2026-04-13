@@ -57,6 +57,10 @@
             border-radius: 50%;
             display: inline-block;
         }
+        
+        .leosa-badge {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-200">
@@ -97,6 +101,14 @@
                     <span>Reciprocity Map</span>
                 </a>
                 
+                <!-- NEW: LEOSA Link for Retired Law Officers -->
+                <a href="https://www.usconcealedcarry.com/resources/federal-ccw-law/leosa-hr-218/" 
+                   target="_blank"
+                   class="flex items-center gap-x-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-3xl text-sm font-semibold transition-colors leosa-badge">
+                    <i class="fa-solid fa-badge-check"></i>
+                    <span>LEOSA • Retired LEO Carry Rights</span>
+                </a>
+                
                 <button onclick="showTravelTips()" 
                         class="flex items-center gap-x-2 px-5 py-2.5 rounded-3xl border border-slate-700 hover:border-slate-400 transition-colors text-sm font-medium">
                     <i class="fa-solid fa-plane"></i>
@@ -126,6 +138,18 @@
                         Alphabetical interactive list of all 50 states. Hover for quick facts. Click any state for details + official links. 
                         Fully mobile-friendly single-file HTML.
                     </p>
+                    
+                    <!-- Special note for retired officers (like the Utah retired law officer with Utah credentials) -->
+                    <div class="mt-6 inline-flex items-center gap-x-3 bg-emerald-950 border border-emerald-500 text-emerald-400 rounded-3xl px-6 py-3 text-sm font-medium">
+                        <i class="fa-solid fa-badge-check text-lg"></i>
+                        <div>
+                            <strong>Retired Law Enforcement Officers:</strong> 
+                            Federal LEOSA (HR 218) gives you nationwide concealed carry rights — regardless of state color. 
+                            <a href="https://www.usconcealedcarry.com/resources/federal-ccw-law/leosa-hr-218/" 
+                               target="_blank" 
+                               class="underline hover:text-white">Click here for full federal LEOSA details &amp; requirements →</a>
+                        </div>
+                    </div>
                     
                     <div class="mt-6 flex flex-wrap gap-3 text-sm">
                         <div class="px-4 py-2 bg-slate-900 rounded-3xl flex items-center gap-x-2 border border-slate-700">
@@ -165,6 +189,13 @@
                             <i class="fa-solid fa-check text-emerald-400 mt-px"></i>
                             <div><strong>Prohibited places?</strong> Schools, courthouses, airports, bars (varies), private property “no guns” signs (enforced in some states).</div>
                         </li>
+                        <!-- New LEOSA quick note -->
+                        <li class="flex gap-x-3 bg-emerald-950 border border-emerald-500 rounded-2xl p-3">
+                            <i class="fa-solid fa-shield-halved text-emerald-400 mt-px"></i>
+                            <div>
+                                <strong>Retired LEOs (e.g. Utah retirees):</strong> Federal LEOSA grants concealed carry rights in <strong>ALL 50 states</strong> + territories. Carry your agency photo ID + recent qualification cert.
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -187,7 +218,7 @@
         </div>
     </main>
 
-    <!-- MODAL -->
+    <!-- MODAL (state details) - unchanged except we kept the original -->
     <div id="modal" onclick="if(event.target === this) hideModal()" 
          class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
         <div onclick="event.stopImmediatePropagation()" 
@@ -248,7 +279,7 @@
         </div>
     </div>
 
-    <!-- TRAVEL TIPS MODAL -->
+    <!-- TRAVEL TIPS MODAL - now includes LEOSA section -->
     <div id="travelModal" onclick="if(event.target === this) hideTravelModal()" 
          class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
         <div onclick="event.stopImmediatePropagation()" class="modal bg-slate-900 rounded-3xl max-w-xl w-full p-8">
@@ -281,8 +312,25 @@
                     </div>
                 </div>
                 
+                <!-- LEOSA dedicated section in Travel Tips -->
+                <div class="border border-emerald-500 bg-emerald-950 rounded-3xl p-6">
+                    <h4 class="font-semibold flex items-center gap-x-2 text-emerald-400 mb-3">
+                        <i class="fa-solid fa-badge-check"></i>
+                        Special Note for Retired Law Officers (e.g., Utah retirees with Utah credentials)
+                    </h4>
+                    <p class="text-sm leading-relaxed">
+                        Under the federal <strong>Law Enforcement Officers Safety Act (LEOSA / HR 218)</strong>, qualified retired law enforcement officers have the right to carry a concealed handgun in <strong>all 50 states and U.S. territories</strong> — regardless of state laws or permit status. 
+                        You must carry your agency-issued photographic ID <strong>and</strong> proof of annual firearms qualification with the same type of firearm you are carrying.
+                    </p>
+                    <a href="https://www.usconcealedcarry.com/resources/federal-ccw-law/leosa-hr-218/" 
+                       target="_blank"
+                       class="mt-4 inline-flex items-center gap-x-2 text-emerald-300 hover:text-white font-medium">
+                        Read the full federal LEOSA guide &amp; qualification requirements →
+                    </a>
+                </div>
+                
                 <p class="text-center text-xs text-slate-400 mt-8">
-                    Always use a current reciprocity map and official state sites before traveling with a firearm.
+                    Always use a current reciprocity map and official state sites before traveling with a firearm. Retired officers — check LEOSA first!
                 </p>
             </div>
             
@@ -292,7 +340,8 @@
     </div>
 
     <footer class="bg-slate-900 py-8 text-center text-xs text-slate-400 border-t border-slate-800">
-        Single-file interactive website • No server needed • Mobile-friendly &amp; modern • Created for you by Grok
+        Single-file interactive website • No server needed • Mobile-friendly &amp; modern • Created for you by Grok • 
+        Special thanks to retired Utah law officers carrying under federal LEOSA
     </footer>
 
     <script>
@@ -306,7 +355,7 @@
             }
         }
         
-        // Full state data - accurate as of April 2026
+        // Full state data - accurate as of April 2026 (unchanged)
         const statesData = [
             { name: "Alabama", abbr: "AL", color: "green", age: "21", type: "Permitless Carry", official: "https://www.alea.gov/dps/concealed-carry" },
             { name: "Alaska", abbr: "AK", color: "green", age: "21", type: "Permitless Carry", official: "https://dps.alaska.gov/" },
@@ -360,7 +409,7 @@
             { name: "Wyoming", abbr: "WY", color: "green", age: "21", type: "Permitless Carry", official: "https://www.wyo.gov/" }
         ]
         
-        // Render the grid
+        // Render the grid (unchanged)
         function renderStates(filteredStates) {
             const container = document.getElementById('statesGrid')
             container.innerHTML = ''
@@ -402,13 +451,11 @@
                 container.innerHTML += cardHTML
             })
             
-            // If no results
             if (filteredStates.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No states found. Try a different search.</div>`
             }
         }
         
-        // Filter function
         function filterStates() {
             const term = document.getElementById('searchInput').value.toLowerCase().trim()
             if (!term) {
@@ -423,17 +470,14 @@
             renderStates(filtered)
         }
         
-        // Show modal for a state
         function showStateModal(stateName) {
             const state = statesData.find(s => s.name === stateName)
             if (!state) return
             
-            // Set modal content
             document.getElementById('modalStateName').textContent = state.name
             const dot = document.getElementById('modalColorDot')
             dot.className = `w-6 h-6 rounded-2xl ${state.color === 'green' ? 'bg-emerald-500' : state.color === 'yellow' ? 'bg-amber-500' : 'bg-red-500'}`
             
-            // Facts HTML
             const factsHTML = `
                 <div class="flex items-center justify-between bg-slate-800 rounded-2xl px-5 py-4">
                     <div><strong class="text-emerald-400">Carry Type</strong><br><span class="text-2xl">${state.type}</span></div>
@@ -441,21 +485,19 @@
                     <div class="text-right"><strong class="text-emerald-400">Handgun</strong><br>Concealed carry rules above</div>
                 </div>
                 <p class="text-slate-300 mt-6">This state follows ${state.type.toLowerCase()}. Always verify prohibited locations and local ordinances. Reciprocity with other states is not guaranteed.</p>
+                ${state.name === 'Utah' ? `<p class="mt-4 text-emerald-400 text-sm font-medium">Note for retired Utah officers: Your federal LEOSA rights still apply here and everywhere else.</p>` : ''}
             `
             document.getElementById('modalFacts').innerHTML = factsHTML
             
-            // Reciprocity text (general but accurate)
             const recipText = state.color === 'green' 
                 ? `Permitless carry state. No permit issued in most cases, but you may carry openly or concealed if legally eligible. Your out-of-state permit is usually not required here.` 
                 : `Permit required. This state has limited or no reciprocity with many other states. Check your specific permit status before traveling here.`
             document.getElementById('modalReciprocity').innerHTML = recipText
             
-            // Official link
             const linkEl = document.getElementById('officialLink')
             linkEl.href = state.official
             document.getElementById('officialLinkText').innerHTML = `Official ${state.name} Firearm / Concealed Carry Page <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>`
             
-            // Show modal
             document.getElementById('modal').classList.remove('hidden')
             document.getElementById('modal').classList.add('flex')
         }
@@ -466,7 +508,6 @@
             modal.classList.remove('flex')
         }
         
-        // Travel tips modal
         function showTravelTips() {
             document.getElementById('travelModal').classList.remove('hidden')
             document.getElementById('travelModal').classList.add('flex')
@@ -478,12 +519,11 @@
             modal.classList.remove('flex')
         }
         
-        // Initialize everything
         function initialize() {
             initTailwind()
             renderStates(statesData)
             
-            console.log('%c✅ CarryGuard HTML ready! Copy this entire file and save as carry-laws.html', 'color:#10b981; font-family:monospace')
+            console.log('%c✅ CarryGuard HTML updated with LEOSA support for retired officers!', 'color:#10b981; font-family:monospace')
         }
         
         window.onload = initialize
