@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryGuard • US State Firearm Carry Laws</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --tw-color-primary: #0f172a;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .header-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .state-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .state-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .tooltip {
+            position: absolute;
+            z-index: 50;
+            opacity: 0;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+        
+        .state-card:hover .tooltip {
+            opacity: 1;
+        }
+        
+        .legend-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="header-font text-3xl tracking-tighter">CarryGuard</h1>
+                    <p class="text-xs text-slate-400 -mt-1">Interactive US Firearm Carry Laws</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-8">
+                <!-- Legend -->
+                <div class="flex items-center gap-x-6 text-sm">
+                    <div class="flex items-center gap-x-2">
+                        <div class="legend-dot bg-emerald-500"></div>
+                        <span class="font-medium">Green — Permitless Carry</span>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <div class="legend-dot bg-amber-500"></div>
+                        <span class="font-medium">Yellow — Shall-Issue (Permit Required)</span>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <div class="legend-dot bg-red-500"></div>
+                        <span class="font-medium">Red — Restrictive / May-Issue</span>
+                    </div>
+                </div>
+                
+                <a href="https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/" 
+                   target="_blank"
+                   class="flex items-center gap-x-2 bg-white text-slate-900 px-5 py-2.5 rounded-3xl text-sm font-semibold hover:bg-amber-400 transition-colors">
+                    <i class="fa-solid fa-map"></i>
+                    <span>Reciprocity Map</span>
+                </a>
+                
+                <button onclick="showTravelTips()" 
+                        class="flex items-center gap-x-2 px-5 py-2.5 rounded-3xl border border-slate-700 hover:border-slate-400 transition-colors text-sm font-medium">
+                    <i class="fa-solid fa-plane"></i>
+                    <span>Travel Tips</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile nav / disclaimer strip -->
+        <div class="bg-amber-500 text-slate-950 text-xs py-2 text-center font-medium flex items-center justify-center gap-x-2 px-4">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>INFORMATIONAL ONLY • Not legal advice • Laws change — verify officially before carrying • Data as of April 2026</span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- HERO / INTRO -->
+        <div class="mb-12">
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+                <div class="lg:w-2/3">
+                    <h2 class="header-font text-5xl lg:text-6xl tracking-tighter leading-none mb-4">
+                        Know Before You Go.<br>
+                        <span class="text-emerald-400">Carry laws at a glance.</span>
+                    </h2>
+                    <p class="text-xl text-slate-400 max-w-lg">
+                        Alphabetical interactive list of all 50 states. Hover for quick facts. Click any state for details + official links. 
+                        Fully mobile-friendly single-file HTML.
+                    </p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3 text-sm">
+                        <div class="px-4 py-2 bg-slate-900 rounded-3xl flex items-center gap-x-2 border border-slate-700">
+                            <i class="fa-solid fa-handgun text-emerald-400"></i>
+                            <span>Handgun focus</span>
+                        </div>
+                        <div class="px-4 py-2 bg-slate-900 rounded-3xl flex items-center gap-x-2 border border-slate-700">
+                            <i class="fa-solid fa-rifle text-amber-400"></i>
+                            <span>Rifles generally less restricted</span>
+                        </div>
+                        <div class="px-4 py-2 bg-slate-900 rounded-3xl flex items-center gap-x-2 border border-slate-700">
+                            <span class="font-semibold">29 states</span>
+                            <span class="text-emerald-400">Permitless carry</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick stats -->
+                <div class="lg:w-1/3 bg-slate-900 rounded-3xl p-6 border border-slate-700 flex-1">
+                    <h3 class="uppercase text-xs tracking-widest text-slate-400 mb-4">Common travel questions answered</h3>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex gap-x-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-px"></i>
+                            <div>
+                                <strong>Reciprocity?</strong> Varies wildly. Your home permit is often <strong>not</strong> honored in Red/Yellow states. Always check before crossing borders.
+                            </div>
+                        </li>
+                        <li class="flex gap-x-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-px"></i>
+                            <div><strong>Vehicle carry?</strong> Many states require guns unloaded &amp; cased for non-residents. Some allow loaded in glove box.</div>
+                        </li>
+                        <li class="flex gap-x-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-px"></i>
+                            <div><strong>Rifles?</strong> Open carry of long guns is legal without permit in 45+ states. Concealed long guns are rare.</div>
+                        </li>
+                        <li class="flex gap-x-3">
+                            <i class="fa-solid fa-check text-emerald-400 mt-px"></i>
+                            <div><strong>Prohibited places?</strong> Schools, courthouses, airports, bars (varies), private property “no guns” signs (enforced in some states).</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="relative mb-8">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+                id="searchInput"
+                type="text" 
+                placeholder="Search states (e.g. Texas, CA, New York)..." 
+                onkeyup="filterStates()"
+                class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 rounded-3xl pl-12 py-5 text-lg outline-none placeholder:text-slate-400">
+        </div>
+
+        <!-- STATES GRID -->
+        <div id="statesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <!-- Populated by JavaScript -->
+        </div>
+    </main>
+
+    <!-- MODAL -->
+    <div id="modal" onclick="if(event.target === this) hideModal()" 
+         class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" 
+             class="modal bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-slate-700 shadow-2xl">
+            
+            <div class="px-8 pt-6 pb-4 border-b border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-x-4">
+                    <span id="modalColorDot" class="w-6 h-6 rounded-2xl"></span>
+                    <h2 id="modalStateName" class="header-font text-4xl"></h2>
+                </div>
+                <button onclick="hideModal()" class="text-slate-400 hover:text-white text-3xl leading-none">×</button>
+            </div>
+            
+            <div class="p-8 space-y-8 overflow-auto max-h-[calc(90vh-80px)]">
+                <!-- Quick facts -->
+                <div>
+                    <h3 class="uppercase text-xs font-semibold tracking-widest text-slate-400 mb-3">Key Carry Facts</h3>
+                    <div id="modalFacts" class="prose prose-invert text-slate-300">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+                
+                <!-- Reciprocity note -->
+                <div class="bg-slate-800 rounded-2xl p-6">
+                    <h4 class="font-semibold flex items-center gap-x-2 mb-2"><i class="fa-solid fa-exchange-alt"></i> Reciprocity &amp; Travel</h4>
+                    <p id="modalReciprocity" class="text-sm leading-relaxed text-slate-300"></p>
+                    <a id="reciprocityLink" href="https://www.usconcealedcarry.com/resources/ccw_reciprocity_map/" 
+                       target="_blank" class="inline-flex items-center gap-x-2 text-emerald-400 hover:text-emerald-300 text-sm mt-4">
+                        View full interactive reciprocity map →
+                    </a>
+                </div>
+                
+                <!-- Official link -->
+                <div>
+                    <h3 class="uppercase text-xs font-semibold tracking-widest text-slate-400 mb-3">Official State Resources</h3>
+                    <a id="officialLink" target="_blank"
+                       class="block w-full bg-white text-slate-950 hover:bg-amber-400 transition-colors text-center font-semibold py-5 rounded-3xl text-lg flex items-center justify-center gap-x-3">
+                        <i class="fa-solid fa-external-link-alt"></i>
+                        <span id="officialLinkText">Visit Official State Gun Laws Page</span>
+                    </a>
+                    <p class="text-xs text-slate-400 mt-3 text-center">Laws can change. This links to the most current official state government page for concealed carry / firearms.</p>
+                </div>
+                
+                <!-- Rifle note -->
+                <div class="text-xs bg-slate-950 border border-slate-700 rounded-2xl p-4 text-slate-400 flex items-start gap-x-3">
+                    <i class="fa-solid fa-rifle mt-px"></i>
+                    <div>
+                        <strong>Rifles &amp; long guns:</strong> In almost every state, open carry of rifles/shotguns is legal without a permit for adults. 
+                        Concealed long guns and vehicle transport rules are more restrictive — always check the official page above.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-8 py-5 border-t border-slate-700 text-xs flex justify-between items-center text-slate-400">
+                <div>Built as a single-file HTML • Copy, paste &amp; save as <strong>carry-laws.html</strong></div>
+                <a href="#" onclick="hideModal(); return false;" class="underline">Close</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAVEL TIPS MODAL -->
+    <div id="travelModal" onclick="if(event.target === this) hideTravelModal()" 
+         class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-slate-900 rounded-3xl max-w-xl w-full p-8">
+            <h2 class="header-font text-3xl mb-6">Most Common Things Travelers Should Know</h2>
+            <div class="space-y-6 text-slate-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">1. Reciprocity is NOT universal</h4>
+                        <p class="text-sm">Even if your home state issues a permit, only certain states honor it. Red and many Yellow states often do <strong>not</strong> recognize out-of-state permits. Permitless states usually don’t issue permits at all.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">2. You must follow the laws of the state you’re in</h4>
+                        <p class="text-sm">Your home permit or permitless status does not override stricter local rules. “I didn’t know” is not a defense.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">3. Vehicle transport rules differ</h4>
+                        <p class="text-sm">Some states require handguns unloaded and in a locked case in the trunk. Others allow loaded in the glovebox. Rifles usually easier.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">4. Prohibited locations are common</h4>
+                        <p class="text-sm">Federal gun-free school zones + state bans on courthouses, airports, stadiums, bars (BAC limits), and any posted private property.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">5. Duty to inform &amp; stand-your-ground</h4>
+                        <p class="text-sm">Some states require you to tell an officer you’re armed during a traffic stop. Stand-your-ground / castle doctrine laws vary widely.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-emerald-400 mb-2">6. Age &amp; eligibility</h4>
+                        <p class="text-sm">Most states require you to be 21+ (some 18+ in Green states). Federal law prohibits certain people from possessing firearms.</p>
+                    </div>
+                </div>
+                
+                <p class="text-center text-xs text-slate-400 mt-8">
+                    Always use a current reciprocity map and official state sites before traveling with a firearm.
+                </p>
+            </div>
+            
+            <button onclick="hideTravelModal()" 
+                    class="mt-8 w-full py-6 bg-white text-slate-950 rounded-3xl font-semibold text-lg">Got it, thanks</button>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 py-8 text-center text-xs text-slate-400 border-t border-slate-800">
+        Single-file interactive website • No server needed • Mobile-friendly &amp; modern • Created for you by Grok
+    </footer>
+
+    <script>
+        // Tailwind script initialization
+        function initTailwind() {
+            tailwind.config = {
+                content: [],
+                theme: {
+                    extend: {}
+                }
+            }
+        }
+        
+        // Full state data - accurate as of April 2026
+        const statesData = [
+            { name: "Alabama", abbr: "AL", color: "green", age: "21", type: "Permitless Carry", official: "https://www.alea.gov/dps/concealed-carry" },
+            { name: "Alaska", abbr: "AK", color: "green", age: "21", type: "Permitless Carry", official: "https://dps.alaska.gov/" },
+            { name: "Arizona", abbr: "AZ", color: "green", age: "21", type: "Permitless Carry", official: "https://www.azdps.gov/services/public/cwp" },
+            { name: "Arkansas", abbr: "AR", color: "green", age: "18", type: "Permitless Carry", official: "https://asp.arkansas.gov/" },
+            { name: "California", abbr: "CA", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://oag.ca.gov/firearms" },
+            { name: "Colorado", abbr: "CO", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.colorado.gov/cbi/concealed-handgun-permit" },
+            { name: "Connecticut", abbr: "CT", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://portal.ct.gov/DESPP/Division-of-Emergency-and-Urban-Response/Special-Licensing-and-Firearms" },
+            { name: "Delaware", abbr: "DE", color: "yellow", age: "21", type: "Shall-Issue", official: "https://statepolice.delaware.gov/" },
+            { name: "Florida", abbr: "FL", color: "green", age: "21", type: "Permitless Carry", official: "https://www.fdle.state.fl.us/CWST" },
+            { name: "Georgia", abbr: "GA", color: "green", age: "21", type: "Permitless Carry", official: "https://gbi.georgia.gov/" },
+            { name: "Hawaii", abbr: "HI", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://www.hawaiipolice.com/" },
+            { name: "Idaho", abbr: "ID", color: "green", age: "18", type: "Permitless Carry", official: "https://isp.idaho.gov/" },
+            { name: "Illinois", abbr: "IL", color: "yellow", age: "21", type: "Shall-Issue", official: "https://isp.illinois.gov/Firearms" },
+            { name: "Indiana", abbr: "IN", color: "green", age: "18", type: "Permitless Carry", official: "https://www.in.gov/isp/" },
+            { name: "Iowa", abbr: "IA", color: "green", age: "21", type: "Permitless Carry", official: "https://www.dps.state.ia.us/" },
+            { name: "Kansas", abbr: "KS", color: "green", age: "21", type: "Permitless Carry", official: "https://www.kansas.gov/" },
+            { name: "Kentucky", abbr: "KY", color: "green", age: "21", type: "Permitless Carry", official: "https://www.kentuckystatepolice.ky.gov/" },
+            { name: "Louisiana", abbr: "LA", color: "green", age: "18", type: "Permitless Carry", official: "https://www.lsp.org/" },
+            { name: "Maine", abbr: "ME", color: "green", age: "21", type: "Permitless Carry", official: "https://www.maine.gov/dps/msp/" },
+            { name: "Maryland", abbr: "MD", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://mdsp.maryland.gov/" },
+            { name: "Massachusetts", abbr: "MA", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://www.mass.gov/info-details/apply-for-a-license-to-carry" },
+            { name: "Michigan", abbr: "MI", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.michigan.gov/msp/services/ccw" },
+            { name: "Minnesota", abbr: "MN", color: "yellow", age: "21", type: "Shall-Issue", official: "https://dps.mn.gov/divisions/bca/" },
+            { name: "Mississippi", abbr: "MS", color: "green", age: "18", type: "Permitless Carry", official: "https://www.dps.ms.gov/" },
+            { name: "Missouri", abbr: "MO", color: "green", age: "19", type: "Permitless Carry", official: "https://www.mshp.dps.missouri.gov/" },
+            { name: "Montana", abbr: "MT", color: "green", age: "21", type: "Permitless Carry", official: "https://dojmt.gov/" },
+            { name: "Nebraska", abbr: "NE", color: "green", age: "21", type: "Permitless Carry", official: "https://statepatrol.nebraska.gov/" },
+            { name: "Nevada", abbr: "NV", color: "yellow", age: "21", type: "Shall-Issue", official: "https://nvop.nv.gov/" },
+            { name: "New Hampshire", abbr: "NH", color: "green", age: "18", type: "Permitless Carry", official: "https://www.nh.gov/safety/divisions/nhsp/" },
+            { name: "New Jersey", abbr: "NJ", color: "red", age: "21", type: "May-Issue / Restrictive", official: "https://www.nj.gov/njsp/" },
+            { name: "New Mexico", abbr: "NM", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.dps.nm.gov/" },
+            { name: "New York", abbr: "NY", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.ny.gov/services/gun-licensing" },
+            { name: "North Carolina", abbr: "NC", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.ncsheriffs.org/" },
+            { name: "North Dakota", abbr: "ND", color: "green", age: "21", type: "Permitless Carry", official: "https://www.nd.gov/dps/" },
+            { name: "Ohio", abbr: "OH", color: "green", age: "21", type: "Permitless Carry", official: "https://www.ohioattorneygeneral.gov/" },
+            { name: "Oklahoma", abbr: "OK", color: "green", age: "21", type: "Permitless Carry", official: "https://www.ok.gov/" },
+            { name: "Oregon", abbr: "OR", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.oregon.gov/osp/" },
+            { name: "Pennsylvania", abbr: "PA", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.psp.pa.gov/" },
+            { name: "Rhode Island", abbr: "RI", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.risp.ri.gov/" },
+            { name: "South Carolina", abbr: "SC", color: "green", age: "21", type: "Permitless Carry", official: "https://www.sled.sc.gov/" },
+            { name: "South Dakota", abbr: "SD", color: "green", age: "18", type: "Permitless Carry", official: "https://dps.sd.gov/" },
+            { name: "Tennessee", abbr: "TN", color: "green", age: "21", type: "Permitless Carry", official: "https://www.tn.gov/safety/" },
+            { name: "Texas", abbr: "TX", color: "green", age: "21", type: "Permitless Carry", official: "https://www.dps.texas.gov/" },
+            { name: "Utah", abbr: "UT", color: "green", age: "21", type: "Permitless Carry", official: "https://bci.utah.gov/" },
+            { name: "Vermont", abbr: "VT", color: "green", age: "18", type: "Permitless Carry", official: "https://www.vtstatepolice.org/" },
+            { name: "Virginia", abbr: "VA", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.vsp.virginia.gov/" },
+            { name: "Washington", abbr: "WA", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.wsp.wa.gov/" },
+            { name: "West Virginia", abbr: "WV", color: "green", age: "21", type: "Permitless Carry", official: "https://www.wvsp.gov/" },
+            { name: "Wisconsin", abbr: "WI", color: "yellow", age: "21", type: "Shall-Issue", official: "https://www.doj.state.wi.us/" },
+            { name: "Wyoming", abbr: "WY", color: "green", age: "21", type: "Permitless Carry", official: "https://www.wyo.gov/" }
+        ]
+        
+        // Render the grid
+        function renderStates(filteredStates) {
+            const container = document.getElementById('statesGrid')
+            container.innerHTML = ''
+            
+            filteredStates.forEach(state => {
+                const colorClass = state.color === 'green' ? 'bg-emerald-500' : 
+                                  state.color === 'yellow' ? 'bg-amber-500' : 'bg-red-500'
+                
+                const cardHTML = `
+                <div onclick="showStateModal('${state.name}')" 
+                     class="state-card cursor-pointer bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden relative group">
+                    <div class="h-2 ${colorClass}"></div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-4xl font-bold text-slate-300">${state.abbr}</span>
+                                <p class="text-sm font-medium text-slate-400 mt-1">${state.name}</p>
+                            </div>
+                            <div class="px-3 py-1 text-xs font-semibold rounded-2xl ${state.color === 'green' ? 'bg-emerald-950 text-emerald-400' : 
+                                                                                   state.color === 'yellow' ? 'bg-amber-950 text-amber-400' : 'bg-red-950 text-red-400'}">
+                                ${state.type}
+                            </div>
+                        </div>
+                        
+                        <!-- Hover tooltip -->
+                        <div class="tooltip bg-slate-800 text-slate-200 text-xs rounded-2xl p-4 shadow-xl w-64 -top-2 right-0 mt-12 opacity-0 group-hover:opacity-100 pointer-events-none absolute">
+                            <strong>${state.type}</strong><br>
+                            Minimum age: ${state.age}+<br>
+                            <span class="text-emerald-400">Hover facts:</span> ${state.color === 'green' ? 
+                                'No permit needed for eligible adults. Open carry also allowed.' : 
+                                state.color === 'yellow' ? 
+                                'Permit required but shall be issued if qualified.' : 
+                                'Discretionary permit — carry is very limited.'}
+                            <div class="text-[10px] text-slate-400 mt-3">Click for full details + official link</div>
+                        </div>
+                    </div>
+                </div>`
+                
+                container.innerHTML += cardHTML
+            })
+            
+            // If no results
+            if (filteredStates.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No states found. Try a different search.</div>`
+            }
+        }
+        
+        // Filter function
+        function filterStates() {
+            const term = document.getElementById('searchInput').value.toLowerCase().trim()
+            if (!term) {
+                renderStates(statesData)
+                return
+            }
+            
+            const filtered = statesData.filter(state => 
+                state.name.toLowerCase().includes(term) || 
+                state.abbr.toLowerCase().includes(term)
+            )
+            renderStates(filtered)
+        }
+        
+        // Show modal for a state
+        function showStateModal(stateName) {
+            const state = statesData.find(s => s.name === stateName)
+            if (!state) return
+            
+            // Set modal content
+            document.getElementById('modalStateName').textContent = state.name
+            const dot = document.getElementById('modalColorDot')
+            dot.className = `w-6 h-6 rounded-2xl ${state.color === 'green' ? 'bg-emerald-500' : state.color === 'yellow' ? 'bg-amber-500' : 'bg-red-500'}`
+            
+            // Facts HTML
+            const factsHTML = `
+                <div class="flex items-center justify-between bg-slate-800 rounded-2xl px-5 py-4">
+                    <div><strong class="text-emerald-400">Carry Type</strong><br><span class="text-2xl">${state.type}</span></div>
+                    <div><strong class="text-emerald-400">Minimum Age</strong><br><span class="text-2xl">${state.age}+</span></div>
+                    <div class="text-right"><strong class="text-emerald-400">Handgun</strong><br>Concealed carry rules above</div>
+                </div>
+                <p class="text-slate-300 mt-6">This state follows ${state.type.toLowerCase()}. Always verify prohibited locations and local ordinances. Reciprocity with other states is not guaranteed.</p>
+            `
+            document.getElementById('modalFacts').innerHTML = factsHTML
+            
+            // Reciprocity text (general but accurate)
+            const recipText = state.color === 'green' 
+                ? `Permitless carry state. No permit issued in most cases, but you may carry openly or concealed if legally eligible. Your out-of-state permit is usually not required here.` 
+                : `Permit required. This state has limited or no reciprocity with many other states. Check your specific permit status before traveling here.`
+            document.getElementById('modalReciprocity').innerHTML = recipText
+            
+            // Official link
+            const linkEl = document.getElementById('officialLink')
+            linkEl.href = state.official
+            document.getElementById('officialLinkText').innerHTML = `Official ${state.name} Firearm / Concealed Carry Page <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>`
+            
+            // Show modal
+            document.getElementById('modal').classList.remove('hidden')
+            document.getElementById('modal').classList.add('flex')
+        }
+        
+        function hideModal() {
+            const modal = document.getElementById('modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        // Travel tips modal
+        function showTravelTips() {
+            document.getElementById('travelModal').classList.remove('hidden')
+            document.getElementById('travelModal').classList.add('flex')
+        }
+        
+        function hideTravelModal() {
+            const modal = document.getElementById('travelModal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
+        
+        // Initialize everything
+        function initialize() {
+            initTailwind()
+            renderStates(statesData)
+            
+            console.log('%c✅ CarryGuard HTML ready! Copy this entire file and save as carry-laws.html', 'color:#10b981; font-family:monospace')
+        }
+        
+        window.onload = initialize
+    </script>
+</body>
+</html>
