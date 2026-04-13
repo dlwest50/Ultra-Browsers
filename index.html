@@ -3,249 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel & Treasure Portal</title>
+    <title>The Explorer's Dashboard</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            line-height: 1.6;
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #f97316;
+            --text: #1f2937;
+            --light: #f8fafc;
+        }
+
+        * {
             margin: 0;
-            background-color: #f0f4f8;
-            color: #2d3436;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #f1f5f9 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
         header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: white;
-            padding: 3rem 1rem;
+            padding: 4rem 1rem 3rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(transparent, #f8fafc);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         nav {
-            background: #fff;
-            padding: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1.25rem 1rem;
             text-align: center;
             position: sticky;
             top: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
+
         nav a {
-            margin: 0 8px; /* Slightly tighter spacing for more links */
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 14px;
             text-decoration: none;
-            color: #1e3c72;
-            font-weight: bold;
-            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.92rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-        nav a:hover { color: #ff7675; }
-        
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
         .container {
-            max-width: 1200px;
-            margin: 2rem auto;
+            max-width: 1280px;
+            margin: 2.5rem auto;
             padding: 0 20px;
         }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin-top: 1.5rem;
         }
+
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
-        .card:hover { transform: translateY(-5px); }
-        .card-content { padding: 20px; flex-grow: 1; }
-        .card h3 { margin-top: 0; color: #1e3c72; }
-        
-        .btn {
-            display: block;
-            background: #1e3c72;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 0 0 12px 12px;
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
         }
-        .btn:hover { background: #2a5298; }
-        
+
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+        }
+
         .tag {
             display: inline-block;
-            background: #dfe6e9;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            margin-bottom: 10px;
+            background: #e0f2fe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            font-size: 1.35rem;
+            margin-bottom: 12px;
+            color: var(--primary);
+            line-height: 1.3;
+        }
+
+        .card p {
+            color: #475569;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: block;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 0 0 16px 16px;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.3rem; }
+            nav a { margin: 6px 6px; font-size: 0.85rem; padding: 6px 10px; }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>The Explorer's Dashboard</h1>
+        <p>Parks • Maps • Local Treasures • Resources</p>
+    </header>
 
-<header>
-    <h1>The Explorer's Dashboard</h1>
-    <p>Parks, Maps, and Local Treasures</p>
-</header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="texas-state-parks-map.html">TX Parks</a>
+        <a href="us-national-parks.html">US Parks</a>
+        <a href="flea-markets-ok-and-tx.html">Flea Markets</a>
+        <a href="flea-market-map.html">Flea Market Map</a>
+        <a href="all-50-states-flags.html">State Flags</a>
+        <a href="top-retail-links.html">Retail</a>
+        <a href="texas-cities-websites.html">TX Cities</a>
+        <a href="texas-cities-jobs.html">TX Jobs</a>
+        <a href="texas-top-50-bbq-restaurants.html">Top 50 BBQ</a>
+        <a href="law_guide.html">Legal Hub</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="gardening-north-texas.html">Gardening N. TX</a>
+        <a href="gun_laws_us.html">Gun Laws</a>
+    </nav>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="texas-state-parks-map.html">TX Parks</a>
-    <a href="us-national-parks.html">US Parks</a>
-    <a href="flea-markets-ok-and-tx.html">Flea Markets</a>
-	<a href="flea-market-map.html">Flea Markts TX and OK</a>
-    <a href="all-50-states-flags.html">State Flags</a>
-    <a href="top-retail-links.html">Retail</a>
-    <a href="texas-cities-websites.html">TX Cities</a>
-    <a href="texas-cities-jobs.html">TX Jobs</a>
-	<a href="texas-top-50-bbq-restaurants.html">Top 50 restaurants</a>
-	<a href="law_guide.html">Legal Resource Hub"</a>
-	<a href="recipes.html">Recipes"</a>
-	<a href="gardening-north-texas.html">Gardening North Texas</a>
-	<a href="gun_laws_us.html">Gun Laws in the US"</a>
-</nav>
+    <div class="container">
+        <div class="grid">
+            <!-- Texas State Parks -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Regional</span>
+                    <h3>Texas State Parks</h3>
+                    <p>Interactive map and detailed information for every state park in Texas.</p>
+                </div>
+                <a href="texas-state-parks-map.html" class="btn">Open Map</a>
+            </div>
 
-<div class="container">
-    <div class="grid">
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Regional</span>
-                <h3>Texas State Parks</h3>
-                <p>Interactive map and location data for every state park in the Lone Star State.</p>
+            <!-- US National Parks -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">National</span>
+                    <h3>US National Parks</h3>
+                    <p>Explore the majestic beauty of America's National Park system.</p>
+                </div>
+                <a href="us-national-parks.html" class="btn">View Parks</a>
             </div>
-            <a href="texas-state-parks-map.html" class="btn">Open Map</a>
-        </div>
 
-		<div class="container">
-    <div class="grid">
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Regional</span>
-                <h3>Gun Laws in the US</h3>
-                <p>Interactive webpage for every states gun laws.</p>
+            <!-- Flea Markets Guide -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Shopping</span>
+                    <h3>Flea Markets OK & TX</h3>
+                    <p>Curated guide to the best flea markets across Oklahoma and Texas.</p>
+                </div>
+                <a href="flea-markets-ok-and-tx.html" class="btn">Find Treasures</a>
             </div>
-            <a href="gun_laws_us.html" class="btn">Open Map</a>
-        </div>
-		
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">National</span>
-                <h3>US National Parks</h3>
-                <p>Explore the majestic beauty of the National Park system across the United States.</p>
-            </div>
-            <a href="us-national-parks.html" class="btn">View Parks</a>
-        </div>
 
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Shopping</span>
-                <h3>Flea Markets</h3>
-                <p>A curated guide to the best flea markets across Oklahoma and Texas.</p>
+            <!-- Flea Market Map -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Shopping</span>
+                    <h3>Flea Market Map</h3>
+                    <p>Interactive map of flea markets in Texas and Oklahoma.</p>
+                </div>
+                <a href="flea-market-map.html" class="btn">View Map</a>
             </div>
-            <a href="flea-markets-ok-and-tx.html" class="btn">Find Treasures</a>
-        </div>
 
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">History</span>
-                <h3>50 State Flags</h3>
-                <p>A complete collection of the official flags and symbols for all 50 U.S. States.</p>
+            <!-- State Flags -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">History</span>
+                    <h3>50 State Flags</h3>
+                    <p>A complete collection of official U.S. state flags and symbols.</p>
+                </div>
+                <a href="all-50-states-flags.html" class="btn">View Flags</a>
             </div>
-            <a href="all-50-states-flags.html" class="btn">View Flags</a>
-        </div>
 
-		<div class="card">
-            <div class="card-content">
-                <span class="tag">History</span>
-                <h3>North Texas Gardener's Hub</h3>
-                <p>North Texas Gardener's Hub</p>
+            <!-- North Texas Gardening -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Regional</span>
+                    <h3>North Texas Gardener's Hub</h3>
+                    <p>Helpful resources for gardening in North Texas climate and soil.</p>
+                </div>
+                <a href="gardening-north-texas.html" class="btn">Gardening Hub</a>
             </div>
-            <a href="gardening-north-texas.html" class="btn">Gardening</a>
-        </div>
-		
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Shopping</span>
-                <h3>Top Retail Links</h3>
-                <p>Quick access to the most popular retail destinations and shopping resources.</p>
-            </div>
-            <a href="top-retail-links.html" class="btn">Shop Now</a>
-        </div>
 
-		<div class="card">
-            <div class="card-content">
-                <span class="tag">Shopping</span>
-                <h3>Flea Markets</h3>
-                <p>A curated guide to the best flea markets across Oklahoma and Texas.</p>
+            <!-- Top Retail Links -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Shopping</span>
+                    <h3>Top Retail Links</h3>
+                    <p>Quick access to popular retail destinations and shopping resources.</p>
+                </div>
+                <a href="top-retail-links.html" class="btn">Shop Now</a>
             </div>
-            <a href="flea-market-map.html" class="btn">Find Treasures</a>
-        </div>
-		
-	<div class="card">
-            <div class="card-content">
-                <span class="tag">Regional</span>
-                <h3>Texas Top 50 BBQ Restaurants</h3>
-                <p>Official links for Top 50 BBQ Restaurants across the state of Texas.</p>
-            </div>
-            <a href="texas-top-50-bbq-restaurants.html" class="btn">Explore Cities</a>
-        </div>
 
-		<div class="card">
-            <div class="card-content">
-                <span class="tag">Regional</span>
-                <h3>Legal Resource Hub</h3>
-                <p>Legal Resource Hub - Oklahoma City, Vernon, Wichita Fall, Dallas, Ft. Worth</p>
+            <!-- Texas BBQ -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Food</span>
+                    <h3>Texas Top 50 BBQ Restaurants</h3>
+                    <p>Official links to the best BBQ joints across the Lone Star State.</p>
+                </div>
+                <a href="texas-top-50-bbq-restaurants.html" class="btn">Explore BBQ</a>
             </div>
-            <a href="law_guide.html" class="btn">Legal Guide</a>
-        </div>
-		
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Healthy Food</span>
-                <h3>Top 50 Healthy Recipes</h3>
-                <p>Top 50 Healthy Recipes.</p>
-            </div>
-            <a href="recipes.html" class="btn">Healthy Recipes</a>
-        </div>
- <div class="card">
-	 
-            <div class="card-content">
-                <span class="tag">Regional</span>
-                <h3>Texas Cities Websites</h3>
-                <p>Official links and resources for cities across the state of Texas.</p>
-            </div>
-            <a href="texas-cities-websites.html" class="btn">Explore Cities</a>
-        </div>
-		
-        <div class="card">
-            <div class="card-content">
-                <span class="tag">Careers</span>
-                <h3>Texas Cities Jobs</h3>
-                <p>Direct access to municipal job boards and career opportunities in Texas cities.</p>
-            </div>
-            <a href="texas-cities-jobs.html" class="btn">Find Jobs</a>
-        </div>
 
-		<div class="card">
-            <div class="card-content">
-                <span class="tag">Food</span>
-                <h3>Freeze Drying and dehydrating</h3>
-                <p>Helpful Freeze Drying & Dehydrating fruit, Veggies, & Meat.</p>
+            <!-- Legal Resource Hub -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Regional</span>
+                    <h3>Legal Resource Hub</h3>
+                    <p>Legal resources for Oklahoma City, Vernon, Wichita Falls, Dallas & Ft. Worth.</p>
+                </div>
+                <a href="law_guide.html" class="btn">Legal Guide</a>
             </div>
-            <a href="freeze-dryer_dehydrator_gemini.html" class="btn">Freeze Drying and dehydrating</a>
+
+            <!-- Healthy Recipes -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Healthy Food</span>
+                    <h3>Top 50 Healthy Recipes</h3>
+                    <p>Collection of delicious and healthy recipes.</p>
+                </div>
+                <a href="recipes.html" class="btn">Browse Recipes</a>
+            </div>
+
+            <!-- Texas Cities Websites -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Regional</span>
+                    <h3>Texas Cities Websites</h3>
+                    <p>Official websites and resources for cities across Texas.</p>
+                </div>
+                <a href="texas-cities-websites.html" class="btn">Explore Cities</a>
+            </div>
+
+            <!-- Texas Cities Jobs -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Careers</span>
+                    <h3>Texas Cities Jobs</h3>
+                    <p>Direct links to municipal job boards and career opportunities.</p>
+                </div>
+                <a href="texas-cities-jobs.html" class="btn">Find Jobs</a>
+            </div>
+
+            <!-- Gun Laws -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Reference</span>
+                    <h3>Gun Laws in the US</h3>
+                    <p>Interactive guide to firearm laws by state.</p>
+                </div>
+                <a href="gun_laws_us.html" class="btn">View Gun Laws</a>
+            </div>
+
+            <!-- Freeze Drying -->
+            <div class="card">
+                <div class="card-content">
+                    <span class="tag">Food Preservation</span>
+                    <h3>Freeze Drying & Dehydrating</h3>
+                    <p>Helpful guides for freeze drying and dehydrating fruits, vegetables, and meat.</p>
+                </div>
+                <a href="freeze-dryer_dehydrator_gemini.html" class="btn">Learn More</a>
+            </div>
         </div>
-		
     </div>
-</div>
-
 </body>
-
 </html>
-
-
-
-
-
-
